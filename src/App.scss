@@ -13,7 +13,6 @@ a:visited,
 a:active,
 a:focus {
 	color: inherit;
-	text-decoration: none;
 	outline: inherit;
 }
 .body-top-highlight {
@@ -24,12 +23,16 @@ a:focus {
 	flex-direction: column;
 	justify-content: space-between;
 }
-.navigation-wrapper--column {
-	height: 300px;
+.navigation-wrapper {
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-end;
 	align-items: center;
+	height: 300px;
+	margin-top: 12px;
+	.title {
+		text-align: center;
+	}
 }
 .content-wrapper {
 	width: 100%;
@@ -37,51 +40,38 @@ a:focus {
 	flex-wrap: wrap;
 	justify-content: center;
 	align-items: center;
-	margin-top: 24px;
+	margin: 24px auto;
 }
-.get-word-wrapper {
+.search-wrapper {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	margin: 20px;
+	width: 90%;
 }
-.get-word__input {
-	height: 55px;
-	width: 590px;
+.search__input {
+	width: 100%;
+	height: 50px;
 	border: 1px solid #d0d0d0;
 	border-right: none;
-	line-height: 30px;
-	font-size: 30px;
-	padding: 0px 0px 0px 80px;
-	text-align: center;
+	line-height: 22px;
+	font-size: 22px;
+	text-align: left;
+	padding-left: 7px;
 	outline: none;
 }
-.get-word__button {
-	height: 55px;
+.search__button {
+	height: 50px;
 	width: 80px;
 	border: 1px solid #d0d0d0;
 	border-left: none;
 	background-color: #ffffff;
 	outline: none;
 }
-.get-word__button-icon {
+.search__button-icon {
 	font-size: xx-large;
 	color: #3c7bbe;
 	vertical-align: middle;
-}
-.loading-wrapper {
-	text-align: center;
-	margin-bottom: auto;
-}
-.loading__header {
-	font-size: 65px;
-}
-.definitions-wrapper {
-	text-align: center;
-	max-width: 1200px;
-	margin: 40px auto;
-	height: 100%;
-	flex: 1;
 }
 .word-header-wrapper {
 	display: flex;
@@ -100,15 +90,22 @@ a:focus {
 	align-items: center;
 	justify-content: flex-start;
 	text-align: center;
-	height: 240px;
-	width: 470px;
+	min-height: 240px;
+	width: 380px;
 	border: 1px solid #bcd4e2;
 	box-shadow: -4px 4px 10px #d0d0d0;
 	background-color: white;
 	margin: 12px;
-	padding-top: 12px;
+	padding: 24px;
+	span {
+		font-size: 30px;
+	}
 	.examples-list {
-		margin-top: 12px;
+		margin-top: 24px;
+		font-style: italic;
+		span {
+			font-size: 14px;
+		}
 	}
 }
 .wod-link {
@@ -125,15 +122,24 @@ a:focus {
 	width: 80px;
 	margin-bottom: 12px;
 }
-.github-icon-footer {
-	text-align: center;
-	height: auto;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	width: 100%;
-	margin-bottom: 20px;
+.highlight {
+  background-color: #ffd54f;
 }
-.github-icon {
-	font-size: 32px;
+.example-highlight {
+	background-color: inherit;
+	font-weight: bold;
+	padding: 0;
+}
+.counter {
+	text-align: right;
+}
+.info {
+	display: flex;
+	width: 100%;
+	justify-content: flex-start;
+	align-items: flex-end;
+	flex-direction: column;
+	height: 100%;
+	padding: 12px;
+	font-size: 12px;
 }
