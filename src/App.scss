@@ -1,0 +1,139 @@
+html,body {
+	background: #f7f7f7;
+	font-family: 'Muli', sans-serif;
+	height: 100%;
+	width: 100%;
+}
+.app {
+	height: 100%;
+}
+a,
+a:hover,
+a:visited,
+a:active,
+a:focus {
+	color: inherit;
+	text-decoration: none;
+	outline: inherit;
+}
+.body-top-highlight {
+	border-top: 5px solid #3c7bbe;
+	width: 100%;
+	min-height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+.navigation-wrapper--column {
+	height: 300px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	align-items: center;
+}
+.content-wrapper {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	margin-top: 24px;
+}
+.get-word-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 20px;
+}
+.get-word__input {
+	height: 55px;
+	width: 590px;
+	border: 1px solid #d0d0d0;
+	border-right: none;
+	line-height: 30px;
+	font-size: 30px;
+	padding: 0px 0px 0px 80px;
+	text-align: center;
+	outline: none;
+}
+.get-word__button {
+	height: 55px;
+	width: 80px;
+	border: 1px solid #d0d0d0;
+	border-left: none;
+	background-color: #ffffff;
+	outline: none;
+}
+.get-word__button-icon {
+	font-size: xx-large;
+	color: #3c7bbe;
+	vertical-align: middle;
+}
+.loading-wrapper {
+	text-align: center;
+	margin-bottom: auto;
+}
+.loading__header {
+	font-size: 65px;
+}
+.definitions-wrapper {
+	text-align: center;
+	max-width: 1200px;
+	margin: 40px auto;
+	height: 100%;
+	flex: 1;
+}
+.word-header-wrapper {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	height: 100px;
+}
+.word-header__header {
+	font-size: 65px;
+	height: 100%;
+}
+.wod-view-wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	text-align: center;
+	height: 240px;
+	width: 470px;
+	border: 1px solid #bcd4e2;
+	box-shadow: -4px 4px 10px #d0d0d0;
+	background-color: white;
+	margin: 12px;
+	padding-top: 12px;
+	.examples-list {
+		margin-top: 12px;
+	}
+}
+.wod-link {
+	&:hover {
+		color: #3c7bbe;
+	}
+}
+.underline {
+	display: block;
+	border-bottom: 1px solid #bcd4e2;
+	height: 1px;
+	margin-right: auto;
+	margin-left: auto;
+	width: 80px;
+	margin-bottom: 12px;
+}
+.github-icon-footer {
+	text-align: center;
+	height: auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 100%;
+	margin-bottom: 20px;
+}
+.github-icon {
+	font-size: 32px;
+}
