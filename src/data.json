@@ -1,5 +1,16 @@
 [
   {
+    "text": "¡A vaina!",
+    "meaning": "Expresión utilizada para demostrar admiración.",
+    "examples": [
+      "‘¡A vaina!, por fin terminaste la carrera’"
+    ],
+    "author": {
+      "link": "https://github.com/jvalenciae",
+      "name": "Javier Valencia"
+    }
+  },
+  {
     "text": "Aguanta el burro",
     "meaning": "Expresión que quiere decir: Espera un momento.",
     "examples": [
@@ -23,10 +34,11 @@
     }
   },
   {
-    "text": "¡A vaina!",
-    "meaning": "Expresión utilizada para demostrar admiración.",
+    "text": "Arrayúo",
+    "meaning": "Hace referencia a una persona sobre motivada.",
     "examples": [
-      "‘¡A vaina!, por fin terminaste la carrera’"
+      "‘Anda arrayúo con el regalo que le dieron’",
+      "‘Ese arrayúo no se quita la camiseta nueva ni para dormir’"
     ],
     "author": {
       "link": "https://github.com/jvalenciae",
@@ -156,18 +168,6 @@
     "meaning": "Expresión que significa: Abusar de la confianza de una persona o sacar provecho de alguien.",
     "examples": [
       "‘Yo te ayudo con el trabajo, pero no te pases de piña’"
-    ],
-    "author": {
-      "link": "https://github.com/jvalenciae",
-      "name": "Javier Valencia"
-    }
-  },
-  {
-    "text": "Rayúo",
-    "meaning": "Hace referencia a una persona sobre motivada.",
-    "examples": [
-      "‘Anda rayúo con el regalo que le dieron’",
-      "‘Ese rayúo no se quita la camiseta nueva ni para dormir’"
     ],
     "author": {
       "link": "https://github.com/jvalenciae",

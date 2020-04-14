@@ -9,6 +9,8 @@
 ## ¿Cómo contribuir?
 Monocuco está desarrollada con React.js, si quieres proponer una mejora, arreglar algún problema o añadir nuevas palabras al diccionario realiza los siguientes pasos:
 
+### Si eres desarrollador
+
 1. Crea el fork
 2. Crea una nueva rama con uno de estos nomnbres: fix (solucionar bug), feature (mejora) o new-word (añadir nueva palabra)
 3. Crea el pull request
@@ -23,10 +25,21 @@ Monocuco está desarrollada con React.js, si quieres proponer una mejora, arregl
     "‘Mira, ahí viene bailando el monocuco’"
   ],
   "author": {
-    "link": "https://github.com/sjdonado",
-    "name": "Juan Rodriguez"
+    "link": "https://github.com/jvalenciae",
+    "name": "Javier Valencia"
   }
 ```
+
+### Si no eres desarrollador
+
+1. Envíame un email a [jsrd98@gmail.com](mailto:jsrd98@gmail.com) con la siguiente información:
+* Palabra
+* Significado
+* Ejemplos (máximo dos)
+* Tu página personal, o algún link para que puedan buscarte
+* Tu nombre
+2. En el asunto coloca: Nueva palabra - Monocuco
+3. Listo!
 
 ## Contribuidores
 <table>
@@ -37,4 +50,4 @@ Monocuco está desarrollada con React.js, si quieres proponer una mejora, arregl
 
 ## Agradecimientos especiales
 
-* Andres Urquina: [Ilustración Bailarina - Carnaval de Barranquilla, Colombia.](https://www.flickr.com/photos/andresurquina/16246891029)
+* Andres Urquina: Autor del icono [Ilustración Bailarina - Carnaval de Barranquilla, Colombia.](https://www.flickr.com/photos/andresurquina/16246891029)

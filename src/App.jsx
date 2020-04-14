@@ -15,11 +15,11 @@ import words from './data.json';
 const Info = () => (
   <div className="info">
     <span>
+      Hecho por:
+      {' '}
       <a href="https://github.com/sjdonado" target="_blank" rel="noopener noreferrer">Juan Rodriguez</a>
-      {' y '}
-      <a href="https://github.com/jvalenciae" target="_blank" rel="noopener noreferrer">Javier Valencia</a>
     </span>
-    <span>Universidad del Norte</span>
+    <a href="https://github.com/sjdonado/monocuco/blob/master/README.md" target="_blank" rel="noopener noreferrer">¿Quieres añadir una palabra? Click aquí</a>
   </div>
 );
 
@@ -38,6 +38,7 @@ const Title = () => (
 );
 
 function App() {
+  words.sort((a, b) => a.text.localeCompare(b.text));
   const [filteredWords, setFilteredWords] = useState(words);
   const [currentWord, setCurrentWord] = useState('');
 
