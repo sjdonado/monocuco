@@ -34,6 +34,9 @@ a:focus {
 	margin-top: 12px;
 	.title {
 		text-align: center;
+		h4 {
+			font-style: italic;
+		}
 	}
 }
 .icon {
@@ -67,14 +70,18 @@ a:focus {
 	padding: 0 7px;
 	outline: none;
 }
-.search__button {
+.search__icon-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	height: 50px;
+	width: 42px;
 	border: 1px solid #d0d0d0;
 	border-left: none;
 	background-color: #ffffff;
 	outline: none;
 }
-.search__button-icon {
+.search__icon-icon {
 	font-size: xx-large;
 	color: #e20f21;
 	vertical-align: middle;

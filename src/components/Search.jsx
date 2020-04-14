@@ -26,9 +26,9 @@ function Search({ onUpdateWord, word }) {
   return (
     <div className="search-wrapper">
       <Input onUpdateWord={onUpdateWord} word={word} />
-      <button className="search__button" type="button">
-        <span className="glyphicon glyphicon-search search__button-icon" aria-hidden="true" />
-      </button>
+      <div className="search__icon-wrapper">
+        <i className="fas fa-search search__icon-icon" />
+      </div>
     </div>
   );
 }

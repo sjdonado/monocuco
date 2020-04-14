@@ -13,7 +13,7 @@ function Word({ word, currentWord }) {
         textToHighlight={word.text}
       />
       <div className="underline" />
-      <h4>{word.meaning}</h4>
+      <h6>{word.meaning}</h6>
       <div className="examples-list">
         {word.examples.map((example) => (
           <Highlighter
@@ -25,7 +25,7 @@ function Word({ word, currentWord }) {
           />
         ))}
       </div>
-      {/* <div className="credits">
+      <div className="credits">
         <span>Añadida por: </span>
         <a
           href={word.author.link}
@@ -34,7 +34,7 @@ function Word({ word, currentWord }) {
         >
           {word.author.name}
         </a>
-      </div> */}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import accents from 'remove-accents';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 import './App.scss';
 
 import Search from './components/Search';
