@@ -2,12 +2,12 @@
 > Diccionario de palabras costeñas.
 <div align="center">
     <a href="monocuco-f4976.firebaseapp.com">
-      <img src="/src/icon.jpg" alt="Mi horario UN" height="800px" />
+      <img src="/src/icon.jpg" alt="Monocuco" width="300px" />
     </a>
 </div>
 
 ## ¿Cómo contribuir?
-Monocuco está desarrollada con React.js, si quieres proponer una mejora, arreglar algún problema o añadir nuevas palabras al diccionario realiza los siguientes pasos.
+Monocuco está desarrollada con React.js, si quieres proponer una mejora, arreglar algún problema o añadir nuevas palabras al diccionario realiza los siguientes pasos:
 
 1. Crea el fork
 2. Crea una nueva rama con uno de estos nomnbres: fix (solucionar bug), feature (mejora) o new-word (añadir nueva palabra)
@@ -34,3 +34,7 @@ Monocuco está desarrollada con React.js, si quieres proponer una mejora, arregl
     <td align="center"><a href="https://github.com/sjdonado"><img src="https://avatars0.githubusercontent.com/u/27580836?s=460&v=4" width="100px;" alt="Juan Rodriguez"/><br /><sub><b>Juan Rodriguez</b></sub></a></td>
   </tr>
 <table>
+
+## Agradecimientos especiales
+
+* Andres Urquina: [Ilustración Bailarina - Carnaval de Barranquilla, Colombia.](https://www.flickr.com/photos/andresurquina/16246891029)
