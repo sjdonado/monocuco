@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import '../App.scss';
 
 function Input({ onUpdateWord, word }) {
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef) {
+      inputRef.current.focus();
+    }
+  });
+
   return (
     <input
+      ref={inputRef}
       id="search-input"
       className="search__input"
       type="text"
@@ -25,7 +33,10 @@ Input.propTypes = {
 function Search({ onUpdateWord, word }) {
   return (
     <div className="search-wrapper">
-      <Input onUpdateWord={onUpdateWord} word={word} />
+      <Input
+        onUpdateWord={onUpdateWord}
+        word={word}
+      />
       <div className="search__icon-wrapper">
         <i className="fas fa-search search__icon-icon" />
       </div>

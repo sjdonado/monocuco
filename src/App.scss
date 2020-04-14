@@ -57,7 +57,7 @@ a:focus {
 	justify-content: center;
 	align-items: center;
 	margin: 20px;
-	width: 90%;
+	width: 425px;
 }
 .search__input {
 	width: 100%;
@@ -109,7 +109,7 @@ a:focus {
 	box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.12);
 	background-color: white;
 	margin: 12px;
-	padding: 24px;
+	padding: 22px 12px;
 	span {
 		font-size: 30px;
 	}
@@ -170,4 +170,9 @@ a:focus {
 	height: 100%;
 	padding: 12px;
 	font-size: 12px;
+}
+@media only screen and (max-width: 425px) {
+  .search-wrapper {
+    width: 90%;
+  }
 }
