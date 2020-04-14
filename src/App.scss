@@ -90,7 +90,7 @@ a:focus {
 	align-items: center;
 	justify-content: flex-start;
 	text-align: center;
-	min-height: 240px;
+	height: 268px;
 	width: 380px;
 	border: 1px solid #bcd4e2;
 	box-shadow: -4px 4px 10px #d0d0d0;
@@ -101,6 +101,8 @@ a:focus {
 		font-size: 30px;
 	}
 	.examples-list {
+		display: flex;
+		flex-direction: column;
 		margin-top: 24px;
 		font-style: italic;
 		span {

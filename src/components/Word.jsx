@@ -19,7 +19,7 @@ function Word({ word, currentWord }) {
           <Highlighter
             key={example}
             highlightClassName="example-highlight"
-            searchWords={[word.text.toLowerCase()]}
+            searchWords={[word.text]}
             autoEscape
             textToHighlight={example}
           />

@@ -33,8 +33,8 @@ function App() {
   const handleUpdate = (word) => {
     const parsedWord = accents.remove(word).toLowerCase();
     setFilteredWords(words.filter(({ text }) => {
-      const parsedText = text.toLocaleLowerCase();
-      return parsedText.includes(parsedWord) || parsedText.includes(word.toLowerCase());
+      const parsedText = accents.remove(text).toLocaleLowerCase();
+      return parsedText.includes(parsedWord);
     }));
     setCurrentWord(word);
   };
