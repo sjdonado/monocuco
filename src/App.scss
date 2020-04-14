@@ -1,8 +1,11 @@
 html,body {
 	background: #f7f7f7;
-	font-family: 'Muli', sans-serif;
+	font-family: sans-serif;
 	height: 100%;
 	width: 100%;
+}
+input {
+	-webkit-appearance: none;
 }
 .app {
 	height: 100%;
@@ -16,7 +19,7 @@ a:focus {
 	outline: inherit;
 }
 .body-top-highlight {
-	border-top: 5px solid #3c7bbe;
+	border-top: 5px solid #e20f21;
 	width: 100%;
 	min-height: 100%;
 	display: flex;
@@ -28,11 +31,15 @@ a:focus {
 	flex-direction: column;
 	justify-content: flex-end;
 	align-items: center;
-	height: 300px;
 	margin-top: 12px;
 	.title {
 		text-align: center;
 	}
+}
+.icon {
+	display: flex;
+	justify-content: center;
+	max-height: 160px;
 }
 .content-wrapper {
 	width: 100%;
@@ -57,12 +64,11 @@ a:focus {
 	line-height: 22px;
 	font-size: 22px;
 	text-align: left;
-	padding-left: 7px;
+	padding: 0 7px;
 	outline: none;
 }
 .search__button {
 	height: 50px;
-	width: 80px;
 	border: 1px solid #d0d0d0;
 	border-left: none;
 	background-color: #ffffff;
@@ -70,7 +76,7 @@ a:focus {
 }
 .search__button-icon {
 	font-size: xx-large;
-	color: #3c7bbe;
+	color: #e20f21;
 	vertical-align: middle;
 }
 .word-header-wrapper {
@@ -85,6 +91,7 @@ a:focus {
 	height: 100%;
 }
 .wod-view-wrapper {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -92,8 +99,7 @@ a:focus {
 	text-align: center;
 	height: 268px;
 	width: 380px;
-	border: 1px solid #bcd4e2;
-	box-shadow: -4px 4px 10px #d0d0d0;
+	box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.12);
 	background-color: white;
 	margin: 12px;
 	padding: 24px;
@@ -109,15 +115,27 @@ a:focus {
 			font-size: 14px;
 		}
 	}
+	.credits {
+		position:absolute;
+		margin-top: 4px;
+    bottom: 4px;
+		right: 4px;
+		span {
+			margin-right: 2px;
+		}
+		span, a {
+			font-size: 11px;
+		}
+	}
 }
 .wod-link {
 	&:hover {
-		color: #3c7bbe;
+		color: #e20f21;
 	}
 }
 .underline {
 	display: block;
-	border-bottom: 1px solid #bcd4e2;
+	border-bottom: 1px solid #e20f21;
 	height: 1px;
 	margin-right: auto;
 	margin-left: auto;

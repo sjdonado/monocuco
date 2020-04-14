@@ -6,6 +6,7 @@ import './App.scss';
 import Search from './components/Search';
 import Word from './components/Word';
 
+import icon from './icon.jpg';
 import words from './data.json';
 
 const Info = () => (
@@ -15,14 +16,21 @@ const Info = () => (
       {' y '}
       <a href="https://github.com/jvalenciae" target="_blank" rel="noopener noreferrer">Javier Valencia</a>
     </span>
-    <span>Universidad del Norte | 2020</span>
+    <span>Universidad del Norte</span>
   </div>
 );
 
 const Title = () => (
   <>
-    <span className="glyphicon glyphicon-book" style={{ fontSize: '50px' }} />
-    <h1 className="title">Costeñol - Diccionario</h1>
+    <img
+      className="icon"
+      src={icon}
+      alt="Bailarina - Carnaval de Barranquilla, Colombia | Ilustración Andrés Urquina Sánchez"
+    />
+    <div className="title">
+      <h1>Monocuco</h1>
+      <h4>Diccionario de palabras costeñas</h4>
+    </div>
   </>
 );
 

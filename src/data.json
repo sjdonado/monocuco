@@ -4,7 +4,11 @@
     "meaning": "Expresión que quiere decir: Espera un momento.",
     "examples": [
       "‘Hey, aguanta el burro que me dejas atrás’"
-    ]
+    ],
+    "author": {
+      "link": "https://github.com/jvalenciae",
+      "name": "Javier Valencia"
+    }
   },
   {
     "text": "Aguacatao",
@@ -12,14 +16,22 @@
     "examples": [
       "‘Ese pelao está como aguacatao’",
       "‘Ey, no estés tanto tiempo aguacatao’"
-    ]
+    ],
+    "author": {
+      "link": "https://github.com/jvalenciae",
+      "name": "Javier Valencia"
+    }
   },
   {
     "text": "¡A vaina!",
     "meaning": "Expresión utilizada para demostrar admiración.",
     "examples": [
       "‘¡A vaina!, por fin terminaste la carrera’"
-    ]
+    ],
+    "author": {
+      "link": "https://github.com/jvalenciae",
+      "name": "Javier Valencia"
+    }
   },
   {
     "text": "Billullo",
@@ -27,7 +39,11 @@
     "examples": [
       "‘Ando con billullo’",
       "‘Me quedé sin billullo’"
-    ]
+    ],
+    "author": {
+      "link": "https://github.com/jvalenciae",
+      "name": "Javier Valencia"
+    }
   },
   {
     "text": "Bololó",
@@ -35,7 +51,11 @@
     "examples": [
       "‘¿Viste el cipote bololó que se formó en la fiesta de anoche?’",
       "‘Vámonos de aquí antes de que se forme un bololó’"
-    ]
+    ],
+    "author": {
+      "link": "https://github.com/jvalenciae",
+      "name": "Javier Valencia"
+    }
   },
   {
     "text": "Calilla",
@@ -43,7 +63,11 @@
     "examples": [
       "‘Ese man si es calilla’",
       "‘Oye deja la intensidad, no seas calilla’"
-    ]
+    ],
+    "author": {
+      "link": "https://github.com/jvalenciae",
+      "name": "Javier Valencia"
+    }
   },
   {
     "text": "Carretilla",
@@ -51,7 +75,11 @@
     "examples": [
       "‘Lo que dijo el presidente es carretilla’",
       "‘No le creas a el, es muy carretillero’"
-    ]
+    ],
+    "author": {
+      "link": "https://github.com/jvalenciae",
+      "name": "Javier Valencia"
+    }
   },
   {
     "text": "Emputao",
@@ -59,14 +87,22 @@
     "examples": [
       "‘Dejalo quieto que está emputao’",
       "‘Deja de joder o me voy a emputar’"
-    ]
+    ],
+    "author": {
+      "link": "https://github.com/jvalenciae",
+      "name": "Javier Valencia"
+    }
   },
   {
     "text": "Esa es la que te cae",
     "meaning": "Frase usada cuando una persona sale siempre con lo mismo.",
     "examples": [
       "‘Esa es la que te cae a ti, siempre con la misma vaina’"
-    ]
+    ],
+    "author": {
+      "link": "https://github.com/jvalenciae",
+      "name": "Javier Valencia"
+    }
   },
   {
     "text": "Guachafita",
@@ -74,14 +110,22 @@
     "examples": [
       "‘Hey, dejen la guachafita y hagamos las cosas en serio’",
       "‘José, me haces el favor y dejas la guachafita’"
-    ]
+    ],
+    "author": {
+      "link": "https://github.com/jvalenciae",
+      "name": "Javier Valencia"
+    }
   },
   {
     "text": "Huepaje",
     "meaning": "Grito para mostrar alegría.",
     "examples": [
       "‘¡Huepaje!, bailalo morena’"
-    ]
+    ],
+    "author": {
+      "link": "https://github.com/jvalenciae",
+      "name": "Javier Valencia"
+    }
   },
   {
     "text": "Lambón",
@@ -89,7 +133,11 @@
     "examples": [
       "‘Ahí viene de la oficina del profesor el lambón ese’",
       "‘Ese pelao es muy lambón’"
-    ]
+    ],
+    "author": {
+      "link": "https://github.com/jvalenciae",
+      "name": "Javier Valencia"
+    }
   },
   {
     "text": "Monocuco",
@@ -97,21 +145,33 @@
     "examples": [
       "‘Con esta pinta nueva quedé monocuco’",
       "‘Mira, ahí viene bailando el monocuco’"
-    ]
+    ],
+    "author": {
+      "link": "https://github.com/jvalenciae",
+      "name": "Javier Valencia"
+    }
   },
   {
     "text": "Pasarse de piña",
     "meaning": "Expresión que significa: Abusar de la confianza de una persona o sacar provecho de alguien.",
     "examples": [
       "‘Yo te ayudo con el trabajo, pero no te pases de piña’"
-    ]
+    ],
+    "author": {
+      "link": "https://github.com/jvalenciae",
+      "name": "Javier Valencia"
+    }
   },
   {
     "text": "Rayúo",
-    "meaning": "hace referencia a una persona sobre motivada",
+    "meaning": "Hace referencia a una persona sobre motivada.",
     "examples": [
       "‘Anda rayúo con el regalo que le dieron’",
       "‘Ese rayúo no se quita la camiseta nueva ni para dormir’"
-    ]
+    ],
+    "author": {
+      "link": "https://github.com/jvalenciae",
+      "name": "Javier Valencia"
+    }
   }
 ]

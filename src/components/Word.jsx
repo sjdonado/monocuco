@@ -25,6 +25,16 @@ function Word({ word, currentWord }) {
           />
         ))}
       </div>
+      {/* <div className="credits">
+        <span>Añadida por: </span>
+        <a
+          href={word.author.link}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {word.author.name}
+        </a>
+      </div> */}
     </div>
   );
 }
@@ -34,6 +44,10 @@ Word.propTypes = {
     text: PropTypes.string.isRequired,
     meaning: PropTypes.string.isRequired,
     examples: PropTypes.arrayOf(PropTypes.string).isRequired,
+    author: PropTypes.shape({
+      link: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+    }),
   }).isRequired,
   currentWord: PropTypes.string,
 };

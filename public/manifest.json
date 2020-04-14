@@ -1,6 +1,6 @@
 {
-  "short_name": "Costeñol",
-  "name": "Costeñol - Diccionario",
+  "short_name": "Monocuco",
+  "name": "Monocuco - Diccionario",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +20,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#e20f21",
   "background_color": "#ffffff"
 }
