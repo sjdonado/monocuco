@@ -6,20 +6,20 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import './App.scss';
 
-import Search from './components/Search';
-import Word from './components/Word';
+import Search from './components/Search/Search';
+import Word from './components/Word/Word';
 
 import icon from './icon.jpg';
+import bmcImg from './bmc-button.png';
 import words from './data.json';
 
 const Info = () => (
   <div className="info">
-    <span>
-      Hecho por:
-      {' '}
-      <a href="https://github.com/sjdonado" target="_blank" rel="noopener noreferrer">Juan Rodriguez</a>
-    </span>
+    <a className="github-button" href="https://github.com/sjdonado/monocuco" data-size="large" data-show-count="true" aria-label="Star sjdonado/monocuco on GitHub">Star</a>
     <a href="https://github.com/sjdonado/monocuco/blob/master/README.md" target="_blank" rel="noopener noreferrer">¿Quieres añadir una palabra? Click aquí</a>
+    <a href="https://www.buymeacoffee.com/Oyh2K6P" target="_blank" rel="noopener noreferrer">
+      <img src={bmcImg} width="110" alt="Comprame un café" />
+    </a>
   </div>
 );
 
@@ -32,7 +32,7 @@ const Title = () => (
     />
     <div className="title">
       <h1>Monocuco</h1>
-      <h4>Diccionario de palabras costeñas</h4>
+      <h4>Diccionario de palabras y frases costeñas</h4>
     </div>
   </>
 );

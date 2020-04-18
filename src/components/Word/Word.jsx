@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import Highlighter from 'react-highlight-words';
 import accents from 'remove-accents';
 
+import './Word.scss';
+
 function Word({ word, currentWord }) {
   return (
-    <div className="wod-view-wrapper">
+    <div className="word-container">
       <Highlighter
         highlightClassName="highlight"
         searchWords={[currentWord, accents.remove(currentWord)]}

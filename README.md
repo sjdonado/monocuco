@@ -1,5 +1,5 @@
 # Monocuco
-> Diccionario de palabras costeñas.
+> Diccionario de palabras y frases costeñas.
 <div align="center">
     <a href="monocuco-f4976.firebaseapp.com">
       <img src="/src/icon.jpg" alt="Monocuco" width="300px" />
@@ -7,7 +7,7 @@
 </div>
 
 ## Objetivo
-Crear el primer y más grande dataset de palabras usadas en la Costa Caribe - Colombia.
+Crear el primer y más grande dataset de palabras y frases usadas en la Costa Caribe - Colombia.
 
 ## ¿Cómo contribuir?
 Monocuco está desarrollada con React.js, si quieres proponer una mejora, arreglar algún problema o añadir nuevas palabras al diccionario realiza los siguientes pasos:

@@ -1,6 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
+import './Search.scss';
+
 function Input({ onUpdateWord, word }) {
   const inputRef = useRef(null);
 
