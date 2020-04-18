@@ -173,5 +173,27 @@
       "link": "https://github.com/jvalenciae",
       "name": "Javier Valencia"
     }
+  },
+  {
+    "text": "Valecita",
+    "meaning": "Palabra utilizada para denotar a alguien como un gran amigo.",
+    "examples": [
+      "‘Yo no te voy a prestar el celular, ni que fueras mi valecita.’"
+     ],
+    "author": {
+      "link": "https://github.com/C9-LinkRs",
+      "name": "Johnny Villegas"
+    }
+  },
+  {
+    "text": "Masacote",
+    "meaning": "Palabra usada para señalar una mezcla bien cargada.",
+    "examples": [
+      "‘No le eches el arroz a la sopa, que vas hacer tremendo masacote!’"
+    ],
+    "author": {
+      "link": "https://github.com/C9-LinkRs",
+      "name": "Johnny Villegas"
+    }
   }
 ]
