@@ -195,5 +195,38 @@
       "link": "https://github.com/C9-LinkRs",
       "name": "Johnny Villegas"
     }
+  },
+  {
+    "text": "Garnatada",
+    "meaning": "Golpe dado en la mejilla con la palma de la mano",
+    "examples": [
+      "‘Te vas a llevar una garnatada’"
+    ],
+    "author": {
+      "link": "https://github.com/fokobot",
+      "name": "Fabian Osorio"
+    }
+  },
+  {
+    "text": "Fría",
+    "meaning": "Cerveza bien helada",
+    "examples": [
+      "‘Hey sireveme una fria’"
+    ],
+    "author": {
+      "link": "https://github.com/fokobot",
+      "name": "Fabian Osorio"
+    }
+  },
+  {
+    "text": "Fría",
+    "meaning": "Cerveza bien helada",
+    "examples": [
+      "‘Hey sireveme una fria’"
+    ],
+    "author": {
+      "link": "https://github.com/fokobot",
+      "name": "Fabian Osorio"
+    }
   }
 ]
