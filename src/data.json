@@ -70,6 +70,30 @@
     }
   },
   {
+    "text": "Botar el chupo",
+    "meaning": "Expresión que se usa para describir el enojo de una persona",
+    "examples": [
+      "‘Jhonny botó el chupo y se salió del grupo’",
+      "‘Vas a botar el chupo ?’"
+    ],
+    "author": {
+      "link": "https://github.com/herasj",
+      "name": "Juan Rambal"
+    }
+  },
+  {
+    "text": "Cachón",
+    "meaning": "Persona que ha sufrido o provocado una infidelidad",
+    "examples": [
+      "‘Que vas a hablar si tu eres cule cachón’",
+      "‘Ese que viene allá quedó como un cachón luego de esa relación’"
+    ],
+    "author": {
+      "link": "https://github.com/herasj",
+      "name": "Juan Rambal"
+    }
+  },
+  {
     "text": "Calilla",
     "meaning": "Persona intensa o molesta.",
     "examples": [
@@ -149,6 +173,18 @@
     "author": {
       "link": "https://github.com/jvalenciae",
       "name": "Javier Valencia"
+    }
+  },
+  {
+    "text": "Lea",
+    "meaning": "Novia",
+    "examples": [
+      "‘Ayer me quedé hablando con la lea hasta tarde’",
+      "‘Ese man se perdió un mes y apareció con lea’"
+    ],
+    "author": {
+      "link": "https://github.com/herasj",
+      "name": "Juan Rambal"
     }
   },
   {
