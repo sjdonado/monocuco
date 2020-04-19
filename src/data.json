@@ -2,9 +2,7 @@
   {
     "text": "¡A vaina!",
     "meaning": "Expresión utilizada para demostrar admiración.",
-    "examples": [
-      "‘¡A vaina!, por fin terminaste la carrera’"
-    ],
+    "examples": ["‘¡A vaina!, por fin terminaste la carrera’"],
     "author": {
       "link": "https://github.com/jvalenciae",
       "name": "Javier Valencia"
@@ -13,9 +11,7 @@
   {
     "text": "Aguanta el burro",
     "meaning": "Expresión que quiere decir: Espera un momento.",
-    "examples": [
-      "‘Hey, aguanta el burro que me dejas atrás’"
-    ],
+    "examples": ["‘Hey, aguanta el burro que me dejas atrás’"],
     "author": {
       "link": "https://github.com/jvalenciae",
       "name": "Javier Valencia"
@@ -24,10 +20,7 @@
   {
     "text": "Aguacatao",
     "meaning": "Persona aburrida, triste o decepcionada.",
-    "examples": [
-      "‘Ese pelao está como aguacatao’",
-      "‘Ey, no estés tanto tiempo aguacatao’"
-    ],
+    "examples": ["‘Ese pelao está como aguacatao’", "‘Ey, no estés tanto tiempo aguacatao’"],
     "author": {
       "link": "https://github.com/jvalenciae",
       "name": "Javier Valencia"
@@ -48,10 +41,7 @@
   {
     "text": "Billullo",
     "meaning": "Dinero en billetes.",
-    "examples": [
-      "‘Ando con billullo’",
-      "‘Me quedé sin billullo’"
-    ],
+    "examples": ["‘Ando con billullo’", "‘Me quedé sin billullo’"],
     "author": {
       "link": "https://github.com/jvalenciae",
       "name": "Javier Valencia"
@@ -72,10 +62,7 @@
   {
     "text": "Calilla",
     "meaning": "Persona intensa o molesta.",
-    "examples": [
-      "‘Ese man si es calilla’",
-      "‘Oye deja la intensidad, no seas calilla’"
-    ],
+    "examples": ["‘Ese man si es calilla’", "‘Oye deja la intensidad, no seas calilla’"],
     "author": {
       "link": "https://github.com/jvalenciae",
       "name": "Javier Valencia"
@@ -94,23 +81,54 @@
     }
   },
   {
+    "text": "Cule",
+    "meaning": "Palabra empleada para hacer hincapié en una característica/adjetivo.",
+    "examples": ["‘Cule pinta bacana’, 'Me sirvieron la sopa en cule plato chiquito'"],
+    "author": {
+      "link": "https://github.com/Yenniferh",
+      "name": "Yennifer Herrera"
+    }
+  },
+  {
+    "text": "'E",
+    "meaning": "Contracción de la preposición de.",
+    "examples": ["‘Bollo 'e yuca’", "‘Mata 'e plátano’"],
+    "author": {
+      "link": "https://github.com/Yenniferh",
+      "name": "Yennifer Herrera"
+    }
+  },
+  {
+    "text": "Embala'o",
+    "meaning": "Contracción de \"embalado\", que significa ir muy rápido. Estar drogado",
+    "examples": ["'Ese man fumó algo, está embala'o'", "Se estrelló por ir embala'o"],
+    "author": {
+      "link": "https://github.com/Yenniferh",
+      "name": "Yennifer Herrera"
+    }
+  },
+  {
     "text": "Emputao",
     "meaning": "Persona brava o enfadada.",
-    "examples": [
-      "‘Dejalo quieto que está emputao’",
-      "‘Deja de joder o me voy a emputar’"
-    ],
+    "examples": ["‘Dejalo quieto que está emputao’", "‘Deja de joder o me voy a emputar’"],
     "author": {
       "link": "https://github.com/jvalenciae",
       "name": "Javier Valencia"
     }
   },
   {
+    "text": "'Erda",
+    "meaning": "Contracción de la palabra mierda.",
+    "examples": ["'¡'Erda!, se cayó' "],
+    "author": {
+      "link": "https://github.com/Yenniferh",
+      "name": "Yennifer Herrera"
+    }
+  },
+  {
     "text": "Esa es la que te cae",
     "meaning": "Frase usada cuando una persona sale siempre con lo mismo.",
-    "examples": [
-      "‘Esa es la que te cae a ti, siempre con la misma vaina’"
-    ],
+    "examples": ["‘Esa es la que te cae a ti, siempre con la misma vaina’"],
     "author": {
       "link": "https://github.com/jvalenciae",
       "name": "Javier Valencia"
@@ -131,9 +149,7 @@
   {
     "text": "Huepaje",
     "meaning": "Grito para mostrar alegría.",
-    "examples": [
-      "‘¡Huepaje!, bailalo morena’"
-    ],
+    "examples": ["‘¡Huepaje!, bailalo morena’"],
     "author": {
       "link": "https://github.com/jvalenciae",
       "name": "Javier Valencia"
@@ -152,12 +168,27 @@
     }
   },
   {
+    "text": "Mamonúo/a'",
+    "meaning": "Sinónimo de grande.",
+    "examples": ["'Cule casa mamonúa'"],
+    "author": {
+      "link": "https://github.com/Yenniferh",
+      "name": "Yennifer Herrera"
+    }
+  },
+  {
+    "text": "Masacote",
+    "meaning": "Palabra usada para señalar una mezcla bien cargada.",
+    "examples": ["‘No le eches el arroz a la sopa, que vas hacer tremendo masacote!’"],
+    "author": {
+      "link": "https://github.com/C9-LinkRs",
+      "name": "Johnny Villegas"
+    }
+  },
+  {
     "text": "Monocuco",
     "meaning": "Palabra utilizada para referirse a algo que está bien o es bonito. Figura del carnaval de barranquilla.",
-    "examples": [
-      "‘Con esta pinta nueva quedé monocuco’",
-      "‘Mira, ahí viene bailando el monocuco’"
-    ],
+    "examples": ["‘Con esta pinta nueva quedé monocuco’", "‘Mira, ahí viene bailando el monocuco’"],
     "author": {
       "link": "https://github.com/jvalenciae",
       "name": "Javier Valencia"
@@ -166,31 +197,27 @@
   {
     "text": "Pasarse de piña",
     "meaning": "Expresión que significa: Abusar de la confianza de una persona o sacar provecho de alguien.",
-    "examples": [
-      "‘Yo te ayudo con el trabajo, pero no te pases de piña’"
-    ],
+    "examples": ["‘Yo te ayudo con el trabajo, pero no te pases de piña’"],
     "author": {
       "link": "https://github.com/jvalenciae",
       "name": "Javier Valencia"
     }
   },
   {
-    "text": "Valecita",
-    "meaning": "Palabra utilizada para denotar a alguien como un gran amigo.",
+    "text": "Tronco",
+    "meaning": "Sinónimo de cule. Suele acompañarse de la preposición \"de\" o de su correspondiente contracción 'e ",
     "examples": [
-      "‘Yo no te voy a prestar el celular, ni que fueras mi valecita.’"
-     ],
+      "‘Tronco 'e problema en el que me metí’, 'Tronco de sapo, le contó lo que le dije al vale'"
+    ],
     "author": {
-      "link": "https://github.com/C9-LinkRs",
-      "name": "Johnny Villegas"
+      "link": "https://github.com/Yenniferh",
+      "name": "Yennifer Herrera"
     }
   },
   {
-    "text": "Masacote",
-    "meaning": "Palabra usada para señalar una mezcla bien cargada.",
-    "examples": [
-      "‘No le eches el arroz a la sopa, que vas hacer tremendo masacote!’"
-    ],
+    "text": "Valecita",
+    "meaning": "Palabra utilizada para denotar a alguien como un gran amigo.",
+    "examples": ["‘Yo no te voy a prestar el celular, ni que fueras mi valecita.’"],
     "author": {
       "link": "https://github.com/C9-LinkRs",
       "name": "Johnny Villegas"
