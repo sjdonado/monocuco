@@ -60,6 +60,27 @@
     }
   },
   {
+    "text": "Botar el chupo",
+    "meaning": "Expresión que se usa para describir el enojo de una persona",
+    "examples": ["‘Jhonny botó el chupo y se salió del grupo’", "‘Vas a botar el chupo ?’"],
+    "author": {
+      "link": "https://github.com/herasj",
+      "name": "Juan Rambal"
+    }
+  },
+  {
+    "text": "Cachón",
+    "meaning": "Persona que ha sufrido o provocado una infidelidad",
+    "examples": [
+      "‘Que vas a hablar si tu eres cule cachón’",
+      "‘Ese que viene allá quedó como un cachón luego de esa relación’"
+    ],
+    "author": {
+      "link": "https://github.com/herasj",
+      "name": "Juan Rambal"
+    }
+  },
+  {
     "text": "Calilla",
     "meaning": "Persona intensa o molesta.",
     "examples": ["‘Ese man si es calilla’", "‘Oye deja la intensidad, no seas calilla’"],
@@ -83,7 +104,7 @@
   {
     "text": "Cule",
     "meaning": "Palabra empleada para hacer hincapié en una característica/adjetivo.",
-    "examples": ["‘Cule pinta bacana’, 'Me sirvieron la sopa en cule plato chiquito'"],
+    "examples": ["‘Cule pinta bacana’", "'Me sirvieron la sopa en cule plato chiquito'"],
     "author": {
       "link": "https://github.com/Yenniferh",
       "name": "Yennifer Herrera"
@@ -100,8 +121,8 @@
   },
   {
     "text": "Embala'o",
-    "meaning": "Contracción de \"embalado\", que significa ir muy rápido. Estar drogado",
-    "examples": ["'Ese man fumó algo, está embala'o'", "Se estrelló por ir embala'o"],
+    "meaning": "Contracción de \"embalado\", que significa ir muy rápido. Otra acepción es estar drogado",
+    "examples": ["'Ese man fumó algo, está embala'o'", "'Se estrelló por ir embala'o'"],
     "author": {
       "link": "https://github.com/Yenniferh",
       "name": "Yennifer Herrera"
@@ -170,7 +191,7 @@
   {
     "text": "Mamonúo/a'",
     "meaning": "Sinónimo de grande.",
-    "examples": ["'Cule casa mamonúa'"],
+    "examples": ["'Cule casa mamonúa'", "'Compró un camión bien mamonúo'"],
     "author": {
       "link": "https://github.com/Yenniferh",
       "name": "Yennifer Herrera"
@@ -183,6 +204,18 @@
     "author": {
       "link": "https://github.com/C9-LinkRs",
       "name": "Johnny Villegas"
+    }
+  },
+  {
+    "text": "Lea",
+    "meaning": "Novia",
+    "examples": [
+      "‘Ayer me quedé hablando con la lea hasta tarde’",
+      "‘Ese man se perdió un mes y apareció con lea’"
+    ],
+    "author": {
+      "link": "https://github.com/herasj",
+      "name": "Juan Rambal"
     }
   },
   {
@@ -207,7 +240,8 @@
     "text": "Tronco",
     "meaning": "Sinónimo de cule. Suele acompañarse de la preposición \"de\" o de su correspondiente contracción 'e ",
     "examples": [
-      "‘Tronco 'e problema en el que me metí’, 'Tronco de sapo, le contó lo que le dije al vale'"
+      "‘Tronco 'e problema en el que me metí’",
+      "'Tronco de sapo, le contó lo que le dije al vale'"
     ],
     "author": {
       "link": "https://github.com/Yenniferh",
@@ -221,6 +255,24 @@
     "author": {
       "link": "https://github.com/C9-LinkRs",
       "name": "Johnny Villegas"
+    }
+  },
+  {
+    "text": "Garnatada",
+    "meaning": "Golpe dado en la mejilla con la palma de la mano",
+    "examples": ["‘Te vas a llevar una garnatada’"],
+    "author": {
+      "link": "https://github.com/fokobot",
+      "name": "Fabian Osorio"
+    }
+  },
+  {
+    "text": "Fría",
+    "meaning": "Cerveza bien helada",
+    "examples": ["‘Hey sireveme una fria’"],
+    "author": {
+      "link": "https://github.com/fokobot",
+      "name": "Fabian Osorio"
     }
   }
 ]
