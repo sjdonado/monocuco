@@ -360,5 +360,14 @@
       "name": "Johnny Villegas",
       "link": "https://github.com/C9-LinkRs"
     }
+  },
+  {
+   "text": "Joa",
+   "meaning": "Expresión utilizada para demostrar cansancio, tristesa, resignación.",
+   "examples": ["‘joa perdió el Junior’", "‘me tocó trasnochar hoy, joa’"],
+   "author": {
+    "link": "https://github.com/jcastell7",
+    "name": "Juan Castellón"
+   }  
   }
 ]
