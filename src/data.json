@@ -156,6 +156,18 @@
     }
   },
   {
+    "text": "Gorrero",
+    "meaning": "Persona que se divierte a costillas de los demás, con un poder de convencimiento para ser invitado y no gastar un peso.",
+    "examples": [
+    "‘Yo no salgo más con ese man porque quiere emborracharse a costillas de uno, es cule gorrero’",
+    "‘Miralo ve, ahí está tomando de la botella él solo y no dio plata para comprarla, es un gorrero y tras de todo descarado’"
+  ],
+    "author": {
+      "link": "https://github.com/jbolivard",
+      "name": "Jorge Bolivar"
+    }
+  },
+  {
     "text": "Guachafita",
     "meaning": "Situación que predomina el desorden.",
     "examples": [
@@ -186,6 +198,18 @@
     "author": {
       "link": "https://github.com/jvalenciae",
       "name": "Javier Valencia"
+    }
+  },
+  {
+    "text": "Liso",
+    "meaning": "Persona confianzuda.",
+    "examples": [
+    "‘Ese man si es liso, me iba a besar y no somos nada’",
+    "‘Nojoda, ese man llegó a mi casa y no tenía ni 5 minutos ahí y abrió la nevera, cule liso’"
+  ],
+    "author": {
+      "link": "https://github.com/jbolivard",
+      "name": "Jorge Bolivar"
     }
   },
   {
