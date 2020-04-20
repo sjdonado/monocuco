@@ -1,0 +1,74 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "array",
+  "title": "The Root Schema",
+  "items": {
+    "type": "object",
+    "required": [
+      "text",
+      "meaning",
+      "examples",
+      "author"
+    ],
+    "properties": {
+      "text": {
+        "type": "string",
+        "title": "The text Schema",
+        "default": "",
+        "examples": [
+          "Monocuco"
+        ],
+        "pattern": "^(.*)$"
+      },
+      "meaning": {
+        "type": "string",
+        "title": "The meaning Schema",
+        "default": "",
+        "examples": [
+          "Palabra utilizada para referirse a algo que está bien o es bonito. Figura del carnaval de barranquilla."
+        ],
+        "pattern": "^(.*)$"
+      },
+      "examples": {
+        "type": "array",
+        "title": "The examples Schema",
+        "items": {
+          "type": "string",
+          "title": "The Items Schema",
+          "default": "",
+          "examples": [
+            "‘Con esta pinta nueva quedé monocuco’",
+            "‘Mira, ahí viene bailando el monocuco’"
+          ],
+          "pattern": "^(.*)$"
+        }
+      },
+      "author": {
+        "type": "object",
+        "title": "The author Schema",
+        "required": [
+          "link",
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Javier Valencia"
+            ]
+          },
+          "link": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "https://github.com/jvalenciae"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -24,8 +24,8 @@ Monocuco está desarrollada con React.js, si quieres proponer una mejora, arregl
     "‘Mira, ahí viene bailando el monocuco’"
   ],
   "author": {
-    "link": "https://github.com/jvalenciae",
-    "name": "Javier Valencia"
+    "name": "Javier Valencia",
+    "link": "https://github.com/jvalenciae"
   }
 ```
 4. Crea el pull request
