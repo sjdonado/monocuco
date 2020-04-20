@@ -16,7 +16,7 @@
 	align-items: center;
 	justify-content: flex-start;
 	text-align: center;
-	height: 268px;
+	min-height: 270px;
 	width: 380px;
 	box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.12);
 	background-color: white;
@@ -32,6 +32,7 @@
 		font-style: italic;
 		span {
 			font-size: 14px;
+			margin-top: 6px;
 		}
 	}
 	.credits {
