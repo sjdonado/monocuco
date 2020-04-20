@@ -20,12 +20,12 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "sort-data": "node sort.js"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "node sort.js",
-      "pre-push": "npx ajv validate -s schema.json -d src/data.json"
+      "pre-commit": "npx ajv validate -s schema.json -d src/data.json && node sort.js && git add src/data.json"
     }
   },
   "eslintConfig": {
