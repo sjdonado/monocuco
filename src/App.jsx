@@ -38,8 +38,6 @@ const Title = () => (
 );
 
 function App() {
-  words.sort((a, b) => a.text.localeCompare(b.text));
-
   const [filteredWords, setFilteredWords] = useState(words);
   const [currentWord, setCurrentWord] = useState('');
 

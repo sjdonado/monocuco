@@ -24,6 +24,7 @@
   },
   "husky": {
     "hooks": {
+      "pre-commit": "node sort.js",
       "pre-push": "npx ajv validate -s schema.json -d src/data.json"
     }
   },
