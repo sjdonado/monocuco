@@ -158,11 +158,11 @@
     "examples": [
       "¿Eche?, ¿Cómo así?",
       "Eche, eso no es tan complicado",
-      "Eche, Vamos pa' 'lante",
-      "¿Eche?, ¿Esa vaina qué?"
+      "'¡Echee!' Siempre es lo mismo contigo.",
+      "'¿Eche qué? ¿Te vas a molestar?'"
     ],
     "author": {
-      "name": "Oskhar Arrieta",
+      "name": "Oskhar Arrieta y Kristell Urueta",
       "link": "https://github.com/oskhar1099"
     }
   },
@@ -432,19 +432,6 @@
     "author": {
       "name": "Johnny Villegas",
       "link": "https://github.com/C9-LinkRs"
-    }
-  },
-  {
-    "text": "Eche",
-    "meaning": "Expresión de sorpresa, enojo o lamento.",
-    "examples": [
-      "‘Eche pero cómo así.’",
-      "'¡Echee!' Siempre es lo mismo contigo.",
-      "'¿Eche qué? ¿Te vas a molestar?'"
-    ],
-    "author": {
-      "name": "Kristell Urueta",
-      "link": "https://github.com/kristellu"
     }
   },
   {
