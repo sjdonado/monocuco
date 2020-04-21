@@ -372,5 +372,29 @@
       "name": "Johnny Villegas",
       "link": "https://github.com/C9-LinkRs"
     }
+  },
+  {
+    "text": "Pava",
+    "meaning": "Palabra que se utiliza para denotar pereza o flojera",
+    "examples": [
+      "‘Tengo pava de hacer esa tarea.’",
+      "‘Me da mucha pava empezar todo de nuevo.’"
+    ],
+    "author": {
+      "name": "Jesus Santiago",
+      "link": "https://github.com/jaravad"
+    }
+  },
+  {
+    "text": "Filo",
+    "meaning": "Palabra que significa hambre",
+    "examples": [
+      "‘Tengo mucho filo.’",
+      "‘No he almorzado todavia, tengo filo.’"
+    ],
+    "author": {
+      "name": "Jesus Santiago",
+      "link": "https://github.com/jaravad"
+    }
   }
 ]
