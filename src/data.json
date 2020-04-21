@@ -153,6 +153,20 @@
     }
   },
   {
+    "text": "Eche",
+    "meaning": "Palabra que significa aceptación, negación, enojo o explicación, dependiento del contexto. Por lo general se usa de forma interrogativa",
+    "examples": [
+      "¿Eche?, ¿Cómo así?",
+      "Eche, eso no es tan complicado",
+      "Eche, Vamos pa' 'lante",
+      "¿Eche?, ¿Esa vaina qué?"
+    ],
+    "author": {
+      "name": "Oskhar Arrieta",
+      "link": "https://github.com/oskhar1099"
+    }
+  },
+  {
     "text": "Embala'o",
     "meaning": "Contracción de \"embalado\", que significa ir muy rápido. Otra acepción es estar drogado",
     "examples": [
@@ -185,6 +199,18 @@
     "author": {
       "name": "Javier Valencia",
       "link": "https://github.com/jvalenciae"
+    }
+  },
+  {
+    "text": "Filo",
+    "meaning": "Palabra que significa hambre",
+    "examples": [
+      "‘Tengo mucho filo.’",
+      "‘No he almorzado todavia, tengo filo.’"
+    ],
+    "author": {
+      "name": "Jesus Santiago",
+      "link": "https://github.com/jaravad"
     }
   },
   {
@@ -317,6 +343,18 @@
     }
   },
   {
+    "text": "Mani",
+    "meaning": "Palabra para denotar a un amigo.",
+    "examples": [
+      "Hey mani, ven acá",
+      "Mani, colabórame con algo."
+    ],
+    "author": {
+      "name": "Oskhar Arrieta",
+      "link": "https://github.com/oskhar1099"
+    }
+  },
+  {
     "text": "Masacote",
     "meaning": "Palabra usada para señalar una mezcla bien cargada.",
     "examples": [
@@ -351,6 +389,29 @@
     }
   },
   {
+    "text": "Pava",
+    "meaning": "Palabra que se utiliza para denotar pereza o flojera",
+    "examples": [
+      "‘Tengo pava de hacer esa tarea.’",
+      "‘Me da mucha pava empezar todo de nuevo.’"
+    ],
+    "author": {
+      "name": "Jesus Santiago",
+      "link": "https://github.com/jaravad"
+    }
+  },
+  {
+    "text": "Pluma",
+    "meaning": "Palabra para referirse al grifo de la regadera, lavamanos, etc.",
+    "examples": [
+      "Cierra la pluma que está botando agua"
+    ],
+    "author": {
+      "name": "Oskhar Arrieta",
+      "link": "https://github.com/oskhar1099"
+    }
+  },
+  {
     "text": "Tronco",
     "meaning": "Sinónimo de cule. Suele acompañarse de la preposición \"de\" o de su correspondiente contracción 'e ",
     "examples": [
@@ -371,30 +432,6 @@
     "author": {
       "name": "Johnny Villegas",
       "link": "https://github.com/C9-LinkRs"
-    }
-  },
-  {
-    "text": "Pava",
-    "meaning": "Palabra que se utiliza para denotar pereza o flojera",
-    "examples": [
-      "‘Tengo pava de hacer esa tarea.’",
-      "‘Me da mucha pava empezar todo de nuevo.’"
-    ],
-    "author": {
-      "name": "Jesus Santiago",
-      "link": "https://github.com/jaravad"
-    }
-  },
-  {
-    "text": "Filo",
-    "meaning": "Palabra que significa hambre",
-    "examples": [
-      "‘Tengo mucho filo.’",
-      "‘No he almorzado todavia, tengo filo.’"
-    ],
-    "author": {
-      "name": "Jesus Santiago",
-      "link": "https://github.com/jaravad"
     }
   }
 ]
