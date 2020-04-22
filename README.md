@@ -52,8 +52,11 @@ Monocuco está desarrollada con React.js, si quieres proponer una mejora, arregl
     <td align="center"><a href="https://github.com/fokobot"><img src="https://avatars0.githubusercontent.com/u/25647093?s=460&v=4" width="100px;" alt="fokobot"/><br /><sub><b>fokobot</b></sub></a></td>
     <td align="center"><a href="https://github.com/herasj"><img src="https://avatars0.githubusercontent.com/u/25647268?s=460&v=4" width="100px;" alt="Juan Rambal"/><br /><sub><b>Juan Rambal</b></sub></a></td>
     <td align="center"><a href="https://github.com/Yenniferh"><img src="https://avatars0.githubusercontent.com/u/19285706?s=460&v=4" width="100px;" alt="Yennifer Herrera"/><br /><sub><b>Yennifer Herrera</b></sub></a></td>
-    <td align="center"><a href="https://github.com/jaravad"><img src="https://avatars1.githubusercontent.com/u/30931849?s=400&u=a007e6122580f36b4e307541a38d5b510cec64b8&v=4" width="100px;" alt="Jesus Santiago"/><br /><sub><b>Jesus Santiago</b></sub></a></td>
-    <td align="center"><a href="https://github.com/oskhar1099"><img src="https://avatars2.githubusercontent.com/u/44534546?s=460&u=654232cad7f22b2fa1cfaa5f066a2cd02cbcc60a&v=4" width="100px;" alt="Oskhar Arrieta"/><br /><sub><b>Oskhar Arrieta</b></sub></a></td>
+    <td align="center"><a href="https://github.com/jaravad"><img src="https://avatars0.githubusercontent.com/u/30931849?s=460&v=4" width="100px;" alt="Jesus Santiago"/><br /><sub><b>Jesus Santiago</b></sub></a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/oskhar1099"><img src="https://avatars0.githubusercontent.com/u/44534546?s=460&v=4" width="100px;" alt="Oskhar Arrieta"/><br /><sub><b>Oskhar Arrieta</b></sub></a></td>
+    <td align="center"><a href="https://github.com/kristellu"><img src="https://avatars0.githubusercontent.com/u/28717626?s=460&v=4" width="100px;" alt="Kristell Urueta"/><br /><sub><b>Kristell Urueta</b></sub></a></td>
   </tr>
 <table>
 
