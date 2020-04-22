@@ -158,11 +158,11 @@
     "examples": [
       "¿Eche?, ¿Cómo así?",
       "Eche, eso no es tan complicado",
-      "Eche, Vamos pa' 'lante",
-      "¿Eche?, ¿Esa vaina qué?"
+      "'¡Echee!' Siempre es lo mismo contigo.",
+      "'¿Eche qué? ¿Te vas a molestar?'"
     ],
     "author": {
-      "name": "Oskhar Arrieta",
+      "name": "Oskhar Arrieta y Kristell Urueta",
       "link": "https://github.com/oskhar1099"
     }
   },
@@ -432,6 +432,63 @@
     "author": {
       "name": "Johnny Villegas",
       "link": "https://github.com/C9-LinkRs"
+    }
+  },
+  {
+    "text": "Apercollar",
+    "meaning": "Abrazar fuertemente a la pareja de baile en medio de una buena canción. En esta acción deben encontrarse los cachetes de cada uno.",
+    "examples": [
+      "'¡Es hora de apercollar a su pareja!’",
+      "'Bailamos apercollados toda la noche."
+    ],
+    "author": {
+      "name": "Kristell Urueta",
+      "link": "https://github.com/kristellu"
+    }
+  },
+  {
+    "text": "Brete",
+    "meaning": "Fiesta, desorden, bullicio.",
+    "examples": [
+      "‘Se armó el brete en la casa de Juan Sebastian.’"
+    ],
+    "author": {
+      "name": "Kristell Urueta",
+      "link": "https://github.com/kristellu"
+    }
+  },
+  {
+    "text": "Nojoda",
+    "meaning": "Expresión utilizada demostrar decepción o alegría.",
+    "examples": [
+      "‘Nojodaaa, tremendo idiota.’",
+      "'Nojoda, ¡qué vaina linda!'"
+    ],
+    "author": {
+      "name": "Kristell Urueta",
+      "link": "https://github.com/kristellu"
+    }
+  },
+  {
+    "text": "Empaquitar",
+    "meaning": "Acción de montarse/inventarse una historia a partir de suposiciones.",
+    "examples": [
+      "‘Se empaquitó solito.’"
+    ],
+    "author": {
+      "name": "Kristell Urueta",
+      "link": "https://github.com/kristellu"
+    }
+  },
+  {
+    "text": "Pechiche",
+    "meaning": "Consentir o mimar.",
+    "examples": [
+      "‘Te voy a pechichar toda la vida.’"
+    ],
+    "author": {
+      "name": "Kristell Urueta",
+      "link": "https://github.com/kristellu"
     }
   }
 ]
