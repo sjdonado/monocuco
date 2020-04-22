@@ -32,16 +32,27 @@ Input.propTypes = {
   word: PropTypes.string.isRequired,
 };
 
-function Search({ onUpdateWord, word }) {
+function Search(props) {
+  const {
+    onUpdateWord,
+    word,
+    resultStats,
+    totalWords,
+  } = props;
   return (
-    <div className="search-wrapper">
-      <Input
-        onUpdateWord={onUpdateWord}
-        word={word}
-      />
-      <div className="search__icon-wrapper">
-        <i className="fas fa-search search__icon-icon" />
+    <div className="search-container">
+      <div className="search-wrapper">
+        <Input
+          onUpdateWord={onUpdateWord}
+          word={word}
+        />
+        <div className="search__icon-wrapper">
+          <i className="fas fa-search search__icon-icon" />
+        </div>
       </div>
+      <span className="result-stats">
+        {`Resultados búsqueda: ${resultStats} de ${totalWords}`}
+      </span>
     </div>
   );
 }
@@ -49,6 +60,8 @@ function Search({ onUpdateWord, word }) {
 Search.propTypes = {
   word: PropTypes.string.isRequired,
   onUpdateWord: PropTypes.func.isRequired,
+  totalWords: PropTypes.number.isRequired,
+  resultStats: PropTypes.number.isRequired,
 };
 
 export default Search;

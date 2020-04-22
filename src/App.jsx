@@ -15,7 +15,10 @@ import words from './data.json';
 
 const Info = () => (
   <div className="info">
-    <a className="github-button" href="https://github.com/sjdonado/monocuco" data-size="large" data-show-count="true" aria-label="Star sjdonado/monocuco on GitHub">Star</a>
+    <div className="github-buttons-wrapper">
+      <a className="github-button" href="https://github.com/sjdonado/monocuco/fork" data-icon="octicon-repo-forked" data-show-count="true" aria-label="Fork sjdonado/monocuco on GitHub">Fork</a>
+      <a className="github-button" href="https://github.com/sjdonado/monocuco" data-icon="octicon-star" data-show-count="true" aria-label="Star sjdonado/monocuco on GitHub">Star</a>
+    </div>
     <a href="https://github.com/sjdonado/monocuco/blob/master/README.md" target="_blank" rel="noopener noreferrer">¿Quieres añadir una palabra? Click aquí</a>
     <a href="https://www.buymeacoffee.com/Oyh2K6P" target="_blank" rel="noopener noreferrer">
       <img src={bmcImg} width="110" alt="Comprame un café" />
@@ -32,24 +35,30 @@ const Title = () => (
     />
     <div className="title">
       <h1>Monocuco</h1>
-      <h4>Diccionario de palabras y frases costeñas</h4>
+      <h5>Diccionario de palabras y frases costeñas</h5>
     </div>
   </>
 );
 
 function App() {
-  words.sort((a, b) => a.text.localeCompare(b.text));
-
   const [filteredWords, setFilteredWords] = useState(words);
   const [currentWord, setCurrentWord] = useState('');
 
   const handleUpdate = (word) => {
+    setCurrentWord(word);
     const parsedWord = accents.remove(word).toLowerCase();
-    setFilteredWords(words.filter(({ text }) => {
+    let newFilteredWords = words.filter(({ text }) => {
       const parsedText = accents.remove(text).toLocaleLowerCase();
       return parsedText.includes(parsedWord);
-    }));
-    setCurrentWord(word);
+    });
+    // Otherwise search by examples
+    if (newFilteredWords.length === 0) {
+      newFilteredWords = words.filter(({ examples }) => {
+        const parsedText = accents.remove(examples.join(',')).toLocaleLowerCase();
+        return parsedText.includes(parsedWord);
+      });
+    }
+    setFilteredWords(newFilteredWords);
   };
 
   return (
@@ -60,10 +69,9 @@ function App() {
         <Search
           word={currentWord}
           onUpdateWord={handleUpdate}
+          totalWords={words.length}
+          resultStats={filteredWords.length}
         />
-        <span>
-          {`Número total de palabras encontradas: ${filteredWords.length}`}
-        </span>
       </div>
       <div className="content-wrapper">
         {filteredWords.map((word) => (

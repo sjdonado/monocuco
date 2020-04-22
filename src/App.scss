@@ -4,9 +4,6 @@ html,body {
 	height: 100%;
 	width: 100%;
 }
-input {
-	-webkit-appearance: none;
-}
 .app {
 	height: 100%;
 }
@@ -34,7 +31,7 @@ a:focus {
 	margin-top: 12px;
 	.title {
 		text-align: center;
-		h4 {
+		h5 {
 			font-style: italic;
 		}
 	}
@@ -65,11 +62,6 @@ a:focus {
 	background-color: #ffd54f;
 	padding: 0;
 }
-.example-highlight {
-	background-color: inherit;
-	font-weight: bold;
-	padding: 0;
-}
 .info {
 	display: flex;
 	width: 100%;
@@ -81,5 +73,15 @@ a:focus {
 	font-size: 12px;
 	a {
 		margin-bottom: 6px;
+	}
+}
+.result-stats {
+	font-size: 14px;
+	color: #70757a;
+}
+.github-buttons-wrapper {
+	display: flex;
+	span {
+		margin-left: 6px;
 	}
 }

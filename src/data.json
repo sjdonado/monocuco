@@ -2,28 +2,70 @@
   {
     "text": "¡A vaina!",
     "meaning": "Expresión utilizada para demostrar admiración.",
-    "examples": ["‘¡A vaina!, por fin terminaste la carrera’"],
+    "examples": [
+      "‘¡A vaina!, por fin terminaste la carrera’"
+    ],
     "author": {
-      "link": "https://github.com/jvalenciae",
-      "name": "Javier Valencia"
+      "name": "Javier Valencia",
+      "link": "https://github.com/jvalenciae"
     }
   },
   {
-    "text": "Aguanta el burro",
-    "meaning": "Expresión que quiere decir: Espera un momento.",
-    "examples": ["‘Hey, aguanta el burro que me dejas atrás’"],
+    "text": "'E",
+    "meaning": "Contracción de la preposición de.",
+    "examples": [
+      "‘Bollo 'e yuca’",
+      "‘Mata 'e plátano’"
+    ],
     "author": {
-      "link": "https://github.com/jvalenciae",
-      "name": "Javier Valencia"
+      "name": "Yennifer Herrera",
+      "link": "https://github.com/Yenniferh"
+    }
+  },
+  {
+    "text": "'Erda",
+    "meaning": "Contracción de la palabra mierda.",
+    "examples": [
+      "'¡'Erda!, se cayó' "
+    ],
+    "author": {
+      "name": "Yennifer Herrera",
+      "link": "https://github.com/Yenniferh"
     }
   },
   {
     "text": "Aguacatao",
     "meaning": "Persona aburrida, triste o decepcionada.",
-    "examples": ["‘Ese pelao está como aguacatao’", "‘Ey, no estés tanto tiempo aguacatao’"],
+    "examples": [
+      "‘Ese pelao está como aguacatao’",
+      "‘Ey, no estés tanto tiempo aguacatao’"
+    ],
     "author": {
-      "link": "https://github.com/jvalenciae",
-      "name": "Javier Valencia"
+      "name": "Javier Valencia",
+      "link": "https://github.com/jvalenciae"
+    }
+  },
+  {
+    "text": "Aguanta el burro",
+    "meaning": "Expresión que quiere decir: Espera un momento.",
+    "examples": [
+      "‘Hey, aguanta el burro que me dejas atrás’"
+    ],
+    "author": {
+      "name": "Javier Valencia",
+      "link": "https://github.com/jvalenciae"
+    }
+  },
+  {
+    "text": "Apercollar",
+    "meaning": "Abrazar fuertemente a la pareja de baile en medio de una buena canción. En esta acción deben encontrarse los cachetes de cada uno.",
+    "examples": [
+      "'¡Es hora de apercollar a su pareja!’",
+      "'Bailamos apercollados toda la noche."
+    ],
+    "author": {
+      "name": "Kristell Urueta",
+      "link": "https://github.com/kristellu"
     }
   },
   {
@@ -34,17 +76,20 @@
       "‘Ese arrayúo no se quita la camiseta nueva ni para dormir’"
     ],
     "author": {
-      "link": "https://github.com/jvalenciae",
-      "name": "Javier Valencia"
+      "name": "Javier Valencia",
+      "link": "https://github.com/jvalenciae"
     }
   },
   {
     "text": "Billullo",
     "meaning": "Dinero en billetes.",
-    "examples": ["‘Ando con billullo’", "‘Me quedé sin billullo’"],
+    "examples": [
+      "‘Ando con billullo’",
+      "‘Me quedé sin billullo’"
+    ],
     "author": {
-      "link": "https://github.com/jvalenciae",
-      "name": "Javier Valencia"
+      "name": "Javier Valencia",
+      "link": "https://github.com/jvalenciae"
     }
   },
   {
@@ -55,17 +100,31 @@
       "‘Vámonos de aquí antes de que se forme un bololó’"
     ],
     "author": {
-      "link": "https://github.com/jvalenciae",
-      "name": "Javier Valencia"
+      "name": "Javier Valencia",
+      "link": "https://github.com/jvalenciae"
     }
   },
   {
     "text": "Botar el chupo",
     "meaning": "Expresión que se usa para describir el enojo de una persona",
-    "examples": ["‘Jhonny botó el chupo y se salió del grupo’", "‘Vas a botar el chupo ?’"],
+    "examples": [
+      "‘Jhonny botó el chupo y se salió del grupo’",
+      "‘Vas a botar el chupo ?’"
+    ],
     "author": {
-      "link": "https://github.com/herasj",
-      "name": "Juan Rambal"
+      "name": "Juan Rambal",
+      "link": "https://github.com/herasj"
+    }
+  },
+  {
+    "text": "Brete",
+    "meaning": "Fiesta, desorden, bullicio.",
+    "examples": [
+      "‘Se armó el brete en la casa de Juan Sebastian.’"
+    ],
+    "author": {
+      "name": "Kristell Urueta",
+      "link": "https://github.com/kristellu"
     }
   },
   {
@@ -76,17 +135,20 @@
       "‘Ese que viene allá quedó como un cachón luego de esa relación’"
     ],
     "author": {
-      "link": "https://github.com/herasj",
-      "name": "Juan Rambal"
+      "name": "Juan Rambal",
+      "link": "https://github.com/herasj"
     }
   },
   {
     "text": "Calilla",
     "meaning": "Persona intensa o molesta.",
-    "examples": ["‘Ese man si es calilla’", "‘Oye deja la intensidad, no seas calilla’"],
+    "examples": [
+      "‘Ese man si es calilla’",
+      "‘Oye deja la intensidad, no seas calilla’"
+    ],
     "author": {
-      "link": "https://github.com/jvalenciae",
-      "name": "Javier Valencia"
+      "name": "Javier Valencia",
+      "link": "https://github.com/jvalenciae"
     }
   },
   {
@@ -97,62 +159,126 @@
       "‘No le creas a el, es muy carretillero’"
     ],
     "author": {
-      "link": "https://github.com/jvalenciae",
-      "name": "Javier Valencia"
+      "name": "Javier Valencia",
+      "link": "https://github.com/jvalenciae"
     }
   },
   {
     "text": "Cule",
     "meaning": "Palabra empleada para hacer hincapié en una característica/adjetivo.",
-    "examples": ["‘Cule pinta bacana’", "'Me sirvieron la sopa en cule plato chiquito'"],
+    "examples": [
+      "‘Cule pinta bacana’",
+      "'Me sirvieron la sopa en cule plato chiquito'"
+    ],
     "author": {
-      "link": "https://github.com/Yenniferh",
-      "name": "Yennifer Herrera"
+      "name": "Yennifer Herrera",
+      "link": "https://github.com/Yenniferh"
     }
   },
   {
-    "text": "'E",
-    "meaning": "Contracción de la preposición de.",
-    "examples": ["‘Bollo 'e yuca’", "‘Mata 'e plátano’"],
+    "text": "Eche",
+    "meaning": "Palabra que significa aceptación, negación, enojo o explicación, dependiento del contexto. Por lo general se usa de forma interrogativa",
+    "examples": [
+      "¿Eche?, ¿Cómo así?",
+      "Eche, eso no es tan complicado",
+      "'¡Echee!' Siempre es lo mismo contigo.",
+      "'¿Eche qué? ¿Te vas a molestar?'"
+    ],
     "author": {
-      "link": "https://github.com/Yenniferh",
-      "name": "Yennifer Herrera"
+      "name": "Oskhar Arrieta y Kristell Urueta",
+      "link": "https://github.com/oskhar1099"
     }
   },
   {
     "text": "Embala'o",
     "meaning": "Contracción de \"embalado\", que significa ir muy rápido. Otra acepción es estar drogado",
-    "examples": ["'Ese man fumó algo, está embala'o'", "'Se estrelló por ir embala'o'"],
+    "examples": [
+      "'Ese man fumó algo, está embala'o'",
+      "'Se estrelló por ir embala'o'"
+    ],
     "author": {
-      "link": "https://github.com/Yenniferh",
-      "name": "Yennifer Herrera"
+      "name": "Yennifer Herrera",
+      "link": "https://github.com/Yenniferh"
+    }
+  },
+  {
+    "text": "Empaquitar",
+    "meaning": "Acción de montarse/inventarse una historia a partir de suposiciones.",
+    "examples": [
+      "‘Se empaquitó solito.’"
+    ],
+    "author": {
+      "name": "Kristell Urueta",
+      "link": "https://github.com/kristellu"
     }
   },
   {
     "text": "Emputao",
     "meaning": "Persona brava o enfadada.",
-    "examples": ["‘Dejalo quieto que está emputao’", "‘Deja de joder o me voy a emputar’"],
+    "examples": [
+      "‘Dejalo quieto que está emputao’",
+      "‘Deja de joder o me voy a emputar’"
+    ],
     "author": {
-      "link": "https://github.com/jvalenciae",
-      "name": "Javier Valencia"
-    }
-  },
-  {
-    "text": "'Erda",
-    "meaning": "Contracción de la palabra mierda.",
-    "examples": ["'¡'Erda!, se cayó' "],
-    "author": {
-      "link": "https://github.com/Yenniferh",
-      "name": "Yennifer Herrera"
+      "name": "Javier Valencia",
+      "link": "https://github.com/jvalenciae"
     }
   },
   {
     "text": "Esa es la que te cae",
     "meaning": "Frase usada cuando una persona sale siempre con lo mismo.",
-    "examples": ["‘Esa es la que te cae a ti, siempre con la misma vaina’"],
+    "examples": [
+      "‘Esa es la que te cae a ti, siempre con la misma vaina’"
+    ],
     "author": {
-      "link": "https://github.com/jvalenciae",
-      "name": "Javier Valencia"
+      "name": "Javier Valencia",
+      "link": "https://github.com/jvalenciae"
+    }
+  },
+  {
+    "text": "Filo",
+    "meaning": "Palabra que significa hambre",
+    "examples": [
+      "‘Tengo mucho filo.’",
+      "‘No he almorzado todavia, tengo filo.’"
+    ],
+    "author": {
+      "name": "Jesus Santiago",
+      "link": "https://github.com/jaravad"
+    }
+  },
+  {
+    "text": "Fría",
+    "meaning": "Cerveza bien helada",
+    "examples": [
+      "‘Hey sireveme una fria’"
+    ],
+    "author": {
+      "name": "Fabian Osorio",
+      "link": "https://github.com/fokobot"
+    }
+  },
+  {
+    "text": "Garnatada",
+    "meaning": "Golpe dado en la mejilla con la palma de la mano",
+    "examples": [
+      "‘Te vas a llevar una garnatada’"
+    ],
+    "author": {
+      "name": "Fabian Osorio",
+      "link": "https://github.com/fokobot"
+    }
+  },
+  {
+    "text": "Gorrero",
+    "meaning": "Persona que se divierte a costillas de los demás, con un poder de convencimiento para ser invitado y no gastar un peso.",
+    "examples": [
+      "‘Yo no salgo más con ese man porque quiere emborracharse a costillas de uno, es cule gorrero’",
+      "‘Miralo ve, ahí está tomando de la botella él solo y no dio plata para comprarla, es un gorrero y tras de todo descarado’"
+    ],
+    "author": {
+      "name": "Jorge Bolivar",
+      "link": "https://github.com/jbolivard"
     }
   },
   {
@@ -163,17 +289,43 @@
       "‘José, me haces el favor y dejas la guachafita’"
     ],
     "author": {
-      "link": "https://github.com/jvalenciae",
-      "name": "Javier Valencia"
+      "name": "Javier Valencia",
+      "link": "https://github.com/jvalenciae"
     }
   },
   {
     "text": "Huepaje",
     "meaning": "Grito para mostrar alegría.",
-    "examples": ["‘¡Huepaje!, bailalo morena’"],
+    "examples": [
+      "‘¡Huepaje!, bailalo morena’"
+    ],
     "author": {
-      "link": "https://github.com/jvalenciae",
-      "name": "Javier Valencia"
+      "name": "Javier Valencia",
+      "link": "https://github.com/jvalenciae"
+    }
+  },
+  {
+    "text": "Jabao",
+    "meaning": "Estrenando",
+    "examples": [
+      "‘Estoy Jabao con mi nuevo carro’",
+      "`Mucha jabadera tuya, ya no quieres salir`"
+    ],
+    "author": {
+      "name": "Henri Lecoultre",
+      "link": ""
+    }
+  },
+  {
+    "text": "Joa",
+    "meaning": "Expresión utilizada para demostrar cansancio, tristesa, resignación.",
+    "examples": [
+      "‘joa perdió el Junior’",
+      "‘me tocó trasnochar hoy, joa’"
+    ],
+    "author": {
+      "link": "https://github.com/jcastell7",
+      "name": "Juan Castellón"
     }
   },
   {
@@ -184,26 +336,8 @@
       "‘Ese pelao es muy lambón’"
     ],
     "author": {
-      "link": "https://github.com/jvalenciae",
-      "name": "Javier Valencia"
-    }
-  },
-  {
-    "text": "Mamonúo/a'",
-    "meaning": "Sinónimo de grande.",
-    "examples": ["'Cule casa mamonúa'", "'Compró un camión bien mamonúo'"],
-    "author": {
-      "link": "https://github.com/Yenniferh",
-      "name": "Yennifer Herrera"
-    }
-  },
-  {
-    "text": "Masacote",
-    "meaning": "Palabra usada para señalar una mezcla bien cargada.",
-    "examples": ["‘No le eches el arroz a la sopa, que vas hacer tremendo masacote!’"],
-    "author": {
-      "link": "https://github.com/C9-LinkRs",
-      "name": "Johnny Villegas"
+      "name": "Javier Valencia",
+      "link": "https://github.com/jvalenciae"
     }
   },
   {
@@ -214,26 +348,124 @@
       "‘Ese man se perdió un mes y apareció con lea’"
     ],
     "author": {
-      "link": "https://github.com/herasj",
-      "name": "Juan Rambal"
+      "name": "Juan Rambal",
+      "link": "https://github.com/herasj"
+    }
+  },
+  {
+    "text": "Liso",
+    "meaning": "Persona confianzuda.",
+    "examples": [
+      "‘Ese man si es liso, me iba a besar y no somos nada’",
+      "‘Nojoda, ese man llegó a mi casa y no tenía ni 5 minutos ahí y abrió la nevera, cule liso’"
+    ],
+    "author": {
+      "name": "Jorge Bolivar",
+      "link": "https://github.com/jbolivard"
+    }
+  },
+  {
+    "text": "Mamonúo/a'",
+    "meaning": "Sinónimo de grande.",
+    "examples": [
+      "'Cule casa mamonúa'",
+      "'Compró un camión bien mamonúo'"
+    ],
+    "author": {
+      "name": "Yennifer Herrera",
+      "link": "https://github.com/Yenniferh"
+    }
+  },
+  {
+    "text": "Mani",
+    "meaning": "Palabra para denotar a un amigo.",
+    "examples": [
+      "Hey mani, ven acá",
+      "Mani, colabórame con algo."
+    ],
+    "author": {
+      "name": "Oskhar Arrieta",
+      "link": "https://github.com/oskhar1099"
+    }
+  },
+  {
+    "text": "Masacote",
+    "meaning": "Palabra usada para señalar una mezcla bien cargada.",
+    "examples": [
+      "‘No le eches el arroz a la sopa, que vas hacer tremendo masacote!’"
+    ],
+    "author": {
+      "name": "Johnny Villegas",
+      "link": "https://github.com/C9-LinkRs"
     }
   },
   {
     "text": "Monocuco",
     "meaning": "Palabra utilizada para referirse a algo que está bien o es bonito. Figura del carnaval de barranquilla.",
-    "examples": ["‘Con esta pinta nueva quedé monocuco’", "‘Mira, ahí viene bailando el monocuco’"],
+    "examples": [
+      "‘Con esta pinta nueva quedé monocuco’",
+      "‘Mira, ahí viene bailando el monocuco’"
+    ],
     "author": {
-      "link": "https://github.com/jvalenciae",
-      "name": "Javier Valencia"
+      "name": "Javier Valencia",
+      "link": "https://github.com/jvalenciae"
+    }
+  },
+  {
+    "text": "Nojoda",
+    "meaning": "Expresión utilizada demostrar decepción o alegría.",
+    "examples": [
+      "‘Nojodaaa, tremendo idiota.’",
+      "'Nojoda, ¡qué vaina linda!'"
+    ],
+    "author": {
+      "name": "Kristell Urueta",
+      "link": "https://github.com/kristellu"
     }
   },
   {
     "text": "Pasarse de piña",
     "meaning": "Expresión que significa: Abusar de la confianza de una persona o sacar provecho de alguien.",
-    "examples": ["‘Yo te ayudo con el trabajo, pero no te pases de piña’"],
+    "examples": [
+      "‘Yo te ayudo con el trabajo, pero no te pases de piña’"
+    ],
     "author": {
-      "link": "https://github.com/jvalenciae",
-      "name": "Javier Valencia"
+      "name": "Javier Valencia",
+      "link": "https://github.com/jvalenciae"
+    }
+  },
+  {
+    "text": "Pava",
+    "meaning": "Palabra que se utiliza para denotar pereza o flojera",
+    "examples": [
+      "‘Tengo pava de hacer esa tarea.’",
+      "‘Me da mucha pava empezar todo de nuevo.’"
+    ],
+    "author": {
+      "name": "Jesus Santiago",
+      "link": "https://github.com/jaravad"
+    }
+  },
+  {
+    "text": "Pechiche",
+    "meaning": "Consentir o mimar.",
+    "examples": [
+      "‘Te voy a pechichar toda la vida.’"
+    ],
+    "author": {
+      "name": "Kristell Urueta",
+      "link": "https://github.com/kristellu"
+    }
+  },
+  {
+    "text": "Pluma",
+    "meaning": "Palabra para referirse al grifo de la regadera, lavamanos, etc.",
+    "examples": [
+      "Cierra la pluma que está botando agua"
+    ],
+    "author": {
+      "name": "Oskhar Arrieta",
+      "link": "https://github.com/oskhar1099"
     }
   },
   {
@@ -244,44 +476,19 @@
       "'Tronco de sapo, le contó lo que le dije al vale'"
     ],
     "author": {
-      "link": "https://github.com/Yenniferh",
-      "name": "Yennifer Herrera"
+      "name": "Yennifer Herrera",
+      "link": "https://github.com/Yenniferh"
     }
   },
   {
     "text": "Valecita",
     "meaning": "Palabra utilizada para denotar a alguien como un gran amigo.",
-    "examples": ["‘Yo no te voy a prestar el celular, ni que fueras mi valecita.’"],
+    "examples": [
+      "‘Yo no te voy a prestar el celular, ni que fueras mi valecita.’"
+    ],
     "author": {
-      "link": "https://github.com/C9-LinkRs",
-      "name": "Johnny Villegas"
+      "name": "Johnny Villegas",
+      "link": "https://github.com/C9-LinkRs"
     }
-  },
-  {
-    "text": "Garnatada",
-    "meaning": "Golpe dado en la mejilla con la palma de la mano",
-    "examples": ["‘Te vas a llevar una garnatada’"],
-    "author": {
-      "link": "https://github.com/fokobot",
-      "name": "Fabian Osorio"
-    }
-  },
-  {
-    "text": "Fría",
-    "meaning": "Cerveza bien helada",
-    "examples": ["‘Hey sireveme una fria’"],
-    "author": {
-      "link": "https://github.com/fokobot",
-      "name": "Fabian Osorio"
-    }
-  },
-  {
-   "text": "Joa",
-   "meaning": "Expresión utilizada para demostrar cansancio, tristeza, resignación.",
-   "examples": ["‘joa perdió el Junior’", "‘me tocó trasnochar hoy, joa’"],
-   "author": {
-    "link": "https://github.com/jcastell7",
-    "name": "Juan Castellón"
-   }  
   }
 ]
