@@ -45,12 +45,20 @@ function App() {
   const [currentWord, setCurrentWord] = useState('');
 
   const handleUpdate = (word) => {
+    setCurrentWord(word);
     const parsedWord = accents.remove(word).toLowerCase();
-    setFilteredWords(words.filter(({ text }) => {
+    let newFilteredWords = words.filter(({ text }) => {
       const parsedText = accents.remove(text).toLocaleLowerCase();
       return parsedText.includes(parsedWord);
-    }));
-    setCurrentWord(word);
+    });
+    // Otherwise search by examples
+    if (newFilteredWords.length === 0) {
+      newFilteredWords = words.filter(({ examples }) => {
+        const parsedText = accents.remove(examples.join(',')).toLocaleLowerCase();
+        return parsedText.includes(parsedWord);
+      });
+    }
+    setFilteredWords(newFilteredWords);
   };
 
   return (

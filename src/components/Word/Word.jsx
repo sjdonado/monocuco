@@ -20,8 +20,8 @@ function Word({ word, currentWord }) {
         {word.examples.map((example) => (
           <Highlighter
             key={example}
-            highlightClassName="example-highlight"
-            searchWords={[word.text]}
+            highlightClassName="highlight"
+            searchWords={[currentWord, accents.remove(currentWord)]}
             autoEscape
             textToHighlight={example}
           />
