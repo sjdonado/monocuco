@@ -15,7 +15,10 @@ import words from './data.json';
 
 const Info = () => (
   <div className="info">
-    <a className="github-button" href="https://github.com/sjdonado/monocuco" data-size="large" data-show-count="true" aria-label="Star sjdonado/monocuco on GitHub">Star</a>
+    <div className="github-buttons-wrapper">
+      <a className="github-button" href="https://github.com/sjdonado/monocuco/fork" data-icon="octicon-repo-forked" data-size="large" data-show-count="true" aria-label="Fork sjdonado/monocuco on GitHub">Fork</a>
+      <a className="github-button" href="https://github.com/sjdonado/monocuco" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star sjdonado/monocuco on GitHub">Star</a>
+    </div>
     <a href="https://github.com/sjdonado/monocuco/blob/master/README.md" target="_blank" rel="noopener noreferrer">¿Quieres añadir una palabra? Click aquí</a>
     <a href="https://www.buymeacoffee.com/Oyh2K6P" target="_blank" rel="noopener noreferrer">
       <img src={bmcImg} width="110" alt="Comprame un café" />

@@ -57,6 +57,18 @@
     }
   },
   {
+    "text": "Apercollar",
+    "meaning": "Abrazar fuertemente a la pareja de baile en medio de una buena canción. En esta acción deben encontrarse los cachetes de cada uno.",
+    "examples": [
+      "'¡Es hora de apercollar a su pareja!’",
+      "'Bailamos apercollados toda la noche."
+    ],
+    "author": {
+      "name": "Kristell Urueta",
+      "link": "https://github.com/kristellu"
+    }
+  },
+  {
     "text": "Arrayúo",
     "meaning": "Hace referencia a una persona sobre motivada.",
     "examples": [
@@ -102,6 +114,17 @@
     "author": {
       "name": "Juan Rambal",
       "link": "https://github.com/herasj"
+    }
+  },
+  {
+    "text": "Brete",
+    "meaning": "Fiesta, desorden, bullicio.",
+    "examples": [
+      "‘Se armó el brete en la casa de Juan Sebastian.’"
+    ],
+    "author": {
+      "name": "Kristell Urueta",
+      "link": "https://github.com/kristellu"
     }
   },
   {
@@ -176,6 +199,17 @@
     "author": {
       "name": "Yennifer Herrera",
       "link": "https://github.com/Yenniferh"
+    }
+  },
+  {
+    "text": "Empaquitar",
+    "meaning": "Acción de montarse/inventarse una historia a partir de suposiciones.",
+    "examples": [
+      "‘Se empaquitó solito.’"
+    ],
+    "author": {
+      "name": "Kristell Urueta",
+      "link": "https://github.com/kristellu"
     }
   },
   {
@@ -378,6 +412,18 @@
     }
   },
   {
+    "text": "Nojoda",
+    "meaning": "Expresión utilizada demostrar decepción o alegría.",
+    "examples": [
+      "‘Nojodaaa, tremendo idiota.’",
+      "'Nojoda, ¡qué vaina linda!'"
+    ],
+    "author": {
+      "name": "Kristell Urueta",
+      "link": "https://github.com/kristellu"
+    }
+  },
+  {
     "text": "Pasarse de piña",
     "meaning": "Expresión que significa: Abusar de la confianza de una persona o sacar provecho de alguien.",
     "examples": [
@@ -398,6 +444,17 @@
     "author": {
       "name": "Jesus Santiago",
       "link": "https://github.com/jaravad"
+    }
+  },
+  {
+    "text": "Pechiche",
+    "meaning": "Consentir o mimar.",
+    "examples": [
+      "‘Te voy a pechichar toda la vida.’"
+    ],
+    "author": {
+      "name": "Kristell Urueta",
+      "link": "https://github.com/kristellu"
     }
   },
   {
@@ -432,63 +489,6 @@
     "author": {
       "name": "Johnny Villegas",
       "link": "https://github.com/C9-LinkRs"
-    }
-  },
-  {
-    "text": "Apercollar",
-    "meaning": "Abrazar fuertemente a la pareja de baile en medio de una buena canción. En esta acción deben encontrarse los cachetes de cada uno.",
-    "examples": [
-      "'¡Es hora de apercollar a su pareja!’",
-      "'Bailamos apercollados toda la noche."
-    ],
-    "author": {
-      "name": "Kristell Urueta",
-      "link": "https://github.com/kristellu"
-    }
-  },
-  {
-    "text": "Brete",
-    "meaning": "Fiesta, desorden, bullicio.",
-    "examples": [
-      "‘Se armó el brete en la casa de Juan Sebastian.’"
-    ],
-    "author": {
-      "name": "Kristell Urueta",
-      "link": "https://github.com/kristellu"
-    }
-  },
-  {
-    "text": "Nojoda",
-    "meaning": "Expresión utilizada demostrar decepción o alegría.",
-    "examples": [
-      "‘Nojodaaa, tremendo idiota.’",
-      "'Nojoda, ¡qué vaina linda!'"
-    ],
-    "author": {
-      "name": "Kristell Urueta",
-      "link": "https://github.com/kristellu"
-    }
-  },
-  {
-    "text": "Empaquitar",
-    "meaning": "Acción de montarse/inventarse una historia a partir de suposiciones.",
-    "examples": [
-      "‘Se empaquitó solito.’"
-    ],
-    "author": {
-      "name": "Kristell Urueta",
-      "link": "https://github.com/kristellu"
-    }
-  },
-  {
-    "text": "Pechiche",
-    "meaning": "Consentir o mimar.",
-    "examples": [
-      "‘Te voy a pechichar toda la vida.’"
-    ],
-    "author": {
-      "name": "Kristell Urueta",
-      "link": "https://github.com/kristellu"
     }
   }
 ]
