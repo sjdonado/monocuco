@@ -31,7 +31,7 @@ a:focus {
 	margin-top: 12px;
 	.title {
 		text-align: center;
-		h4 {
+		h5 {
 			font-style: italic;
 		}
 	}
@@ -74,6 +74,10 @@ a:focus {
 	a {
 		margin-bottom: 6px;
 	}
+}
+.result-stats {
+	font-size: 14px;
+	color: #70757a;
 }
 .github-buttons-wrapper {
 	display: flex;

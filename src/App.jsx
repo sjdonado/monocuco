@@ -16,8 +16,8 @@ import words from './data.json';
 const Info = () => (
   <div className="info">
     <div className="github-buttons-wrapper">
-      <a className="github-button" href="https://github.com/sjdonado/monocuco/fork" data-icon="octicon-repo-forked" data-size="large" data-show-count="true" aria-label="Fork sjdonado/monocuco on GitHub">Fork</a>
-      <a className="github-button" href="https://github.com/sjdonado/monocuco" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star sjdonado/monocuco on GitHub">Star</a>
+      <a className="github-button" href="https://github.com/sjdonado/monocuco/fork" data-icon="octicon-repo-forked" data-show-count="true" aria-label="Fork sjdonado/monocuco on GitHub">Fork</a>
+      <a className="github-button" href="https://github.com/sjdonado/monocuco" data-icon="octicon-star" data-show-count="true" aria-label="Star sjdonado/monocuco on GitHub">Star</a>
     </div>
     <a href="https://github.com/sjdonado/monocuco/blob/master/README.md" target="_blank" rel="noopener noreferrer">¿Quieres añadir una palabra? Click aquí</a>
     <a href="https://www.buymeacoffee.com/Oyh2K6P" target="_blank" rel="noopener noreferrer">
@@ -35,7 +35,7 @@ const Title = () => (
     />
     <div className="title">
       <h1>Monocuco</h1>
-      <h4>Diccionario de palabras y frases costeñas</h4>
+      <h5>Diccionario de palabras y frases costeñas</h5>
     </div>
   </>
 );
@@ -69,10 +69,9 @@ function App() {
         <Search
           word={currentWord}
           onUpdateWord={handleUpdate}
+          totalWords={words.length}
+          resultStats={filteredWords.length}
         />
-        <span>
-          {`Número total de palabras encontradas: ${filteredWords.length}`}
-        </span>
       </div>
       <div className="content-wrapper">
         {filteredWords.map((word) => (
