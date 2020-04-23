@@ -490,5 +490,65 @@
       "name": "Johnny Villegas",
       "link": "https://github.com/C9-LinkRs"
     }
+  },
+  {
+    "text": "Barras",
+    "meaning": "Unidad monetaria o divisa de alto flujo en la región.",
+    "examples": [
+      "‘Ey, prestame dos mil barras pal' bu'.’",
+      "‘Tengo hambre y nada más tengo dos barras, será comprarme una empanada’"
+    ],
+    "author": {
+      "name": "Jorge Bolivar",
+      "link": "https://github.com/jbolivard"
+    }
+  },
+  {
+    "text": "Bollo",
+    "meaning": "Palabra empleada para referirse a una persona atractiva físicamente.",
+    "examples": [
+      "‘La vecina es tronco de bollo, es demasiado hermosa.’",
+      "‘Ese man es cule bollo, mirale ese cuerpazo.’"
+    ],
+    "author": {
+      "name": "Jorge Bolivar",
+      "link": "https://github.com/jbolivard"
+    }
+  },
+  {
+    "text": "Camello",
+    "meaning": "Palabra empleada para referirse al trabajo.",
+    "examples": [
+      "‘Me voy a dormir ya porque mañana tengo que estar en el camello a las 6 de la mañana.’",
+      "‘Me voy a camellar porque sino no tengo pa' las frías del fincho.’"
+    ],
+    "author": {
+      "name": "Jorge Bolivar",
+      "link": "https://github.com/jbolivard"
+    }
+  },
+  {
+    "text": "Fincho",
+    "meaning": "Palabra empleada para referirse al fin de semana.",
+    "examples": [
+      "‘Este fincho vienen los carnavales y me voy a meter cule pea con mi lea’",
+      "‘Tengo tronco de trabajo largo, yo creo que lo voy a dejar pal' fincho’"
+    ],
+    "author": {
+      "name": "Jorge Bolivar",
+      "link": "https://github.com/jbolivard"
+    }
+  },
+  {
+    "text": "Bu'",
+    "meaning": "Transporte masivo utilizado en las ciudades. Normalmente empleada cuando la palabra que reemplaza está al final de la oración.",
+    "examples": [
+      "‘Nojoda, tronco de calor que hacía en ese bu'.’",
+      "‘Para llegar temprano tengo que salir a las 4 de la mañana a coger el bu'.’"
+    ],
+    "author": {
+      "name": "Jorge Bolivar",
+      "link": "https://github.com/jbolivard"
+    }
   }
 ]
