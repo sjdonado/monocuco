@@ -16,27 +16,31 @@
 	align-items: center;
 	justify-content: flex-start;
 	text-align: center;
-	height: 268px;
+	min-height: 282px;
 	width: 380px;
 	box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.12);
 	background-color: white;
 	margin: 12px;
-	padding: 22px 12px;
+	padding: 22px 16px;
 	span {
 		font-size: 30px;
+	}
+	h6 {
+		margin-top: 12px;
+		text-align: justify;
 	}
 	.examples-list {
 		display: flex;
 		flex-direction: column;
-		margin-top: 24px;
+		margin: 12px auto;
 		font-style: italic;
 		span {
 			font-size: 14px;
+			margin-top: 6px;
 		}
 	}
 	.credits {
 		position:absolute;
-		margin-top: 4px;
     bottom: 4px;
 		right: 4px;
 		span {

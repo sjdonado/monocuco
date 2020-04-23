@@ -1,9 +1,15 @@
+input {
+	border-radius: 0;
+	-webkit-appearance: none;
+}
+.search-container {
+	width: 480px;
+	margin: 20px 0 0 0;
+}
 .search-wrapper {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin: 20px;
-	width: 480px;
 }
 .search__input {
 	width: 100%;
@@ -33,7 +39,7 @@
 	vertical-align: middle;
 }
 @media only screen and (max-width: 425px) {
-  .search-wrapper {
+  .search-container {
     width: 90%;
   }
 }
