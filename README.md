@@ -19,6 +19,7 @@ Monocuco está desarrollada con React.js, si quieres proponer una mejora, arregl
 ```json
   "text": "Monocuco",
   "meaning": "Palabra utilizada para referirse a algo que está bien o es bonito. Figura del carnaval de barranquilla.",
+  "synonyms": [],
   "examples": [
     "‘Con esta pinta nueva quedé monocuco’",
     "‘Mira, ahí viene bailando el monocuco’"
@@ -37,6 +38,7 @@ Monocuco está desarrollada con React.js, si quieres proponer una mejora, arregl
 1. Envíame un email a [jsrd98@gmail.com](mailto:jsrd98@gmail.com) con la siguiente información:
   * Palabra
   * Significado
+  * Sinónimos (opcional)
   * Ejemplos (máximo dos)
   * Tu página personal, o algún link para que puedan buscarte
   * Tu nombre

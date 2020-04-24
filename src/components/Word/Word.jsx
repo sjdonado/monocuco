@@ -16,18 +16,17 @@ function Word({ word, currentWord }) {
       />
       <div className="underline" />
       <h6>{word.meaning}</h6>
-      {word.synonyms && word.synonyms.length ? (
+      {word.synonyms.length > 0 ? (
         <div className="synonyms-list">
           <span className="list-title">Sinónimos</span>
-
-          {word.synonyms.map((synonym, i) => (
-            <i className="synonym" key={synonym}>
-              {synonym}
-            </i>
-          ))}
+          <Highlighter
+            highlightClassName="highlight"
+            searchWords={[currentWord, accents.remove(currentWord)]}
+            autoEscape
+            textToHighlight={word.synonyms.join(', ')}
+          />
         </div>
       ) : null}
-
       <div className="examples-list">
         <span className="list-title">Ejemplos</span>
         {word.examples.map((example) => (
@@ -54,6 +53,7 @@ Word.propTypes = {
   word: PropTypes.shape({
     text: PropTypes.string.isRequired,
     meaning: PropTypes.string.isRequired,
+    synonyms: PropTypes.arrayOf(PropTypes.string).isRequired,
     examples: PropTypes.arrayOf(PropTypes.string).isRequired,
     author: PropTypes.shape({
       link: PropTypes.string.isRequired,
