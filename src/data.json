@@ -423,7 +423,10 @@
   {
     "text": "Joa",
     "meaning": "Expresión utilizada para demostrar cansancio, tristeza, resignación.",
-    "synonyms": [],
+    "synonyms": [
+      "joda",
+      "jo'a"
+    ],
     "examples": [
       "‘joa perdió el Junior’",
       "‘me tocó trasnochar hoy, joa’"
@@ -431,6 +434,19 @@
     "author": {
       "link": "https://github.com/jcastell7",
       "name": "Juan Castellón"
+    }
+  },
+  {
+    "text": "Joder",
+    "meaning": "Molestar",
+    "synonyms": [],
+    "examples": [
+      "¡No me jodas!",
+      "¡Tú sí jodes la vida, Juan!"
+    ],
+    "author": {
+      "link": "https://github.com/krthr",
+      "name": "Wilson Tovar"
     }
   },
   {
