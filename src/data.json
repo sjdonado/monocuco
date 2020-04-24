@@ -664,8 +664,8 @@
   },
   {
     "text": "Vacile",
-    "meaning": "Palabra empleada para expresar que algo o alguien es muy agradable, chévere, chistoso, bacano. También se usa para referirse a un tipo de relación sentimental sin un compromiso serio u oficial. La palabra tiene algunas variaciones como vacilar, vacila, vacilón entre otras.",
-    "synonyms": [],
+    "meaning": "Palabra empleada para expresar que algo o alguien es muy agradable, chévere, chistoso, bacano. También se usa para referirse a un tipo de relación sentimental sin un compromiso serio u oficial.",
+    "synonyms": ["vacilar", "vacila", "vacilón"],
     "examples": [
       "‘Esa discoteca es un vacile’",
       "‘Ese man se la vacila’",
