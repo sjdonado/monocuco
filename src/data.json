@@ -251,7 +251,7 @@
     "text": "Fría",
     "meaning": "Cerveza bien helada",
     "examples": [
-      "‘Ey sireveme una fria’"
+      "‘Ey sirveme una fria’"
     ],
     "author": {
       "name": "Fabian Osorio",
@@ -550,5 +550,54 @@
       "name": "Jorge Bolivar",
       "link": "https://github.com/jbolivard"
     }
+  },
+  {
+    "text": "Uy zona",
+    "meaning": "Expresión empleada para denotar sorpresa",
+    "examples": [
+      "‘Uy zona, esa vieja esta buena’"
+      
+    ],
+    "author": {
+      "name": "Juan Bojato",
+      "link": "https://github.com/Juandavid716"
+    }
+  },
+  {
+    "text": "Montar imperio",
+    "meaning": "Expresión empleada para afirmar que una persona quiere tener problemas con uno",
+    "examples": [
+      "‘Ese man es nuevo en la cuadra y ya quiere venir a montar imperio’"
+      
+    ],
+    "author": {
+      "name": "Juan Bojato",
+      "link": "https://github.com/Juandavid716"
+    }
+  },
+  {
+    "text": "Sisas",
+    "meaning": "Forma alternativa de decir sí",
+    "examples": [
+      "‘-¿Me compras algo? -Sisas’"
+      
+    ],
+    "author": {
+      "name": "Juan Bojato",
+      "link": "https://github.com/Juandavid716"
+    }
+  },
+  {
+    "text": "Cuadro",
+    "meaning": "Sinónimo de compañero, amigo, colega",
+    "examples": [
+      "‘Hey cuadro vamos a tomarnos unas frías"
+      
+    ],
+    "author": {
+      "name": "Juan Bojato",
+      "link": "https://github.com/Juandavid716"
+    }
   }
+  
 ]
