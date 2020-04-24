@@ -1,53 +1,63 @@
 .word-header-wrapper {
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-	height: 100px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
 }
 .word-header__header {
-	font-size: 65px;
-	height: 100%;
+  font-size: 65px;
+  height: 100%;
 }
 .word-container {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: flex-start;
-	text-align: center;
-	min-height: 282px;
-	width: 380px;
-	box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.12);
-	background-color: white;
-	margin: 12px;
-	padding: 22px 16px;
-	span {
-		font-size: 30px;
-	}
-	h6 {
-		margin-top: 12px;
-		text-align: justify;
-	}
-	.examples-list {
-		display: flex;
-		flex-direction: column;
-		margin: 12px auto;
-		font-style: italic;
-		span {
-			font-size: 14px;
-			margin-top: 6px;
-		}
-	}
-	.credits {
-		position:absolute;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  min-height: 282px;
+  width: 380px;
+  box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.12);
+  background-color: white;
+  margin: 12px;
+  padding: 22px 16px;
+  span {
+    font-size: 30px;
+  }
+  h6 {
+    margin-top: 12px;
+    text-align: justify;
+  }
+
+  .examples-list,
+  .synonyms-list {
+    display: flex;
+    flex-direction: column;
+    margin: 12px auto;
+    font-style: italic;
+
+    span {
+      font-size: 14px;
+      margin-top: 6px;
+    }
+  }
+
+  .list-title {
+    font-style: normal;
+    font-weight: bold;
+  }
+
+  .credits {
+    position: absolute;
     bottom: 4px;
-		right: 4px;
-		span {
-			margin-right: 2px;
-		}
-		span, a {
-			font-size: 11px;
-		}
-	}
+    right: 4px;
+    span {
+      margin-right: 2px;
+    }
+    span,
+    a {
+      font-size: 11px;
+    }
+  }
 }

@@ -16,7 +16,20 @@ function Word({ word, currentWord }) {
       />
       <div className="underline" />
       <h6>{word.meaning}</h6>
+      {word.synonyms && word.synonyms.length ? (
+        <div className="synonyms-list">
+          <span className="list-title">Sinónimos</span>
+
+          {word.synonyms.map((synonym, i) => (
+            <i className="synonym" key={synonym}>
+              {synonym}
+            </i>
+          ))}
+        </div>
+      ) : null}
+
       <div className="examples-list">
+        <span className="list-title">Ejemplos</span>
         {word.examples.map((example) => (
           <Highlighter
             key={example}
@@ -29,11 +42,7 @@ function Word({ word, currentWord }) {
       </div>
       <div className="credits">
         <span>Añadida por: </span>
-        <a
-          href={word.author.link}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href={word.author.link} target="_blank" rel="noopener noreferrer">
           {word.author.name}
         </a>
       </div>
