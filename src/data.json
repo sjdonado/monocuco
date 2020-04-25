@@ -797,6 +797,68 @@
     }
   },
   {
+    "text": "Coleto/Coleta",
+    "meaning": "Persona de malas mañas que genera desconfianza. Se puede abreviar como 'cole'.",
+    "synonyms": ["delincuente, ladron, nea, ñero, chirrete"],
+    "examples": [
+      "‘Unos coletos nos asaltaron’"
+    ],
+    "author": {
+      "name": "Andrea Gentil",
+      "link": "https://github.com/Isaiasdelahoz"
+    }
+  },
+  {
+    "text": "Cuadro",
+    "meaning": "Compañero, amigo, persona cercana, conocido.",
+    "synonyms": ["parcero"],
+    "examples": [
+      "Que mas cuadro, como va la vaina?’"
+    ],
+    "author": {
+      "name": "Isaías De la Hoz",
+      "link": "https://github.com/Isaiasdelahoz"
+    }
+  },
+  {
+    "text": "Espantajopo",
+    "meaning": "Persona que presume o aparenta accesorios, viajes, comida, etc.",
+    "synonyms": [],
+    "examples": [
+      "Ese man es cule espantajopo!’"
+    ],
+    "author": {
+      "name": "Natasha De Marchena",
+      "link": "https://github.com/Isaiasdelahoz"
+    }
+  },
+  {
+    "text": "Pupi",
+    "meaning": "Persona o lugar de estrato alto, o que goza de una buena situación económica.",
+    "synonyms": ["rico", "exclusivo"],
+    "examples": [
+      "Ese lugar es muy pupi’",
+      "Esa persona es pupi"
+    ],
+    "author": {
+      "name": "Isaías De la Hoz",
+      "link": "https://github.com/Isaiasdelahoz"
+    }
+  },
+  {
+    "text": "Corroncho",
+    "meaning": "Ordinario, Tosco, sin estilo, ignorante",
+    "synonyms": [],
+    "examples": [
+      "Ese man es un corroncho!’",
+      "Esa camiseta se ve corroncha, no la compraré"
+    ],
+    "author": {
+      "name": "Andres Hugueth",
+      "link": "https://github.com/Isaiasdelahoz"
+    }
+  },
+  {
     "text": "Valecita",
     "meaning": "Palabra utilizada para denotar a alguien como un gran amigo.",
     "synonyms": [],
@@ -806,6 +868,18 @@
     "author": {
       "name": "Johnny Villegas",
       "link": "https://github.com/C9-LinkRs"
+    }
+  },
+  {
+    "text": "Cucayo",
+    "meaning": "arroz que queda adherido a la olla al terminar su cocción tomando una textura crocante",
+    "synonyms": ["pega, pegao, concolón, concón"],
+    "examples": [
+      "‘Ese cucayo está delicioso’"
+    ],
+    "author": {
+    "name": "Isaías De la Hoz",
+    "link": "https://github.com/Isaiasdelahoz"
     }
   }
 ]
