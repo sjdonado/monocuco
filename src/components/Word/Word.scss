@@ -29,25 +29,24 @@
     margin-top: 12px;
     text-align: justify;
   }
-
   .examples-list,
   .synonyms-list {
     display: flex;
     flex-direction: column;
-    margin: 12px auto;
     font-style: italic;
-
     span {
       font-size: 14px;
-      margin-top: 6px;
+      margin-top: 4px;
     }
   }
-
+  .examples-list {
+    margin: 6px auto;
+    margin-bottom: 12px;
+  }
   .list-title {
     font-style: normal;
     font-weight: bold;
   }
-
   .credits {
     position: absolute;
     bottom: 4px;

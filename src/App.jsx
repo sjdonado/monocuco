@@ -47,15 +47,18 @@ function App() {
   const handleUpdate = (word) => {
     setCurrentWord(word);
     const parsedWord = accents.remove(word).toLowerCase();
-    let newFilteredWords = words.filter(({ text }) => {
+
+    let newFilteredWords = words.filter(({ text, synonyms }) => {
       const parsedText = accents.remove(text).toLocaleLowerCase();
-      return parsedText.includes(parsedWord);
+      const parsedSynonyms = accents.remove(synonyms.join(',')).toLocaleLowerCase();
+      return parsedText.includes(parsedWord) || parsedSynonyms.includes(parsedWord);
     });
+
     // Otherwise search by examples
     if (newFilteredWords.length === 0) {
       newFilteredWords = words.filter(({ examples }) => {
-        const parsedText = accents.remove(examples.join(',')).toLocaleLowerCase();
-        return parsedText.includes(parsedWord);
+        const parsedExamples = accents.remove(examples.join(',')).toLocaleLowerCase();
+        return parsedExamples.includes(parsedWord);
       });
     }
     setFilteredWords(newFilteredWords);

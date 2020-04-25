@@ -62,6 +62,19 @@
     }
   },
   {
+    "text": "Añoñi",
+    "meaning": "Palabra utilizada para corroborar una acción con alto nivel de credibilidad.",
+    "synonyms": [],
+    "examples": [
+      "‘Pregunta: Ey mani, vas para la batalla de flores mañana’",
+      "‘Respuesta: Añoñi!’"
+    ],
+    "author": {
+      "name": "Jose Guzman",
+      "link": "https://github.com/pygabo"
+    }
+  },
+  {
     "text": "Apercollar",
     "meaning": "Abrazar fuertemente a la pareja de baile en medio de una buena canción. En esta acción deben encontrarse los cachetes de cada uno.",
     "synonyms": [],
@@ -660,6 +673,20 @@
     "author": {
       "name": "Johnny Villegas",
       "link": "https://github.com/C9-LinkRs"
+    }
+  },
+  {
+    "text": "Vacile",
+    "meaning": "Palabra empleada para expresar que algo o alguien es muy agradable, chévere, chistoso, bacano. También se usa para referirse a un tipo de relación sentimental sin un compromiso serio u oficial.",
+    "synonyms": ["vacilar", "vacila", "vacilón"],
+    "examples": [
+      "‘Esa discoteca es un vacile’",
+      "‘Ese man se la vacila’",
+      "‘Ya llevo 2 meses vacilando con el / ella’"
+    ],
+    "author": {
+      "name": "Rafael Villarreal",
+      "link": "https://github.com/Rafaell416"
     }
   }
 ]
