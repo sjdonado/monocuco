@@ -267,6 +267,20 @@
     }
   },
   {
+    "text": "Coleto/Coleta",
+    "meaning": "Persona de malas mañas que genera desconfianza. Se puede abreviar como 'cole'.",
+    "synonyms": [
+      "delincuente, ladron, nea, ñero, chirrete"
+    ],
+    "examples": [
+      "‘Unos coletos nos asaltaron’"
+    ],
+    "author": {
+      "name": "Andrea Gentil",
+      "link": "https://github.com/Isaiasdelahoz"
+    }
+  },
+  {
     "text": "Compa",
     "meaning": "Palabra empleada para referirse a un amigo",
     "synonyms": [],
@@ -279,11 +293,24 @@
     }
   },
   {
+    "text": "Corroncho",
+    "meaning": "Ordinario, Tosco, sin estilo, ignorante",
+    "synonyms": [],
+    "examples": [
+      "Ese man es un corroncho!’",
+      "Esa camiseta se ve corroncha, no la compraré"
+    ],
+    "author": {
+      "name": "Andres Hugueth",
+      "link": "https://github.com/Isaiasdelahoz"
+    }
+  },
+  {
     "text": "Cuadro",
     "meaning": "Sinónimo de compañero, amigo, colega",
     "synonyms": [],
     "examples": [
-      "‘Hey cuadro vamos a tomarnos unas frías"
+      "‘Hey cuadro vamos a tomarnos unas frías’"
     ],
     "author": {
       "name": "Juan Bojato",
@@ -381,6 +408,18 @@
     }
   },
   {
+    "text": "Espantajopo",
+    "meaning": "Persona que presume o aparenta accesorios, viajes, comida, etc.",
+    "synonyms": [],
+    "examples": [
+      "Ese man es cule espantajopo!’"
+    ],
+    "author": {
+      "name": "Natasha De Marchena",
+      "link": "https://github.com/Isaiasdelahoz"
+    }
+  },
+  {
     "text": "Filo",
     "meaning": "Palabra que significa hambre",
     "synonyms": [],
@@ -411,7 +450,7 @@
     "meaning": "Cerveza bien helada",
     "synonyms": [],
     "examples": [
-      "‘Ey sirveme una fria’"
+      "‘Ey sirveme una fría’"
     ],
     "author": {
       "name": "Fabian Osorio",
@@ -687,6 +726,22 @@
     }
   },
   {
+    "text": "Pupi",
+    "meaning": "Persona o lugar de estrato alto, o que goza de una buena situación económica.",
+    "synonyms": [
+      "rico",
+      "exclusivo"
+    ],
+    "examples": [
+      "Ese lugar es muy pupi’",
+      "Esa persona es pupi"
+    ],
+    "author": {
+      "name": "Isaías De la Hoz",
+      "link": "https://github.com/Isaiasdelahoz"
+    }
+  },
+  {
     "text": "Sisas",
     "meaning": "Forma alternativa de decir sí",
     "synonyms": [],
@@ -760,7 +815,9 @@
     "examples": [
       "Que mas cuadro, como va la vaina?’"
     ],
-    
+    "author": {
+      "name": "Isaías De la Hoz",
+      "link": "https://github.com/Isaiasdelahoz"
     }
   },
   {
@@ -802,7 +859,7 @@
     }
   },
   {
-   "text": "Valecita",
+    "text": "Valecita",
     "meaning": "Palabra utilizada para denotar a alguien como un gran amigo.",
     "synonyms": [],
     "examples": [
@@ -819,10 +876,10 @@
     "synonyms": ["pega, pegao, concolón, concón"],
     "examples": [
       "‘Ese cucayo está delicioso’"
-     ]
-     "author": {
-      "name": "Isaías De la Hoz",
-      "link": "https://github.com/Isaiasdelahoz"
+    ],
+    "author": {
+    "name": "Isaías De la Hoz",
+    "link": "https://github.com/Isaiasdelahoz"
     }
   }
 ]
