@@ -48,8 +48,6 @@ Monocuco está desarrollada con React.js, si quieres proponer una mejora, arregl
 ## Contribuidores
 <table>
   <tr>
-    <sub><b>Turiano De Jesus Romero Guzman</b></sub></a></td>
-    <td align="center"><a href="https://github.com/Rome96"><img src="https://avatars0.githubusercontent.com/u/19671381?s=400&u=0ce01449b358f88b1ed9a589c025d78d17739434&v=4" width="460" alt="Turiano Romero"/><br /><sub><b>Turiano De Jesus Romero Guzman</b></sub></a></td>
     <td align="center"><a href="https://github.com/krthr"><img src="https://avatars0.githubusercontent.com/u/18665740?s=460&v=4" width="460" alt="Wilson Tovar"/><br /><sub><b>Wilson Tovar</b></sub></a></td>
     <td align="center"><a href="https://github.com/jvalenciae"><img src="https://avatars0.githubusercontent.com/u/44078264?s=460&v=4" width="460" alt="Javier Valencia"/><br /><sub><b>Javier Valencia</b></sub></a></td>
     <td align="center"><a href="https://github.com/C9-LinkRs"><img src="https://avatars0.githubusercontent.com/u/23248296?s=460&v=4" width="460" alt="Johnny Villegas"/><br /><sub><b>Johnny Villegas</b></sub></a></td>
@@ -64,6 +62,7 @@ Monocuco está desarrollada con React.js, si quieres proponer una mejora, arregl
     <td align="center"><a href="https://github.com/juandavid716"><img src="https://avatars0.githubusercontent.com/u/42303342?s=460&v=4" width="460" alt="Juan Bojato"/><br /><sub><b>Juan Bojato</b></sub></a></td>
     <td align="center"><a href="https://github.com/pygabo"><img src="https://avatars0.githubusercontent.com/u/17889145?s=400&u=a25cac21223fb057416d6e3f4e2fc44afee7c6b4&v=4" width="460" alt="Jose Guzman"/><br /><sub><b>Jose Guzman</b></sub></a></td>
     <td align="center"><a href="https://github.com/Rafaell416"><img src="https://avatars0.githubusercontent.com/u/18080929?s=400" width="460" alt="Rafael Villarreal"/><br /><sub><b>Rafael Villarreal</b></sub></a></td>
+    <td align="center"><a href="https://github.com/Rome96"><img src="https://avatars0.githubusercontent.com/u/19671381?s=400&u=0ce01449b358f88b1ed9a589c025d78d17739434&v=4" width="460" alt="Turiano Romero"/><br /><sub><b>Turiano Romero</b></sub></a></td>
   </tr>
 <table>
 
