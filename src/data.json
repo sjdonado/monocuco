@@ -268,6 +268,42 @@
     }
   },
   {
+    "text": "Cañaña",
+    "meaning": "Palabra empleada para referirse a alguien con mucha fuerza, o en su defecto, musculoso.",
+    "synonyms": [],
+    "examples": [
+      "‘Ese tipo tiene cañaña para levantar el bulto e' yuca’"
+    ],
+    "author": {
+      "name": "Turiano Romero Guzman",
+      "link": "https://github.com/Rome96"
+    }
+  },
+  {
+    "text": "Compa",
+    "meaning": "Palabra empleada para referirse a un amigo",
+    "synonyms": [],
+    "examples": [
+      "‘Hey compa, acompañame al centro’"
+    ],
+    "author": {
+      "name": "Turiano Romero Guzman",
+      "link": "https://github.com/Rome96"
+    }
+  },
+  {
+    "text": "Cole o coleto",
+    "meaning": "Palabra empleada para referirse a una persona malandra",
+    "synonyms": [],
+    "examples": [
+      "‘Hey mira ese cole que viene allá, vamos a cruzar de anden :v’"
+    ],
+    "author": {
+      "name": "Turiano Romero Guzman",
+      "link": "https://github.com/Rome96"
+    }
+  },
+  {
     "text": "Eche",
     "meaning": "Palabra que significa aceptación, negación, enojo o explicación, dependiento del contexto. Por lo general se usa de forma interrogativa",
     "synonyms": [],
@@ -343,6 +379,18 @@
     "author": {
       "name": "Jesus Santiago",
       "link": "https://github.com/jaravad"
+    }
+  },
+  {
+    "text": "Emparapetar",
+    "meaning": "Palabra empleada para referirse a algo remendado",
+    "synonyms": [],
+    "examples": [
+      "‘Juanito emparapetó los zapatos para jugar’"
+    ],
+    "author": {
+      "name": "Turiano Romero Guzman",
+      "link": "https://github.com/Rome96"
     }
   },
   {
@@ -612,6 +660,18 @@
     "author": {
       "name": "Kristell Urueta",
       "link": "https://github.com/kristellu"
+    }
+  },
+  {
+    "text": "Piñuo",
+    "meaning": "Palabra empleada para referirse a alguien musculoso(a).",
+    "synonyms": [],
+    "examples": [
+      "‘Esa lea está Piñua’"
+    ],
+    "author": {
+      "name": "Turiano Romero Guzman",
+      "link": "https://github.com/Rome96"
     }
   },
   {
