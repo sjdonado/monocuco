@@ -748,5 +748,18 @@
       "name": "Rafael Villarreal",
       "link": "https://github.com/Rafaell416"
     }
+  },
+  {
+    "text": "A la tiña",
+    "meaning": "Tirar al aire algún o algunos objeto(s) para que las personas lo(s) recojan y se hagan propietarios de este/estos.",
+    "synonyms": [],
+    "examples": [
+      "‘Voy a tirar estos dulces a la tiña, el que los coja se los queda’",
+      "‘Tiraron este celular a la tiña, me cayó en las manos y me lo quedé’"
+    ],
+    "author": {
+      "name": "Jorge Bolivar",
+      "link": "https://github.com/jbolivard"
+    }
   }
 ]
