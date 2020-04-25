@@ -6,10 +6,12 @@
     "examples": [
       "‘¡A vaina!, por fin terminaste la carrera’"
     ],
-    "author": {
-      "name": "Javier Valencia",
-      "link": "https://github.com/jvalenciae"
-    }
+    "authors": [
+      {
+        "name": "Javier Valencia",
+        "link": "https://github.com/jvalenciae"
+      }
+    ]
   },
   {
     "text": "'E",
@@ -19,10 +21,12 @@
       "‘Bollo 'e yuca’",
       "‘Mata 'e plátano’"
     ],
-    "author": {
-      "name": "Yennifer Herrera",
-      "link": "https://github.com/Yenniferh"
-    }
+    "authors": [
+      {
+        "name": "Yennifer Herrera",
+        "link": "https://github.com/Yenniferh"
+      }
+    ]
   },
   {
     "text": "'Erda",
@@ -31,10 +35,12 @@
     "examples": [
       "'¡'Erda!, se cayó' "
     ],
-    "author": {
-      "name": "Yennifer Herrera",
-      "link": "https://github.com/Yenniferh"
-    }
+    "authors": [
+      {
+        "name": "Yennifer Herrera",
+        "link": "https://github.com/Yenniferh"
+      }
+    ]
   },
   {
     "text": "Aguacatao",
@@ -44,10 +50,12 @@
       "‘Ese pelao está como aguacatao’",
       "‘Ey, no estés tanto tiempo aguacatao’"
     ],
-    "author": {
-      "name": "Javier Valencia",
-      "link": "https://github.com/jvalenciae"
-    }
+    "authors": [
+      {
+        "name": "Javier Valencia",
+        "link": "https://github.com/jvalenciae"
+      }
+    ]
   },
   {
     "text": "Aguanta el burro",
@@ -56,10 +64,12 @@
     "examples": [
       "‘Ey, aguanta el burro que me dejas atrás’"
     ],
-    "author": {
-      "name": "Javier Valencia",
-      "link": "https://github.com/jvalenciae"
-    }
+    "authors": [
+      {
+        "name": "Javier Valencia",
+        "link": "https://github.com/jvalenciae"
+      }
+    ]
   },
   {
     "text": "Añoñi",
@@ -69,10 +79,12 @@
       "‘Pregunta: Ey mani, vas para la batalla de flores mañana’",
       "‘Respuesta: Añoñi!’"
     ],
-    "author": {
-      "name": "Jose Guzman",
-      "link": "https://github.com/pygabo"
-    }
+    "authors": [
+      {
+        "name": "Jose Guzman",
+        "link": "https://github.com/pygabo"
+      }
+    ]
   },
   {
     "text": "Apercollar",
@@ -82,10 +94,12 @@
       "'¡Es hora de apercollar a su pareja!’",
       "'Bailamos apercollados toda la noche."
     ],
-    "author": {
-      "name": "Kristell Urueta",
-      "link": "https://github.com/kristellu"
-    }
+    "authors": [
+      {
+        "name": "Kristell Urueta",
+        "link": "https://github.com/kristellu"
+      }
+    ]
   },
   {
     "text": "Arrayúo",
@@ -95,10 +109,12 @@
       "‘Anda arrayúo con el regalo que le dieron’",
       "‘Ese arrayúo no se quita la camiseta nueva ni para dormir’"
     ],
-    "author": {
-      "name": "Javier Valencia",
-      "link": "https://github.com/jvalenciae"
-    }
+    "authors": [
+      {
+        "name": "Javier Valencia",
+        "link": "https://github.com/jvalenciae"
+      }
+    ]
   },
   {
     "text": "Barras",
@@ -108,10 +124,12 @@
       "‘Ey, prestame dos mil barras pal' bu'.’",
       "‘Tengo hambre y nada más tengo dos barras, será comprarme una empanada’"
     ],
-    "author": {
-      "name": "Jorge Bolivar",
-      "link": "https://github.com/jbolivard"
-    }
+    "authors": [
+      {
+        "name": "Jorge Bolivar",
+        "link": "https://github.com/jbolivard"
+      }
+    ]
   },
   {
     "text": "Billullo",
@@ -121,10 +139,12 @@
       "‘Ando con billullo’",
       "‘Me quedé sin billullo’"
     ],
-    "author": {
-      "name": "Javier Valencia",
-      "link": "https://github.com/jvalenciae"
-    }
+    "authors": [
+      {
+        "name": "Javier Valencia",
+        "link": "https://github.com/jvalenciae"
+      }
+    ]
   },
   {
     "text": "Bollo",
@@ -134,10 +154,12 @@
       "‘La vecina es tronco de bollo, es demasiado hermosa.’",
       "‘Ese man es cule bollo, mirale ese cuerpazo.’"
     ],
-    "author": {
-      "name": "Jorge Bolivar",
-      "link": "https://github.com/jbolivard"
-    }
+    "authors": [
+      {
+        "name": "Jorge Bolivar",
+        "link": "https://github.com/jbolivard"
+      }
+    ]
   },
   {
     "text": "Bololó",
@@ -147,10 +169,12 @@
       "‘¿Viste el cipote bololó que se formó en la fiesta de anoche?’",
       "‘Vámonos de aquí antes de que se forme un bololó’"
     ],
-    "author": {
-      "name": "Javier Valencia",
-      "link": "https://github.com/jvalenciae"
-    }
+    "authors": [
+      {
+        "name": "Javier Valencia",
+        "link": "https://github.com/jvalenciae"
+      }
+    ]
   },
   {
     "text": "Botar el chupo",
@@ -160,10 +184,12 @@
       "‘Jhonny botó el chupo y se salió del grupo’",
       "‘Vas a botar el chupo ?’"
     ],
-    "author": {
-      "name": "Juan Rambal",
-      "link": "https://github.com/herasj"
-    }
+    "authors": [
+      {
+        "name": "Juan Rambal",
+        "link": "https://github.com/herasj"
+      }
+    ]
   },
   {
     "text": "Brete",
@@ -172,10 +198,12 @@
     "examples": [
       "‘Se armó el brete en la casa de Juan Sebastian.’"
     ],
-    "author": {
-      "name": "Kristell Urueta",
-      "link": "https://github.com/kristellu"
-    }
+    "authors": [
+      {
+        "name": "Kristell Urueta",
+        "link": "https://github.com/kristellu"
+      }
+    ]
   },
   {
     "text": "Bu'",
@@ -185,10 +213,12 @@
       "‘Nojoda, tronco de calor que hacía en ese bu'.’",
       "‘Para llegar temprano tengo que salir a las 4 de la mañana a coger el bu'.’"
     ],
-    "author": {
-      "name": "Jorge Bolivar",
-      "link": "https://github.com/jbolivard"
-    }
+    "authors": [
+      {
+        "name": "Jorge Bolivar",
+        "link": "https://github.com/jbolivard"
+      }
+    ]
   },
   {
     "text": "Cachón",
@@ -198,10 +228,12 @@
       "‘Que vas a hablar si tu eres cule cachón’",
       "‘Ese que viene allá quedó como un cachón luego de esa relación’"
     ],
-    "author": {
-      "name": "Juan Rambal",
-      "link": "https://github.com/herasj"
-    }
+    "authors": [
+      {
+        "name": "Juan Rambal",
+        "link": "https://github.com/herasj"
+      }
+    ]
   },
   {
     "text": "Calilla",
@@ -211,10 +243,12 @@
       "‘Ese man si es calilla’",
       "‘Oye deja la intensidad, no seas calilla’"
     ],
-    "author": {
-      "name": "Javier Valencia",
-      "link": "https://github.com/jvalenciae"
-    }
+    "authors": [
+      {
+        "name": "Javier Valencia",
+        "link": "https://github.com/jvalenciae"
+      }
+    ]
   },
   {
     "text": "Camello",
@@ -224,10 +258,12 @@
       "‘Me voy a dormir ya porque mañana tengo que estar en el camello a las 6 de la mañana.’",
       "‘Me voy a camellar porque sino no tengo pa' las frías del fincho.’"
     ],
-    "author": {
-      "name": "Jorge Bolivar",
-      "link": "https://github.com/jbolivard"
-    }
+    "authors": [
+      {
+        "name": "Jorge Bolivar",
+        "link": "https://github.com/jbolivard"
+      }
+    ]
   },
   {
     "text": "Cañaña",
@@ -236,10 +272,12 @@
     "examples": [
       "‘Ese tipo tiene cañaña para levantar el bulto e' yuca’"
     ],
-    "author": {
-      "name": "Turiano Romero Guzman",
-      "link": "https://github.com/Rome96"
-    }
+    "authors": [
+      {
+        "name": "Turiano Romero Guzman",
+        "link": "https://github.com/Rome96"
+      }
+    ]
   },
   {
     "text": "Carretilla",
@@ -249,22 +287,12 @@
       "‘Lo que dijo el presidente es carretilla’",
       "‘No le creas a el, es muy carretillero’"
     ],
-    "author": {
-      "name": "Javier Valencia",
-      "link": "https://github.com/jvalenciae"
-    }
-  },
-  {
-    "text": "Cole o coleto",
-    "meaning": "Palabra empleada para referirse a una persona malandra",
-    "synonyms": [],
-    "examples": [
-      "‘Hey mira ese cole que viene allá, vamos a cruzar de anden :v’"
-    ],
-    "author": {
-      "name": "Turiano Romero Guzman",
-      "link": "https://github.com/Rome96"
-    }
+    "authors": [
+      {
+        "name": "Javier Valencia",
+        "link": "https://github.com/jvalenciae"
+      }
+    ]
   },
   {
     "text": "Coleto/Coleta",
@@ -273,12 +301,19 @@
       "delincuente, ladron, nea, ñero, chirrete"
     ],
     "examples": [
+      "‘Hey mira ese cole que viene allá, vamos a cruzar de anden :v’",
       "‘Unos coletos nos asaltaron’"
     ],
-    "author": {
-      "name": "Andrea Gentil",
-      "link": "https://github.com/Isaiasdelahoz"
-    }
+    "authors": [
+      {
+        "name": "Turiano Romero Guzman",
+        "link": "https://github.com/Rome96"
+      },
+      {
+        "name": "Andres Hugueth",
+        "link": "https://github.com/Isaiasdelahoz"
+      }
+    ]
   },
   {
     "text": "Compa",
@@ -287,10 +322,12 @@
     "examples": [
       "‘Hey compa, acompañame al centro’"
     ],
-    "author": {
-      "name": "Turiano Romero Guzman",
-      "link": "https://github.com/Rome96"
-    }
+    "authors": [
+      {
+        "name": "Turiano Romero Guzman",
+        "link": "https://github.com/Rome96"
+      }
+    ]
   },
   {
     "text": "Corroncho",
@@ -300,10 +337,12 @@
       "Ese man es un corroncho!’",
       "Esa camiseta se ve corroncha, no la compraré"
     ],
-    "author": {
-      "name": "Andres Hugueth",
-      "link": "https://github.com/Isaiasdelahoz"
-    }
+    "authors": [
+      {
+        "name": "Andres Hugueth",
+        "link": "https://github.com/Isaiasdelahoz"
+      }
+    ]
   },
   {
     "text": "Cuadro",
@@ -312,10 +351,28 @@
     "examples": [
       "‘Hey cuadro vamos a tomarnos unas frías’"
     ],
-    "author": {
-      "name": "Juan Bojato",
-      "link": "https://github.com/Juandavid716"
-    }
+    "authors": [
+      {
+        "name": "Juan Bojato",
+        "link": "https://github.com/Juandavid716"
+      }
+    ]
+  },
+  {
+    "text": "Cucayo",
+    "meaning": "arroz que queda adherido a la olla al terminar su cocción tomando una textura crocante",
+    "synonyms": [
+      "pega, pegao, concolón, concón"
+    ],
+    "examples": [
+      "‘Ese cucayo está delicioso’"
+    ],
+    "authors": [
+      {
+        "name": "Isaías De la Hoz",
+        "link": "https://github.com/Isaiasdelahoz"
+      }
+    ]
   },
   {
     "text": "Cule",
@@ -325,10 +382,12 @@
       "‘Cule pinta bacana’",
       "'Me sirvieron la sopa en cule plato chiquito'"
     ],
-    "author": {
-      "name": "Yennifer Herrera",
-      "link": "https://github.com/Yenniferh"
-    }
+    "authors": [
+      {
+        "name": "Yennifer Herrera",
+        "link": "https://github.com/Yenniferh"
+      }
+    ]
   },
   {
     "text": "Eche",
@@ -340,10 +399,16 @@
       "'¡Echee!' Siempre es lo mismo contigo.",
       "'¿Eche qué? ¿Te vas a molestar?'"
     ],
-    "author": {
-      "name": "Oskhar Arrieta y Kristell Urueta",
-      "link": "https://github.com/oskhar1099"
-    }
+    "authors": [
+      {
+        "name": "Oskhar Arrieta",
+        "link": "https://github.com/oskhar1099"
+      },
+      {
+        "name": "Kristell Urueta",
+        "link": "https://github.com/kristellu"
+      }
+    ]
   },
   {
     "text": "Embala'o",
@@ -353,10 +418,12 @@
       "'Ese man fumó algo, está embala'o'",
       "'Se estrelló por ir embala'o'"
     ],
-    "author": {
-      "name": "Yennifer Herrera",
-      "link": "https://github.com/Yenniferh"
-    }
+    "authors": [
+      {
+        "name": "Yennifer Herrera",
+        "link": "https://github.com/Yenniferh"
+      }
+    ]
   },
   {
     "text": "Empaquitar",
@@ -365,10 +432,12 @@
     "examples": [
       "‘Se empaquitó solito.’"
     ],
-    "author": {
-      "name": "Kristell Urueta",
-      "link": "https://github.com/kristellu"
-    }
+    "authors": [
+      {
+        "name": "Kristell Urueta",
+        "link": "https://github.com/kristellu"
+      }
+    ]
   },
   {
     "text": "Emparapetar",
@@ -377,10 +446,12 @@
     "examples": [
       "‘Juanito emparapetó los zapatos para jugar’"
     ],
-    "author": {
-      "name": "Turiano Romero Guzman",
-      "link": "https://github.com/Rome96"
-    }
+    "authors": [
+      {
+        "name": "Turiano Romero Guzman",
+        "link": "https://github.com/Rome96"
+      }
+    ]
   },
   {
     "text": "Emputao",
@@ -390,10 +461,12 @@
       "‘Dejalo quieto que está emputao’",
       "‘Deja de joder o me voy a emputar’"
     ],
-    "author": {
-      "name": "Javier Valencia",
-      "link": "https://github.com/jvalenciae"
-    }
+    "authors": [
+      {
+        "name": "Javier Valencia",
+        "link": "https://github.com/jvalenciae"
+      }
+    ]
   },
   {
     "text": "Esa es la que te cae",
@@ -402,10 +475,12 @@
     "examples": [
       "‘Esa es la que te cae a ti, siempre con la misma vaina’"
     ],
-    "author": {
-      "name": "Javier Valencia",
-      "link": "https://github.com/jvalenciae"
-    }
+    "authors": [
+      {
+        "name": "Javier Valencia",
+        "link": "https://github.com/jvalenciae"
+      }
+    ]
   },
   {
     "text": "Espantajopo",
@@ -414,10 +489,12 @@
     "examples": [
       "Ese man es cule espantajopo!’"
     ],
-    "author": {
-      "name": "Natasha De Marchena",
-      "link": "https://github.com/Isaiasdelahoz"
-    }
+    "authors": [
+      {
+        "name": "Natasha De Marchena",
+        "link": "https://github.com/Isaiasdelahoz"
+      }
+    ]
   },
   {
     "text": "Filo",
@@ -427,10 +504,12 @@
       "‘Tengo mucho filo.’",
       "‘No he almorzado todavia, tengo filo.’"
     ],
-    "author": {
-      "name": "Jesus Santiago",
-      "link": "https://github.com/jaravad"
-    }
+    "authors": [
+      {
+        "name": "Jesus Santiago",
+        "link": "https://github.com/jaravad"
+      }
+    ]
   },
   {
     "text": "Fincho",
@@ -440,10 +519,12 @@
       "‘Este fincho vienen los carnavales y me voy a meter cule pea con mi lea’",
       "‘Tengo tronco de trabajo largo, yo creo que lo voy a dejar pal' fincho’"
     ],
-    "author": {
-      "name": "Jorge Bolivar",
-      "link": "https://github.com/jbolivard"
-    }
+    "authors": [
+      {
+        "name": "Jorge Bolivar",
+        "link": "https://github.com/jbolivard"
+      }
+    ]
   },
   {
     "text": "Fría",
@@ -452,10 +533,12 @@
     "examples": [
       "‘Ey sirveme una fría’"
     ],
-    "author": {
-      "name": "Fabian Osorio",
-      "link": "https://github.com/fokobot"
-    }
+    "authors": [
+      {
+        "name": "Fabian Osorio",
+        "link": "https://github.com/fokobot"
+      }
+    ]
   },
   {
     "text": "Garnatada",
@@ -464,10 +547,12 @@
     "examples": [
       "‘Te vas a llevar una garnatada’"
     ],
-    "author": {
-      "name": "Fabian Osorio",
-      "link": "https://github.com/fokobot"
-    }
+    "authors": [
+      {
+        "name": "Fabian Osorio",
+        "link": "https://github.com/fokobot"
+      }
+    ]
   },
   {
     "text": "Gorrero",
@@ -477,10 +562,12 @@
       "‘Yo no salgo más con ese man porque quiere emborracharse a costillas de uno, es cule gorrero’",
       "‘Miralo ve, ahí está tomando de la botella él solo y no dio plata para comprarla, es un gorrero y tras de todo descarado’"
     ],
-    "author": {
-      "name": "Jorge Bolivar",
-      "link": "https://github.com/jbolivard"
-    }
+    "authors": [
+      {
+        "name": "Jorge Bolivar",
+        "link": "https://github.com/jbolivard"
+      }
+    ]
   },
   {
     "text": "Guachafita",
@@ -490,10 +577,12 @@
       "‘Ey, dejen la guachafita y hagamos las cosas en serio’",
       "‘José, me haces el favor y dejas la guachafita’"
     ],
-    "author": {
-      "name": "Javier Valencia",
-      "link": "https://github.com/jvalenciae"
-    }
+    "authors": [
+      {
+        "name": "Javier Valencia",
+        "link": "https://github.com/jvalenciae"
+      }
+    ]
   },
   {
     "text": "Huepaje",
@@ -502,10 +591,12 @@
     "examples": [
       "‘¡Huepaje!, bailalo morena’"
     ],
-    "author": {
-      "name": "Javier Valencia",
-      "link": "https://github.com/jvalenciae"
-    }
+    "authors": [
+      {
+        "name": "Javier Valencia",
+        "link": "https://github.com/jvalenciae"
+      }
+    ]
   },
   {
     "text": "Jabao",
@@ -515,10 +606,12 @@
       "‘Estoy Jabao con mi nuevo carro’",
       "`Mucha jabadera tuya, ya no quieres salir`"
     ],
-    "author": {
-      "name": "Henri Lecoultre",
-      "link": ""
-    }
+    "authors": [
+      {
+        "name": "Henri Lecoultre",
+        "link": ""
+      }
+    ]
   },
   {
     "text": "Joa",
@@ -531,10 +624,12 @@
       "‘joa perdió el Junior’",
       "‘me tocó trasnochar hoy, joa’"
     ],
-    "author": {
-      "link": "https://github.com/jcastell7",
-      "name": "Juan Castellón"
-    }
+    "authors": [
+      {
+        "link": "https://github.com/jcastell7",
+        "name": "Juan Castellón"
+      }
+    ]
   },
   {
     "text": "Joder",
@@ -544,10 +639,12 @@
       "¡No me jodas!",
       "¡Tú sí jodes la vida, Juan!"
     ],
-    "author": {
-      "link": "https://github.com/krthr",
-      "name": "Wilson Tovar"
-    }
+    "authors": [
+      {
+        "link": "https://github.com/krthr",
+        "name": "Wilson Tovar"
+      }
+    ]
   },
   {
     "text": "Lambón",
@@ -557,10 +654,12 @@
       "‘Ahí viene de la oficina del profesor el lambón ese’",
       "‘Ese pelao es muy lambón’"
     ],
-    "author": {
-      "name": "Javier Valencia",
-      "link": "https://github.com/jvalenciae"
-    }
+    "authors": [
+      {
+        "name": "Javier Valencia",
+        "link": "https://github.com/jvalenciae"
+      }
+    ]
   },
   {
     "text": "Lea",
@@ -570,10 +669,12 @@
       "‘Ayer me quedé hablando con la lea hasta tarde’",
       "‘Ese man se perdió un mes y apareció con lea’"
     ],
-    "author": {
-      "name": "Juan Rambal",
-      "link": "https://github.com/herasj"
-    }
+    "authors": [
+      {
+        "name": "Juan Rambal",
+        "link": "https://github.com/herasj"
+      }
+    ]
   },
   {
     "text": "Liso",
@@ -583,10 +684,12 @@
       "‘Ese man si es liso, me iba a besar y no somos nada’",
       "‘Nojoda, ese man llegó a mi casa y no tenía ni 5 minutos ahí y abrió la nevera, cule liso’"
     ],
-    "author": {
-      "name": "Jorge Bolivar",
-      "link": "https://github.com/jbolivard"
-    }
+    "authors": [
+      {
+        "name": "Jorge Bolivar",
+        "link": "https://github.com/jbolivard"
+      }
+    ]
   },
   {
     "text": "Mamonúo/a'",
@@ -596,10 +699,12 @@
       "'Cule casa mamonúa'",
       "'Compró un camión bien mamonúo'"
     ],
-    "author": {
-      "name": "Yennifer Herrera",
-      "link": "https://github.com/Yenniferh"
-    }
+    "authors": [
+      {
+        "name": "Yennifer Herrera",
+        "link": "https://github.com/Yenniferh"
+      }
+    ]
   },
   {
     "text": "Mani",
@@ -609,10 +714,12 @@
       "Ey mani, ven acá",
       "Mani, colabórame con algo."
     ],
-    "author": {
-      "name": "Oskhar Arrieta",
-      "link": "https://github.com/oskhar1099"
-    }
+    "authors": [
+      {
+        "name": "Oskhar Arrieta",
+        "link": "https://github.com/oskhar1099"
+      }
+    ]
   },
   {
     "text": "Masacote",
@@ -621,10 +728,28 @@
     "examples": [
       "‘No le eches el arroz a la sopa, que vas hacer tremendo masacote!’"
     ],
-    "author": {
-      "name": "Johnny Villegas",
-      "link": "https://github.com/C9-LinkRs"
-    }
+    "authors": [
+      {
+        "name": "Johnny Villegas",
+        "link": "https://github.com/C9-LinkRs"
+      }
+    ]
+  },
+  {
+    "text": "Mondá",
+    "meaning": "Dicese de miembro reproductor masculino.",
+    "synonyms": [
+      "pene, pipí, verga"
+    ],
+    "examples": [
+      "‘Ese man tiene la mondá grande’"
+    ],
+    "authors": [
+      {
+        "name": "Sharon Benjumea",
+        "link": "https://github.com/Isaiasdelahoz"
+      }
+    ]
   },
   {
     "text": "Monocuco",
@@ -634,10 +759,12 @@
       "‘Con esta pinta nueva quedé monocuco’",
       "‘Mira, ahí viene bailando el monocuco’"
     ],
-    "author": {
-      "name": "Javier Valencia",
-      "link": "https://github.com/jvalenciae"
-    }
+    "authors": [
+      {
+        "name": "Javier Valencia",
+        "link": "https://github.com/jvalenciae"
+      }
+    ]
   },
   {
     "text": "Montar imperio",
@@ -646,10 +773,12 @@
     "examples": [
       "‘Ese man es nuevo en la cuadra y ya quiere venir a montar imperio’"
     ],
-    "author": {
-      "name": "Juan Bojato",
-      "link": "https://github.com/Juandavid716"
-    }
+    "authors": [
+      {
+        "name": "Juan Bojato",
+        "link": "https://github.com/Juandavid716"
+      }
+    ]
   },
   {
     "text": "Nojoda",
@@ -659,10 +788,12 @@
       "‘Nojodaaa, tremendo idiota.’",
       "'Nojoda, ¡qué vaina linda!'"
     ],
-    "author": {
-      "name": "Kristell Urueta",
-      "link": "https://github.com/kristellu"
-    }
+    "authors": [
+      {
+        "name": "Kristell Urueta",
+        "link": "https://github.com/kristellu"
+      }
+    ]
   },
   {
     "text": "Pasarse de piña",
@@ -671,10 +802,12 @@
     "examples": [
       "‘Yo te ayudo con el trabajo, pero no te pases de piña’"
     ],
-    "author": {
-      "name": "Javier Valencia",
-      "link": "https://github.com/jvalenciae"
-    }
+    "authors": [
+      {
+        "name": "Javier Valencia",
+        "link": "https://github.com/jvalenciae"
+      }
+    ]
   },
   {
     "text": "Pava",
@@ -684,10 +817,12 @@
       "‘Tengo pava de hacer esa tarea.’",
       "‘Me da mucha pava empezar todo de nuevo.’"
     ],
-    "author": {
-      "name": "Jesus Santiago",
-      "link": "https://github.com/jaravad"
-    }
+    "authors": [
+      {
+        "name": "Jesus Santiago",
+        "link": "https://github.com/jaravad"
+      }
+    ]
   },
   {
     "text": "Pechiche",
@@ -696,10 +831,12 @@
     "examples": [
       "‘Te voy a pechichar toda la vida.’"
     ],
-    "author": {
-      "name": "Kristell Urueta",
-      "link": "https://github.com/kristellu"
-    }
+    "authors": [
+      {
+        "name": "Kristell Urueta",
+        "link": "https://github.com/kristellu"
+      }
+    ]
   },
   {
     "text": "Piñuo",
@@ -708,10 +845,12 @@
     "examples": [
       "‘Esa lea está Piñua’"
     ],
-    "author": {
-      "name": "Turiano Romero Guzman",
-      "link": "https://github.com/Rome96"
-    }
+    "authors": [
+      {
+        "name": "Turiano Romero Guzman",
+        "link": "https://github.com/Rome96"
+      }
+    ]
   },
   {
     "text": "Pluma",
@@ -720,10 +859,12 @@
     "examples": [
       "Cierra la pluma que está botando agua"
     ],
-    "author": {
-      "name": "Oskhar Arrieta",
-      "link": "https://github.com/oskhar1099"
-    }
+    "authors": [
+      {
+        "name": "Oskhar Arrieta",
+        "link": "https://github.com/oskhar1099"
+      }
+    ]
   },
   {
     "text": "Pupi",
@@ -736,10 +877,12 @@
       "Ese lugar es muy pupi’",
       "Esa persona es pupi"
     ],
-    "author": {
-      "name": "Isaías De la Hoz",
-      "link": "https://github.com/Isaiasdelahoz"
-    }
+    "authors": [
+      {
+        "name": "Isaías De la Hoz",
+        "link": "https://github.com/Isaiasdelahoz"
+      }
+    ]
   },
   {
     "text": "Sisas",
@@ -748,10 +891,12 @@
     "examples": [
       "‘-¿Me compras algo? -Sisas’"
     ],
-    "author": {
-      "name": "Juan Bojato",
-      "link": "https://github.com/Juandavid716"
-    }
+    "authors": [
+      {
+        "name": "Juan Bojato",
+        "link": "https://github.com/Juandavid716"
+      }
+    ]
   },
   {
     "text": "Tronco",
@@ -761,10 +906,12 @@
       "‘Tronco 'e problema en el que me metí’",
       "'Tronco de sapo, le contó lo que le dije al vale'"
     ],
-    "author": {
-      "name": "Yennifer Herrera",
-      "link": "https://github.com/Yenniferh"
-    }
+    "authors": [
+      {
+        "name": "Yennifer Herrera",
+        "link": "https://github.com/Yenniferh"
+      }
+    ]
   },
   {
     "text": "Uy zona",
@@ -773,10 +920,12 @@
     "examples": [
       "‘Uy zona, esa vieja esta buena’"
     ],
-    "author": {
-      "name": "Juan Bojato",
-      "link": "https://github.com/Juandavid716"
-    }
+    "authors": [
+      {
+        "name": "Juan Bojato",
+        "link": "https://github.com/Juandavid716"
+      }
+    ]
   },
   {
     "text": "Vacile",
@@ -791,72 +940,12 @@
       "‘Ese man se la vacila’",
       "‘Ya llevo 2 meses vacilando con el / ella’"
     ],
-    "author": {
-      "name": "Rafael Villarreal",
-      "link": "https://github.com/Rafaell416"
-    }
-  },
-  {
-    "text": "Coleto/Coleta",
-    "meaning": "Persona de malas mañas que genera desconfianza. Se puede abreviar como 'cole'.",
-    "synonyms": ["delincuente, ladron, nea, ñero, chirrete"],
-    "examples": [
-      "‘Unos coletos nos asaltaron’"
-    ],
-    "author": {
-      "name": "Andrea Gentil",
-      "link": "https://github.com/Isaiasdelahoz"
-    }
-  },
-  {
-    "text": "Cuadro",
-    "meaning": "Compañero, amigo, persona cercana, conocido.",
-    "synonyms": ["parcero"],
-    "examples": [
-      "Que mas cuadro, como va la vaina?’"
-    ],
-    "author": {
-      "name": "Isaías De la Hoz",
-      "link": "https://github.com/Isaiasdelahoz"
-    }
-  },
-  {
-    "text": "Espantajopo",
-    "meaning": "Persona que presume o aparenta accesorios, viajes, comida, etc.",
-    "synonyms": [],
-    "examples": [
-      "Ese man es cule espantajopo!’"
-    ],
-    "author": {
-      "name": "Natasha De Marchena",
-      "link": "https://github.com/Isaiasdelahoz"
-    }
-  },
-  {
-    "text": "Pupi",
-    "meaning": "Persona o lugar de estrato alto, o que goza de una buena situación económica.",
-    "synonyms": ["rico", "exclusivo"],
-    "examples": [
-      "Ese lugar es muy pupi’",
-      "Esa persona es pupi"
-    ],
-    "author": {
-      "name": "Isaías De la Hoz",
-      "link": "https://github.com/Isaiasdelahoz"
-    }
-  },
-  {
-    "text": "Corroncho",
-    "meaning": "Ordinario, Tosco, sin estilo, ignorante",
-    "synonyms": [],
-    "examples": [
-      "Ese man es un corroncho!’",
-      "Esa camiseta se ve corroncha, no la compraré"
-    ],
-    "author": {
-      "name": "Andres Hugueth",
-      "link": "https://github.com/Isaiasdelahoz"
-    }
+    "authors": [
+      {
+        "name": "Rafael Villarreal",
+        "link": "https://github.com/Rafaell416"
+      }
+    ]
   },
   {
     "text": "Valecita",
@@ -865,33 +954,11 @@
     "examples": [
       "‘Yo no te voy a prestar el celular, ni que fueras mi valecita.’"
     ],
-    "author": {
-      "name": "Johnny Villegas",
-      "link": "https://github.com/C9-LinkRs"
-    }
-  },
-  {
-    "text": "Cucayo",
-    "meaning": "arroz que queda adherido a la olla al terminar su cocción tomando una textura crocante",
-    "synonyms": ["pega, pegao, concolón, concón"],
-    "examples": [
-      "‘Ese cucayo está delicioso’"
-    ],
-    "author": {
-    "name": "Isaías De la Hoz",
-    "link": "https://github.com/Isaiasdelahoz"
-    }
-  },
-  {
-    "text": "Mondá",
-    "meaning": "Dicese de miembro reproductor masculino.",
-    "synonyms": ["pene, pipí, verga"],
-    "examples": [
-      "‘Ese man tiene la mondá grande’"
-    ],
-    "author": {
-      "name": "Sharon Benjumea",
-      "link": "https://github.com/Isaiasdelahoz"
-    }
+    "authors": [
+      {
+        "name": "Johnny Villegas",
+        "link": "https://github.com/C9-LinkRs"
+      }
+    ]
   }
 ]

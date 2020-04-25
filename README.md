@@ -13,8 +13,6 @@ Crear el más grande dataset de palabras y frases usadas en la Costa Caribe - Co
 ## ¿Cómo contribuir?
 Monocuco está desarrollada con React.js, si quieres proponer una mejora, arreglar algún problema o añadir nuevas palabras al diccionario realiza los siguientes pasos:
 
-(Asegurate que la palabra no esté en el diccionario)
-
 ### Si eres desarrollador
 1. Crea el fork
 2. Crea una nueva rama con uno de estos nombres: fix (solucionar bug), feature (mejora) o new-word (añadir nueva palabra)
@@ -48,10 +46,10 @@ Debes la entrada directamente en el archivo `src/data.json` siguiendo esta estru
     "‘Con esta pinta nueva quedé monocuco’",
     "‘Mira, ahí viene bailando el monocuco’"
   ],
-  "author": {
+  "authors": [{
     "name": "Javier Valencia",
     "link": "https://github.com/jvalenciae"
-  }
+  }]
 ```
 6. Crea el pull request
 7. Opcional: Añadate en la lista de contribuidores &#128526; (no cambies el orden)

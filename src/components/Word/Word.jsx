@@ -41,9 +41,17 @@ function Word({ word, currentWord }) {
       </div>
       <div className="credits">
         <span>Añadida por: </span>
-        <a href={word.author.link} target="_blank" rel="noopener noreferrer">
-          {word.author.name}
-        </a>
+        {word.authors.map(({ name, link }, idx) => {
+          let parsedName = name;
+          if (idx < word.authors.length - 1) {
+            parsedName += ', ';
+          }
+          return (
+            <a key={`${word.text}-${link}`} href={link} target="_blank" rel="noopener noreferrer">
+              {parsedName}
+            </a>
+          );
+        })}
       </div>
     </div>
   );
@@ -55,10 +63,10 @@ Word.propTypes = {
     meaning: PropTypes.string.isRequired,
     synonyms: PropTypes.arrayOf(PropTypes.string).isRequired,
     examples: PropTypes.arrayOf(PropTypes.string).isRequired,
-    author: PropTypes.shape({
+    authors: PropTypes.arrayOf(PropTypes.shape({
       link: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
-    }),
+    })),
   }).isRequired,
   currentWord: PropTypes.string,
 };

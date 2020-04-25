@@ -64,10 +64,10 @@ const receiver = async () => {
     meaning,
     synonyms: synonyms.split(',').map(trimLines).filter(nonEmpty),
     examples: examples.split('\n').map(trimLines).filter(nonEmpty),
-    author: {
+    authors: [{
       name,
       link,
-    },
+    }],
   });
 
   words.sort((a, b) => a.text.localeCompare(b.text));
