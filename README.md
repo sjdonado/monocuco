@@ -55,6 +55,10 @@ Debes la entrada directamente en el archivo `src/data.json` siguiendo esta estru
 7. Opcional: Añadate en la lista de contribuidores &#128526; (no cambies el orden)
 8. Listo!
 
+
+Si tienes alguna duda respecto a tu contribución puedes unirte a nuestro canal de slack [aqui](https://barranquillajs.slack.com/join/shared_invite/enQtNDI1OTYwOTE2MjQwLTJhYWIzOGJhZDQ3NDljYmMyZjNiMzUwYWM0ZGMwYTliMWRhYmQ2ZjVhODM4MjE2OTg4YTEwYTQzMjAzMzA1Mzc), Al entrar al espacio de trabajo de slack ve a la sección de canales busca el canal #monocuco y únete.
+
+
 ### Si no eres desarrollador
 1. Envíame un email a [jsrd98@gmail.com](mailto:jsrd98@gmail.com) con la siguiente información:
 
