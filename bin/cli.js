@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 
 const DATA_PATH = path.join(__dirname, '..', 'src/data.json');
+// eslint-disable-next-line import/no-dynamic-require
 const words = require(DATA_PATH);
 
 const validate = (val) => (val === '' ? 'Es necesario un valor.' : true);
@@ -51,18 +52,18 @@ const receiver = async () => {
       type: 'input',
       message: '¿Cuál es el link de tu cuenta en GitHub?',
       name: 'author_link',
-      validate: (val = '') =>
-        !/^https?:\/\/(www.)?github\.com\/[a-zA-Z0-9]+$/.test(val) ? 'Enlace inválido' : true,
+      validate: (val = '') => (!/^https?:\/\/(www.)?github\.com\/[a-zA-Z0-9]+$/.test(val) ? 'Enlace inválido' : true),
     },
   ]);
 
   const trimLines = (line) => line.trim();
+  const nonEmpty = (elem) => elem.length > 0;
 
   words.push({
     text,
     meaning,
-    synonyms: synonyms.split(',').map(trimLines),
-    examples: examples.split('\n').map(trimLines),
+    synonyms: synonyms.split(',').map(trimLines).filter(nonEmpty),
+    examples: examples.split('\n').map(trimLines).filter(nonEmpty),
     author: {
       name,
       link,
@@ -73,8 +74,6 @@ const receiver = async () => {
 
   fs.writeFile(DATA_PATH, JSON.stringify(words, null, 2), (err) => {
     if (err) throw err;
-
-
     console.log('\n¡Nueva palabra agregada correctamente! ¡Gracias!');
     console.log('Ya puedes hacer commit y realizar el PR. ;)');
   });
