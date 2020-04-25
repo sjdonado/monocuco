@@ -63,6 +63,8 @@ Monocuco está desarrollada con React.js, si quieres proponer una mejora, arregl
     <td align="center"><a href="https://github.com/juandavid716"><img src="https://avatars0.githubusercontent.com/u/42303342?s=460&v=4" width="460" alt="Juan Bojato"/><br /><sub><b>Juan Bojato</b></sub></a></td>
     <td align="center"><a href="https://github.com/pygabo"><img src="https://avatars0.githubusercontent.com/u/17889145?s=400&u=a25cac21223fb057416d6e3f4e2fc44afee7c6b4&v=4" width="460" alt="Jose Guzman"/><br /><sub><b>Jose Guzman</b></sub></a></td>
     <td align="center"><a href="https://github.com/Rafaell416"><img src="https://avatars0.githubusercontent.com/u/18080929?s=400" width="460" alt="Rafael Villarreal"/><br /><sub><b>Rafael Villarreal</b></sub></a></td>
+     <td align="center"><a href="https://github.com/jbolivard"><img src="https://avatars0.githubusercontent.com/u/62828937?s=460&v=4" width="460" alt="Jorge Bolivar"/><br /><sub><b>Jorge Bolivar</b></sub></a></td>
+    
   </tr>
 <table>
 
