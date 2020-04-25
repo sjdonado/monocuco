@@ -48,6 +48,7 @@ Monocuco está desarrollada con React.js, si quieres proponer una mejora, arregl
 ## Contribuidores
 <table>
   <tr>
+    <td align="center"><a href="https://github.com/sjdonado"><img src="https://avatars0.githubusercontent.com/u/27580836?s=460&v=4" width="460" alt="Juan Rodriguez"/><br /><sub><b>Juan Rodriguez</b></sub></a></td>
     <td align="center"><a href="https://github.com/krthr"><img src="https://avatars0.githubusercontent.com/u/18665740?s=460&v=4" width="460" alt="Wilson Tovar"/><br /><sub><b>Wilson Tovar</b></sub></a></td>
     <td align="center"><a href="https://github.com/jvalenciae"><img src="https://avatars0.githubusercontent.com/u/44078264?s=460&v=4" width="460" alt="Javier Valencia"/><br /><sub><b>Javier Valencia</b></sub></a></td>
     <td align="center"><a href="https://github.com/C9-LinkRs"><img src="https://avatars0.githubusercontent.com/u/23248296?s=460&v=4" width="460" alt="Johnny Villegas"/><br /><sub><b>Johnny Villegas</b></sub></a></td>
