@@ -748,5 +748,17 @@
       "name": "Rafael Villarreal",
       "link": "https://github.com/Rafaell416"
     }
+  },
+  {
+    "text": "Cucayo",
+    "meaning": "arroz que queda adherido a la olla al terminar su cocción tomando una textura crocante",
+    "synonyms": ["pega, pegao, concolón, concón"],
+    "examples": [
+      "‘Ese cucayo está delicioso’"
+    ],
+    "author": {
+      "name": "Isaías De la Hoz",
+      "link": "https://github.com/Isaiasdelahoz"
+    }
   }
 ]
