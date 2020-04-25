@@ -15,7 +15,7 @@ Monocuco está desarrollada con React.js, si quieres proponer una mejora, arregl
 
 ### Si eres desarrollador
 1. Crea el fork
-2. Crea una nueva rama con uno de estos nomnbres: fix (solucionar bug), feature (mejora) o new-word (añadir nueva palabra)
+2. Crea una nueva rama con uno de estos nombres: fix (solucionar bug), feature (mejora) o new-word (añadir nueva palabra)
 3. Puedes añadir la palabra de dos maneras:
 
 **Usando el CLI (Nuevo!)**  
