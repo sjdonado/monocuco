@@ -230,6 +230,18 @@
     }
   },
   {
+    "text": "Cañaña",
+    "meaning": "Palabra empleada para referirse a alguien con mucha fuerza, o en su defecto, musculoso.",
+    "synonyms": [],
+    "examples": [
+      "‘Ese tipo tiene cañaña para levantar el bulto e' yuca’"
+    ],
+    "author": {
+      "name": "Turiano Romero Guzman",
+      "link": "https://github.com/Rome96"
+    }
+  },
+  {
     "text": "Carretilla",
     "meaning": "Algo falso o que es mentira.",
     "synonyms": [],
@@ -240,6 +252,30 @@
     "author": {
       "name": "Javier Valencia",
       "link": "https://github.com/jvalenciae"
+    }
+  },
+  {
+    "text": "Cole o coleto",
+    "meaning": "Palabra empleada para referirse a una persona malandra",
+    "synonyms": [],
+    "examples": [
+      "‘Hey mira ese cole que viene allá, vamos a cruzar de anden :v’"
+    ],
+    "author": {
+      "name": "Turiano Romero Guzman",
+      "link": "https://github.com/Rome96"
+    }
+  },
+  {
+    "text": "Compa",
+    "meaning": "Palabra empleada para referirse a un amigo",
+    "synonyms": [],
+    "examples": [
+      "‘Hey compa, acompañame al centro’"
+    ],
+    "author": {
+      "name": "Turiano Romero Guzman",
+      "link": "https://github.com/Rome96"
     }
   },
   {
@@ -265,42 +301,6 @@
     "author": {
       "name": "Yennifer Herrera",
       "link": "https://github.com/Yenniferh"
-    }
-  },
-  {
-    "text": "Cañaña",
-    "meaning": "Palabra empleada para referirse a alguien con mucha fuerza, o en su defecto, musculoso.",
-    "synonyms": [],
-    "examples": [
-      "‘Ese tipo tiene cañaña para levantar el bulto e' yuca’"
-    ],
-    "author": {
-      "name": "Turiano Romero Guzman",
-      "link": "https://github.com/Rome96"
-    }
-  },
-  {
-    "text": "Compa",
-    "meaning": "Palabra empleada para referirse a un amigo",
-    "synonyms": [],
-    "examples": [
-      "‘Hey compa, acompañame al centro’"
-    ],
-    "author": {
-      "name": "Turiano Romero Guzman",
-      "link": "https://github.com/Rome96"
-    }
-  },
-  {
-    "text": "Cole o coleto",
-    "meaning": "Palabra empleada para referirse a una persona malandra",
-    "synonyms": [],
-    "examples": [
-      "‘Hey mira ese cole que viene allá, vamos a cruzar de anden :v’"
-    ],
-    "author": {
-      "name": "Turiano Romero Guzman",
-      "link": "https://github.com/Rome96"
     }
   },
   {
@@ -344,6 +344,18 @@
     }
   },
   {
+    "text": "Emparapetar",
+    "meaning": "Palabra empleada para referirse a algo remendado",
+    "synonyms": [],
+    "examples": [
+      "‘Juanito emparapetó los zapatos para jugar’"
+    ],
+    "author": {
+      "name": "Turiano Romero Guzman",
+      "link": "https://github.com/Rome96"
+    }
+  },
+  {
     "text": "Emputao",
     "meaning": "Persona brava o enfadada.",
     "synonyms": [],
@@ -379,18 +391,6 @@
     "author": {
       "name": "Jesus Santiago",
       "link": "https://github.com/jaravad"
-    }
-  },
-  {
-    "text": "Emparapetar",
-    "meaning": "Palabra empleada para referirse a algo remendado",
-    "synonyms": [],
-    "examples": [
-      "‘Juanito emparapetó los zapatos para jugar’"
-    ],
-    "author": {
-      "name": "Turiano Romero Guzman",
-      "link": "https://github.com/Rome96"
     }
   },
   {
@@ -724,6 +724,24 @@
     }
   },
   {
+    "text": "Vacile",
+    "meaning": "Palabra empleada para expresar que algo o alguien es muy agradable, chévere, chistoso, bacano. También se usa para referirse a un tipo de relación sentimental sin un compromiso serio u oficial.",
+    "synonyms": [
+      "vacilar",
+      "vacila",
+      "vacilón"
+    ],
+    "examples": [
+      "‘Esa discoteca es un vacile’",
+      "‘Ese man se la vacila’",
+      "‘Ya llevo 2 meses vacilando con el / ella’"
+    ],
+    "author": {
+      "name": "Rafael Villarreal",
+      "link": "https://github.com/Rafaell416"
+    }
+  },
+  {
     "text": "Valecita",
     "meaning": "Palabra utilizada para denotar a alguien como un gran amigo.",
     "synonyms": [],
@@ -733,20 +751,6 @@
     "author": {
       "name": "Johnny Villegas",
       "link": "https://github.com/C9-LinkRs"
-    }
-  },
-  {
-    "text": "Vacile",
-    "meaning": "Palabra empleada para expresar que algo o alguien es muy agradable, chévere, chistoso, bacano. También se usa para referirse a un tipo de relación sentimental sin un compromiso serio u oficial.",
-    "synonyms": ["vacilar", "vacila", "vacilón"],
-    "examples": [
-      "‘Esa discoteca es un vacile’",
-      "‘Ese man se la vacila’",
-      "‘Ya llevo 2 meses vacilando con el / ella’"
-    ],
-    "author": {
-      "name": "Rafael Villarreal",
-      "link": "https://github.com/Rafaell416"
     }
   }
 ]
