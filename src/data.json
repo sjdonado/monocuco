@@ -664,6 +664,24 @@
     }
   },
   {
+    "text": "Vacile",
+    "meaning": "Palabra empleada para expresar que algo o alguien es muy agradable, chévere, chistoso, bacano. También se usa para referirse a un tipo de relación sentimental sin un compromiso serio u oficial.",
+    "synonyms": [
+      "vacilar",
+      "vacila",
+      "vacilón"
+    ],
+    "examples": [
+      "‘Esa discoteca es un vacile’",
+      "‘Ese man se la vacila’",
+      "‘Ya llevo 2 meses vacilando con el / ella’"
+    ],
+    "author": {
+      "name": "Rafael Villarreal",
+      "link": "https://github.com/Rafaell416"
+    }
+  },
+  {
     "text": "Valecita",
     "meaning": "Palabra utilizada para denotar a alguien como un gran amigo.",
     "synonyms": [],
@@ -673,20 +691,6 @@
     "author": {
       "name": "Johnny Villegas",
       "link": "https://github.com/C9-LinkRs"
-    }
-  },
-  {
-    "text": "Vacile",
-    "meaning": "Palabra empleada para expresar que algo o alguien es muy agradable, chévere, chistoso, bacano. También se usa para referirse a un tipo de relación sentimental sin un compromiso serio u oficial.",
-    "synonyms": ["vacilar", "vacila", "vacilón"],
-    "examples": [
-      "‘Esa discoteca es un vacile’",
-      "‘Ese man se la vacila’",
-      "‘Ya llevo 2 meses vacilando con el / ella’"
-    ],
-    "author": {
-      "name": "Rafael Villarreal",
-      "link": "https://github.com/Rafaell416"
     }
   }
 ]
