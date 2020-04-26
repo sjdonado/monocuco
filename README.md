@@ -1,9 +1,10 @@
 # Monocuco
 > Diccionario de palabras y frases costeñas.
+
 <div align="center">
-    <a href="monocuco-f4976.firebaseapp.com">
-      <img src="/src/icon.jpg" alt="Monocuco" width="300px" />
-    </a>
+  <a href="monocuco-f4976.firebaseapp.com">
+    <img src="/src/icon.jpg" alt="Monocuco" width="300px" />
+  </a>
 </div>
 
 ## Objetivo
@@ -14,8 +15,29 @@ Monocuco está desarrollada con React.js, si quieres proponer una mejora, arregl
 
 ### Si eres desarrollador
 1. Crea el fork
-2. Crea una nueva rama con uno de estos nomnbres: fix (solucionar bug), feature (mejora) o new-word (añadir nueva palabra)
-3. Dirígete al archivo src/data.json y añade la nueva palabra siguiendo esta estructura:
+2. Crea una nueva rama con uno de estos nombres: fix (solucionar bug), feature (mejora) o new-word (añadir nueva palabra)
+3. Puedes añadir la palabra de dos maneras:
+
+**Usando el CLI (Nuevo!)**  
+Ingresa a tu consola:
+```bash
+  npm run cli
+```
+Y luego ingresas la información en consola a medida que se vaya pidiendo:
+```bash
+? Palabra Jodido
+? Significado Persona que está mal
+? Sinónimos (separados por coma) salado
+? Por favor, escribe un ejemplo por línea. Received
+? ¿Cuál es tu nombre? Wilson Tovar
+? ¿Cuál es el link de tu cuenta en GitHub? https://github.com/krthr
+
+¡Nueva palabra agregada correctamente! ¡Gracias!
+Ya puedes hacer commit y realizar el PR. ;)
+```
+
+**Editando archivo**  
+Debes la entrada directamente en el archivo `src/data.json` siguiendo esta estructura:
 ```json
   "text": "Monocuco",
   "meaning": "Palabra utilizada para referirse a algo que está bien o es bonito. Figura del carnaval de barranquilla.",
@@ -24,24 +46,29 @@ Monocuco está desarrollada con React.js, si quieres proponer una mejora, arregl
     "‘Con esta pinta nueva quedé monocuco’",
     "‘Mira, ahí viene bailando el monocuco’"
   ],
-  "author": {
+  "authors": [{
     "name": "Javier Valencia",
     "link": "https://github.com/jvalenciae"
-  }
+  }]
 ```
-4. Crea el pull request
-5. Opcional: Añadate en la lista de contribuidores &#128526; (no cambies el orden)
-6. Listo!
+6. Crea el pull request
+7. Opcional: Añadate en la lista de contribuidores &#128526; (no cambies el orden)
+8. Listo!
+
+
+Si tienes alguna duda respecto a tu contribución puedes unirte a nuestro canal de slack [aqui](https://barranquillajs.slack.com/join/shared_invite/enQtNDI1OTYwOTE2MjQwLTJhYWIzOGJhZDQ3NDljYmMyZjNiMzUwYWM0ZGMwYTliMWRhYmQ2ZjVhODM4MjE2OTg4YTEwYTQzMjAzMzA1Mzc), Al entrar al espacio de trabajo de slack ve a la sección de canales busca el canal #monocuco y únete.
+
 
 ### Si no eres desarrollador
-
 1. Envíame un email a [jsrd98@gmail.com](mailto:jsrd98@gmail.com) con la siguiente información:
-  * Palabra
-  * Significado
-  * Sinónimos (opcional)
-  * Ejemplos (máximo dos)
-  * Tu página personal, o algún link para que puedan buscarte
-  * Tu nombre
+
+- Palabra
+- Significado
+- Sinónimos (opcional)
+- Ejemplos (máximo dos)
+- Tu página personal, o algún link para que puedan buscarte
+- Tu nombre
+
 2. En el asunto coloca: Nueva palabra - Monocuco
 3. Listo!
 
@@ -63,10 +90,13 @@ Monocuco está desarrollada con React.js, si quieres proponer una mejora, arregl
     <td align="center"><a href="https://github.com/juandavid716"><img src="https://avatars0.githubusercontent.com/u/42303342?s=460&v=4" width="460" alt="Juan Bojato"/><br /><sub><b>Juan Bojato</b></sub></a></td>
     <td align="center"><a href="https://github.com/pygabo"><img src="https://avatars0.githubusercontent.com/u/17889145?s=400&u=a25cac21223fb057416d6e3f4e2fc44afee7c6b4&v=4" width="460" alt="Jose Guzman"/><br /><sub><b>Jose Guzman</b></sub></a></td>
     <td align="center"><a href="https://github.com/Rafaell416"><img src="https://avatars0.githubusercontent.com/u/18080929?s=400" width="460" alt="Rafael Villarreal"/><br /><sub><b>Rafael Villarreal</b></sub></a></td>
-     <td align="center"><a href="https://github.com/jbolivard"><img src="https://avatars0.githubusercontent.com/u/62828937?s=460&v=4" width="460" alt="Jorge Bolivar"/><br /><sub><b>Jorge Bolivar</b></sub></a></td>
-    
+    <td align="center"><a href="https://github.com/Rome96"><img src="https://avatars0.githubusercontent.com/u/19671381?s=400&u=0ce01449b358f88b1ed9a589c025d78d17739434&v=4" width="460" alt="Turiano Romero"/><br /><sub><b>Turiano Romero</b></sub></a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/Isaiasdelahoz"><img src="https://avatars3.githubusercontent.com/u/25128103?s=460&u=3a44744203ab858fcda162b7e6037f3e79d6bdfe&v=4" width="460" alt="Isaias De la Hoz"/><br /><sub><b>Isaías De la Hoz</b></sub></a></td>
+    <td align="center"><a href="https://github.com/jbolivard"><img src="https://avatars0.githubusercontent.com/u/62828937?s=460&v=4" width="460" alt="Jorge Bolivar"/><br /><sub><b>Jorge Bolivar</b></sub></a></td>
   </tr>
 <table>
 
 ## Agradecimientos especiales
-* Andres Urquina: Autor del icono [Ilustración Bailarina - Carnaval de Barranquilla, Colombia.](https://www.flickr.com/photos/andresurquina/16246891029)
+- Andres Urquina: Autor del icono [Ilustración Bailarina - Carnaval de Barranquilla, Colombia.](https://www.flickr.com/photos/andresurquina/16246891029)
