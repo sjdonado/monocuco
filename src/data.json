@@ -102,6 +102,24 @@
     ]
   },
   {
+    "text": "Aro",
+    "meaning": "Palabra utilizada para afirmar algo.",
+    "synonyms": [
+      "Sisas",
+      "si"
+    ],
+    "examples": [
+      "A: Hey! quieres Cucayo?",
+      "B: Aro, eso no se pregunta."
+    ],
+    "authors": [
+      {
+        "name": "Manlio Tejeda",
+        "link": "https://github.com/manliot"
+      }
+    ]
+  },
+  {
     "text": "Arrayúo",
     "meaning": "Hace referencia a una persona sobre motivada.",
     "synonyms": [],
