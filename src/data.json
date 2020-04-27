@@ -254,6 +254,20 @@
     ]
   },
   {
+    "text": "Cajonero",
+    "meaning": "Es aquel que intenta conquistar a la novida de un amigo.",
+    "synonyms": [],
+    "examples": [
+      "¡ey! Ojo con este man que es cule cajonero"
+    ],
+    "authors": [
+      {
+        "name": "Rafael Villarreal",
+        "link": "https://github.com/Rafaell416"
+      }
+    ]
+  },
+  {
     "text": "Calilla",
     "meaning": "Persona intensa o molesta.",
     "synonyms": [],
@@ -422,6 +436,20 @@
     ]
   },
   {
+    "text": "Dejar el pelero",
+    "meaning": "Es una expresión utilizada para referirse al acto de huida o el hecho de irse, (en algunos casos sin avisar).",
+    "synonyms": [],
+    "examples": [
+      "¡Ey! Este man dejó el pelero y nos tocó quedarnos aqui solos."
+    ],
+    "authors": [
+      {
+        "name": "Rafael Villarreal",
+        "link": "https://github.com/Rafaell416"
+      }
+    ]
+  },
+  {
     "text": "Eche",
     "meaning": "Palabra que significa aceptación, negación, enojo o explicación, dependiento del contexto. Por lo general se usa de forma interrogativa",
     "synonyms": [],
@@ -454,6 +482,22 @@
       {
         "name": "Yennifer Herrera",
         "link": "https://github.com/Yenniferh"
+      }
+    ]
+  },
+  {
+    "text": "Embuste",
+    "meaning": "Mentira o Falsedad",
+    "synonyms": [],
+    "examples": [
+      "No le creas nada, él es un embustero",
+      "Todo lo que dijo esa vieja es puro embuste",
+      "¿ Es que no te cansas de echar tanto embuste ?"
+    ],
+    "authors": [
+      {
+        "name": "Rafael Villarreal",
+        "link": "https://github.com/Rafaell416"
       }
     ]
   },
@@ -709,6 +753,22 @@
     ]
   },
   {
+    "text": "Lengua larga",
+    "meaning": "Es una expresión usada para referirse a una persona poco prudente.",
+    "synonyms": [
+      "Imprudente"
+    ],
+    "examples": [
+      "No le voy a volver a contar nada a él, es un lengua larga, enseguida fue a contárselo a todo el mundo"
+    ],
+    "authors": [
+      {
+        "name": "Rafael Villarreal",
+        "link": "https://github.com/Rafaell416"
+      }
+    ]
+  },
+  {
     "text": "Liso",
     "meaning": "Persona confianzuda.",
     "synonyms": [],
@@ -720,6 +780,24 @@
       {
         "name": "Jorge Bolivar",
         "link": "https://github.com/jbolivard"
+      }
+    ]
+  },
+  {
+    "text": "Llevao",
+    "meaning": "Esta palabra se usa para referirse a alguien con poca fortaleza física o alguien sin dinero.",
+    "synonyms": [
+      "Debilucho",
+      "Mondao"
+    ],
+    "examples": [
+      "Mí­ralo, no puede cargar eso. Está es llevao",
+      "No voy a poder ir a la fiesta del sábado, estoy es llevao"
+    ],
+    "authors": [
+      {
+        "name": "Rafael Villarreal",
+        "link": "https://github.com/Rafaell416"
       }
     ]
   },
@@ -809,6 +887,20 @@
       {
         "name": "Juan Bojato",
         "link": "https://github.com/Juandavid716"
+      }
+    ]
+  },
+  {
+    "text": "Morisqueta",
+    "meaning": "Es una palabra que se usa para denotar expresiones faciales como fruncir el ceño.",
+    "synonyms": [],
+    "examples": [
+      "Míralo, Tan pronto probó la comida empezó a hacer morisqueta, seguro no le gusta."
+    ],
+    "authors": [
+      {
+        "name": "Rafael Villarreal",
+        "link": "https://github.com/Rafaell416"
       }
     ]
   },
@@ -913,6 +1005,20 @@
       {
         "name": "Isaías De la Hoz",
         "link": "https://github.com/Isaiasdelahoz"
+      }
+    ]
+  },
+  {
+    "text": "Rasquiñita",
+    "meaning": "Es una palabra usada para referirse a un conflicto o pendiente con alguien más.",
+    "synonyms": [],
+    "examples": [
+      "Le tengo cule rasquiñita a ese man"
+    ],
+    "authors": [
+      {
+        "name": "Rafael Villarreal",
+        "link": "https://github.com/Rafaell416"
       }
     ]
   },
