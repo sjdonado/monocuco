@@ -724,6 +724,24 @@
     ]
   },
   {
+    "text": "Llevao",
+    "meaning": "Esta palabra se usa para referirse a alguien con poca fortaleza física o alguien sin dinero.",
+    "synonyms": [
+      "Debilucho",
+      "Mondao"
+    ],
+    "examples": [
+      "MÃ­ralo, no puede cargar eso. EstÃ¡ es llevao",
+      "No voy a poder ir a la fiesta del sÃ¡bado, estoy es llevao"
+    ],
+    "authors": [
+      {
+        "name": "Rafael Villarreal",
+        "link": "https://github.com/Rafaell416"
+      }
+    ]
+  },
+  {
     "text": "Mamonúo/a'",
     "meaning": "Sinónimo de grande.",
     "synonyms": [],
