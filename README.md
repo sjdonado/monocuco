@@ -94,6 +94,7 @@ Si tienes alguna duda respecto a tu contribución puedes unirte a nuestro canal 
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/Isaiasdelahoz"><img src="https://avatars3.githubusercontent.com/u/25128103?s=460&u=3a44744203ab858fcda162b7e6037f3e79d6bdfe&v=4" width="460" alt="Isaias De la Hoz"/><br /><sub><b>Isaías De la Hoz</b></sub></a></td>
+    <td align="center"><a href="https://github.com/jbolivard"><img src="https://avatars0.githubusercontent.com/u/62828937?s=460&v=4" width="460" alt="Jorge Bolivar"/><br /><sub><b>Jorge Bolivar</b></sub></a></td>
   </tr>
 <table>
 
