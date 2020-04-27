@@ -426,6 +426,22 @@
     ]
   },
   {
+    "text": "Embuste",
+    "meaning": "Mentira o Falsedad",
+    "synonyms": [],
+    "examples": [
+      "No le creas nada, Ã©l es un embustero",
+      "Todo lo que dijo esa vieja es puro embuste",
+      "Â¿ Es que no te cansas de echar tanto embuste ?"
+    ],
+    "authors": [
+      {
+        "name": "Rafael Villarreal",
+        "link": "https://github.com/Rafaell416"
+      }
+    ]
+  },
+  {
     "text": "Empaquitar",
     "meaning": "Acción de montarse/inventarse una historia a partir de suposiciones.",
     "synonyms": [],
