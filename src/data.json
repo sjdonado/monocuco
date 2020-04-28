@@ -935,6 +935,24 @@
     ]
   },
   {
+    "text": "Ñopito",
+    "meaning": "Ropa o algo que queda ajustado",
+    "synonyms": [
+      "Apretado",
+      "ajustado"
+    ],
+    "examples": [
+      "Esa camisa te queda ñopita",
+      "No me pongo este pantalon porque me queda ñopito"
+    ],
+    "authors": [
+      {
+        "name": "Francisco Quintero",
+        "link": "https://github.com/cesc1989"
+      }
+    ]
+  },
+  {
     "text": "Pasarse de piña",
     "meaning": "Expresión que significa: Abusar de la confianza de una persona o sacar provecho de alguien.",
     "synonyms": [],
