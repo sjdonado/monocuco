@@ -8,10 +8,10 @@
 </div>
 
 ## Objetivo
-Crear el más grande dataset de palabras y frases usadas en la Costa Caribe - Colombia.
+Crear el más grande conjunto de palabras y frases usadas en la Costa Caribe Colombiana.
 
 ## ¿Cómo contribuir?
-Monocuco está desarrollada con React.js, si quieres proponer una mejora, arreglar algún problema o añadir nuevas palabras al diccionario realiza los siguientes pasos:
+Monocuco está desarrollada con React.js. Si quieres proponer una mejora, arreglar algún problema o añadir nuevas palabras al diccionario, realiza los siguientes pasos:
 
 ### Si eres desarrollador
 1. Crea el fork
@@ -37,7 +37,8 @@ Ya puedes hacer commit y realizar el PR. ;)
 ```
 
 **Editando archivo**  
-Debes la entrada directamente en el archivo `src/data.json` siguiendo esta estructura:
+Agrega la entrada directamente en el archivo `src/data.json` siguiendo esta estructura:
+
 ```json
   "text": "Monocuco",
   "meaning": "Palabra utilizada para referirse a algo que está bien o es bonito. Figura del carnaval de barranquilla.",
@@ -55,9 +56,7 @@ Debes la entrada directamente en el archivo `src/data.json` siguiendo esta estru
 7. Opcional: Añadate en la lista de contribuidores &#128526; (no cambies el orden)
 8. Listo!
 
-
 Si tienes alguna duda respecto a tu contribución puedes unirte a nuestro canal de slack [aqui](https://barranquillajs.slack.com/join/shared_invite/enQtNDI1OTYwOTE2MjQwLTJhYWIzOGJhZDQ3NDljYmMyZjNiMzUwYWM0ZGMwYTliMWRhYmQ2ZjVhODM4MjE2OTg4YTEwYTQzMjAzMzA1Mzc), Al entrar al espacio de trabajo de slack ve a la sección de canales busca el canal #monocuco y únete.
-
 
 ### Si no eres desarrollador
 1. Envíame un email a [jsrd98@gmail.com](mailto:jsrd98@gmail.com) con la siguiente información:
@@ -95,6 +94,7 @@ Si tienes alguna duda respecto a tu contribución puedes unirte a nuestro canal 
   <tr>
     <td align="center"><a href="https://github.com/Isaiasdelahoz"><img src="https://avatars3.githubusercontent.com/u/25128103?s=460&u=3a44744203ab858fcda162b7e6037f3e79d6bdfe&v=4" width="460" alt="Isaias De la Hoz"/><br /><sub><b>Isaías De la Hoz</b></sub></a></td>
     <td align="center"><a href="https://github.com/jbolivard"><img src="https://avatars0.githubusercontent.com/u/62828937?s=460&v=4" width="460" alt="Jorge Bolivar"/><br /><sub><b>Jorge Bolivar</b></sub></a></td>
+    <td align="center"><a href="https://github.com/cesc1989"><img src="https://avatars1.githubusercontent.com/u/1375981?s=460&u=ed9d00ff9f5e03676267a24fd43ee305e4e09723&v=4" width="460" alt="Francisco Quintero"/><br /><sub><b>Francisco Quintero</b></sub></a></td>
   </tr>
 <table>
 
