@@ -87,14 +87,14 @@ Si tienes alguna duda respecto a tu contribución puedes unirte a nuestro canal 
     <td align="center"><a href="https://github.com/oskhar1099"><img src="https://avatars0.githubusercontent.com/u/44534546?s=460&v=4" width="460" alt="Oskhar Arrieta"/><br /><sub><b>Oskhar Arrieta</b></sub></a></td>
     <td align="center"><a href="https://github.com/kristellu"><img src="https://avatars0.githubusercontent.com/u/28717626?s=460&v=4" width="460" alt="Kristell Urueta"/><br /><sub><b>Kristell Urueta</b></sub></a></td>
     <td align="center"><a href="https://github.com/juandavid716"><img src="https://avatars0.githubusercontent.com/u/42303342?s=460&v=4" width="460" alt="Juan Bojato"/><br /><sub><b>Juan Bojato</b></sub></a></td>
-    <td align="center"><a href="https://github.com/pygabo"><img src="https://avatars0.githubusercontent.com/u/17889145?s=400&u=a25cac21223fb057416d6e3f4e2fc44afee7c6b4&v=4" width="460" alt="Jose Guzman"/><br /><sub><b>Jose Guzman</b></sub></a></td>
-    <td align="center"><a href="https://github.com/Rafaell416"><img src="https://avatars0.githubusercontent.com/u/18080929?s=400" width="460" alt="Rafael Villarreal"/><br /><sub><b>Rafael Villarreal</b></sub></a></td>
-    <td align="center"><a href="https://github.com/Rome96"><img src="https://avatars0.githubusercontent.com/u/19671381?s=400&u=0ce01449b358f88b1ed9a589c025d78d17739434&v=4" width="460" alt="Turiano Romero"/><br /><sub><b>Turiano Romero</b></sub></a></td>
+    <td align="center"><a href="https://github.com/pygabo"><img src="https://avatars0.githubusercontent.com/u/17889145?s=460&v=4" width="460" alt="Jose Guzman"/><br /><sub><b>Jose Guzman</b></sub></a></td>
+    <td align="center"><a href="https://github.com/Rafaell416"><img src="https://avatars0.githubusercontent.com/u/18080929?s=460&v=4" width="460" alt="Rafael Villarreal"/><br /><sub><b>Rafael Villarreal</b></sub></a></td>
+    <td align="center"><a href="https://github.com/Rome96"><img src="https://avatars0.githubusercontent.com/u/19671381?s=460&v=4" width="460" alt="Turiano Romero"/><br /><sub><b>Turiano Romero</b></sub></a></td>
   </tr>
   <tr>
-    <td align="center"><a href="https://github.com/Isaiasdelahoz"><img src="https://avatars3.githubusercontent.com/u/25128103?s=460&u=3a44744203ab858fcda162b7e6037f3e79d6bdfe&v=4" width="460" alt="Isaias De la Hoz"/><br /><sub><b>Isaías De la Hoz</b></sub></a></td>
+    <td align="center"><a href="https://github.com/Isaiasdelahoz"><img src="https://avatars0.githubusercontent.com/u/25128103?s=460&v=4" width="460" alt="Isaias De la Hoz"/><br /><sub><b>Isaías De la Hoz</b></sub></a></td>
     <td align="center"><a href="https://github.com/jbolivard"><img src="https://avatars0.githubusercontent.com/u/62828937?s=460&v=4" width="460" alt="Jorge Bolivar"/><br /><sub><b>Jorge Bolivar</b></sub></a></td>
-    <td align="center"><a href="https://github.com/cesc1989"><img src="https://avatars1.githubusercontent.com/u/1375981?s=460&u=ed9d00ff9f5e03676267a24fd43ee305e4e09723&v=4" width="460" alt="Francisco Quintero"/><br /><sub><b>Francisco Quintero</b></sub></a></td>
+    <td align="center"><a href="https://github.com/cesc1989"><img src="https://avatars0.githubusercontent.com/u/1375981?s=460&v=4" width="460" alt="Francisco Quintero"/><br /><sub><b>Francisco Quintero</b></sub></a></td>
   </tr>
 <table>
 
