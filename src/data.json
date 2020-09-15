@@ -893,6 +893,21 @@
   },
   {
     "text": "Monocuco",
+    "meaning": "Pequeño agregado, gratis, que un vendedor da como compensación a un cliente que ha hecho una buena compra.",
+    "synonyms": [],
+    "examples": [
+      "‘¡Negocio colombiano que se respete da Ñapa!’",
+      "En frutera: ‘Hey valecita tirate la ñapa del jugo de zapote ahí de bacan’"
+    ],
+    "authors": [
+      {
+        "name": "John Barbosa",
+        "link": "https://github.com/JohnDBR"
+      }
+    ]
+  },
+  {
+    "text": "Monocuco",
     "meaning": "Palabra utilizada para referirse a algo que está bien o es bonito. Figura del carnaval de barranquilla.",
     "synonyms": [],
     "examples": [
