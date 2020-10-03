@@ -1090,6 +1090,24 @@
     ]
   },
   {
+    "text": "quedado",
+    "meaning": "Cuando un hombre o mujer no es capaz de entender las indirectas",
+    "synonyms": [
+      "lento",
+      "despistado"
+    ],
+    "examples": [
+      "Ese muchacho es muy quedado, no entiende nada de lo que le digo.",
+      "Tu estÃ¡s es quedado, tienes que ponerte las pilas"
+    ],
+    "authors": [
+      {
+        "name": "Fabio Zapata",
+        "link": "https://github.com/fazd"
+      }
+    ]
+  },
+  {
     "text": "Rasquiñita",
     "meaning": "Es una palabra usada para referirse a un conflicto o pendiente con alguien más.",
     "synonyms": [],
