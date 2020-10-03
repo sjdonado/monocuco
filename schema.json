@@ -10,7 +10,7 @@
       "text",
       "meaning",
       "examples",
-      "author"
+      "authors"
     ],
     "properties": {
       "text": {
@@ -36,7 +36,7 @@
         "title": "The examples Schema",
         "items": {
           "type": "string",
-          "title": "The Items Schema",
+          "title": "The item Schema",
           "default": "",
           "examples": [
             "‘Con esta pinta nueva quedé monocuco’",
@@ -45,27 +45,33 @@
           "pattern": "^(.*)$"
         }
       },
-      "author": {
-        "type": "object",
-        "title": "The author Schema",
-        "required": [
-          "link",
-          "name"
-        ],
-        "properties": {
-          "name": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "Javier Valencia"
-            ]
-          },
-          "link": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "https://github.com/jvalenciae"
-            ]
+      "authors": {
+        "type": "array",
+        "title": "The authors Schema",
+        "items": {
+          "type": "object",
+          "title": "The author Schema",
+          "required": [
+            "name",
+            "link"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "default": "",
+              "examples": [
+                "Javier Valencia"
+              ],
+              "pattern": "^(.*)$"
+
+            },
+            "link": {
+              "type": "string",
+              "default": "",
+              "examples": [
+                "https://github.com/jvalenciae"
+              ]
+            }
           }
         }
       }
