@@ -95,6 +95,7 @@ Si tienes alguna duda respecto a tu contribución puedes unirte a nuestro canal 
     <td align="center"><a href="https://github.com/Isaiasdelahoz"><img src="https://avatars0.githubusercontent.com/u/25128103?s=460&v=4" width="460" alt="Isaias De la Hoz"/><br /><sub><b>Isaías De la Hoz</b></sub></a></td>
     <td align="center"><a href="https://github.com/jbolivard"><img src="https://avatars0.githubusercontent.com/u/62828937?s=460&v=4" width="460" alt="Jorge Bolivar"/><br /><sub><b>Jorge Bolivar</b></sub></a></td>
     <td align="center"><a href="https://github.com/cesc1989"><img src="https://avatars0.githubusercontent.com/u/1375981?s=460&v=4" width="460" alt="Francisco Quintero"/><br /><sub><b>Francisco Quintero</b></sub></a></td>
+    <td align="center"><a href="https://github.com/wgarcia1309"><img src="https://avatars0.githubusercontent.com/u/20034079?s=460&v=4" width="460" alt="Willian Garcia"/><br /><sub><b>Willian Garcia</b></sub></a></td>
   </tr>
 <table>
 
