@@ -12,6 +12,7 @@ import Word from './components/Word/Word';
 import icon from './icon.jpg';
 import bmcImg from './bmc-button.png';
 import words from './data.json';
+import loading from './loading.svg';
 
 const Info = () => (
   <div className="info">
@@ -43,25 +44,36 @@ const Title = () => (
 function App() {
   const [filteredWords, setFilteredWords] = useState(words);
   const [currentWord, setCurrentWord] = useState('');
+  const [searchTimeout, setSearchTimeout] = useState(null);
+  const [searching, setSearching] = useState(false);
 
   const handleUpdate = (word) => {
     setCurrentWord(word);
     const parsedWord = accents.remove(word).toLowerCase();
 
-    let newFilteredWords = words.filter(({ text, synonyms }) => {
-      const parsedText = accents.remove(text).toLocaleLowerCase();
-      const parsedSynonyms = accents.remove(synonyms.join(',')).toLocaleLowerCase();
-      return parsedText.includes(parsedWord) || parsedSynonyms.includes(parsedWord);
-    });
-
-    // Otherwise search by examples
-    if (newFilteredWords.length === 0) {
-      newFilteredWords = words.filter(({ examples }) => {
-        const parsedExamples = accents.remove(examples.join(',')).toLocaleLowerCase();
-        return parsedExamples.includes(parsedWord);
-      });
+    if (searchTimeout !== null) {
+      clearTimeout(searchTimeout);
     }
-    setFilteredWords(newFilteredWords);
+
+    setSearching(true);
+    setSearchTimeout(setTimeout(() => {
+      let newFilteredWords = words.filter(({ text, synonyms }) => {
+        const parsedText = accents.remove(text).toLocaleLowerCase();
+        const parsedSynonyms = accents.remove(synonyms.join(',')).toLocaleLowerCase();
+        return parsedText.includes(parsedWord) || parsedSynonyms.includes(parsedWord);
+      });
+
+      // Otherwise search by examples
+      if (newFilteredWords.length === 0) {
+        newFilteredWords = words.filter(({ examples }) => {
+          const parsedExamples = accents.remove(examples.join(',')).toLocaleLowerCase();
+          return parsedExamples.includes(parsedWord);
+        });
+      }
+
+      setFilteredWords(newFilteredWords);
+      setSearching(false);
+    }, 400));
   };
 
   return (
@@ -77,13 +89,19 @@ function App() {
         />
       </div>
       <div className="content-wrapper">
-        {filteredWords.map((word) => (
-          <Word
-            key={word.text}
-            word={word}
-            currentWord={currentWord}
-          />
-        ))}
+        {
+          searching ? (
+            <img src={loading} alt="Buscando" />
+          ) : (
+            filteredWords.map((word) => (
+              <Word
+                key={word.text}
+                word={word}
+                currentWord={currentWord}
+              />
+            ))
+          )
+        }
       </div>
     </div>
   );
