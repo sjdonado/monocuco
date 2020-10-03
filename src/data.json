@@ -892,21 +892,6 @@
     ]
   },
   {
-    "text": "Ñapa",
-    "meaning": "Pequeño agregado, gratis, que un vendedor da como compensación a un cliente que ha hecho una buena compra.",
-    "synonyms": [],
-    "examples": [
-      "‘¡Negocio colombiano que se respete da Ñapa!’",
-      "En frutera: ‘Hey valecita tirate la ñapa del jugo de zapote ahí de bacan’"
-    ],
-    "authors": [
-      {
-        "name": "John Barbosa",
-        "link": "https://github.com/JohnDBR"
-      }
-    ]
-  },
-  {
     "text": "Monocuco",
     "meaning": "Palabra utilizada para referirse a algo que está bien o es bonito. Figura del carnaval de barranquilla.",
     "synonyms": [],
@@ -946,6 +931,21 @@
       {
         "name": "Rafael Villarreal",
         "link": "https://github.com/Rafaell416"
+      }
+    ]
+  },
+  {
+    "text": "Ñapa",
+    "meaning": "Pequeño agregado, gratis, que un vendedor da como compensación a un cliente que ha hecho una buena compra.",
+    "synonyms": [],
+    "examples": [
+      "‘¡Negocio colombiano que se respete da Ñapa!’",
+      "En frutera: ‘Hey valecita tirate la ñapa del jugo de zapote ahí de bacan’"
+    ],
+    "authors": [
+      {
+        "name": "John Barbosa",
+        "link": "https://github.com/JohnDBR"
       }
     ]
   },
@@ -1068,6 +1068,24 @@
       {
         "name": "Isaías De la Hoz",
         "link": "https://github.com/Isaiasdelahoz"
+      }
+    ]
+  },
+  {
+    "text": "quedado",
+    "meaning": "Cuando un hombre o mujer no es capaz de entender las indirectas",
+    "synonyms": [
+      "lento",
+      "despistado"
+    ],
+    "examples": [
+      "Ese muchacho es muy quedado, no entiende nada de lo que le digo.",
+      "Tu estÃ¡s es quedado, tienes que ponerte las pilas"
+    ],
+    "authors": [
+      {
+        "name": "Fabio Zapata",
+        "link": "https://github.com/fazd"
       }
     ]
   },
