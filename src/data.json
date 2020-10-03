@@ -150,6 +150,24 @@
     ]
   },
   {
+    "text": "Bacano",
+    "meaning": "Procedente del adjetivo Bacán. Hace referencia a algo agradable, muy bueno, estupendo",
+    "synonyms": [
+      "Chevere"
+    ],
+    "examples": [
+      "Qué vaina bacana",
+      "Ese lugar está bacanisimo",
+      "Estuvo bacano el concierto cuadro"
+    ],
+    "authors": [
+      {
+        "name": "Juan Rodriguez",
+        "link": "https://github.com/sjdonado"
+      }
+    ]
+  },
+  {
     "text": "Barras",
     "meaning": "Unidad monetaria o divisa de alto flujo en la región.",
     "synonyms": [],
@@ -892,21 +910,6 @@
     ]
   },
   {
-    "text": "Ñapa",
-    "meaning": "Pequeño agregado, gratis, que un vendedor da como compensación a un cliente que ha hecho una buena compra.",
-    "synonyms": [],
-    "examples": [
-      "‘¡Negocio colombiano que se respete da Ñapa!’",
-      "En frutera: ‘Hey valecita tirate la ñapa del jugo de zapote ahí de bacan’"
-    ],
-    "authors": [
-      {
-        "name": "John Barbosa",
-        "link": "https://github.com/JohnDBR"
-      }
-    ]
-  },
-  {
     "text": "Monocuco",
     "meaning": "Palabra utilizada para referirse a algo que está bien o es bonito. Figura del carnaval de barranquilla.",
     "synonyms": [],
@@ -946,6 +949,21 @@
       {
         "name": "Rafael Villarreal",
         "link": "https://github.com/Rafaell416"
+      }
+    ]
+  },
+  {
+    "text": "Ñapa",
+    "meaning": "Pequeño agregado, gratis, que un vendedor da como compensación a un cliente que ha hecho una buena compra.",
+    "synonyms": [],
+    "examples": [
+      "‘¡Negocio colombiano que se respete da Ñapa!’",
+      "En frutera: ‘Hey valecita tirate la ñapa del jugo de zapote ahí de bacan’"
+    ],
+    "authors": [
+      {
+        "name": "John Barbosa",
+        "link": "https://github.com/JohnDBR"
       }
     ]
   },
