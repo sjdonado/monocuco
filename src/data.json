@@ -414,6 +414,26 @@
     ]
   },
   {
+    "text": "Chance",
+    "meaning": "Palabra que segun el contexto puede tener varios significados:",
+    "synonyms": [
+      "loteria",
+      "transportar",
+      "oportunidad"
+    ],
+    "examples": [
+      "‘Hoy anoto y me gano el chance.’",
+      "‘Ey, hazme el chance hasta el centro.’",
+      "‘Dame un chance de salir contigo.’"
+    ],
+    "authors": [
+      {
+        "name": "Diego Camacho",
+        "link": "https://github.com/hackvan"
+      }
+    ]
+  },
+  {
     "text": "Cipote",
     "meaning": "Palabra empleada para expresar exageración de una cualidad de algo.",
     "synonyms": [],
@@ -1155,6 +1175,20 @@
       {
         "name": "Isaías De la Hoz",
         "link": "https://github.com/Isaiasdelahoz"
+      }
+    ]
+  },
+  {
+    "text": "Puya el burro",
+    "meaning": "Expresión que quiere decir: Date prisa.",
+    "synonyms": [],
+    "examples": [
+      "‘Ey, puya el burro que nos deja el bus.’"
+    ],
+    "authors": [
+      {
+        "name": "Diego Camacho",
+        "link": "https://github.com/hackvan"
       }
     ]
   },
