@@ -87,6 +87,25 @@
     ]
   },
   {
+    "text": "Aja",
+    "meaning": "si",
+    "synonyms": [
+      "si",
+      "sizas",
+      "aja"
+    ],
+    "examples": [
+      "estas almorzando?",
+      "aja!`"
+    ],
+    "authors": [
+      {
+        "name": "jvelezpo",
+        "link": "https://github.com/jvelezpo"
+      }
+    ]
+  },
+  {
     "text": "Añoñi",
     "meaning": "Palabra utilizada para corroborar una acción con alto nivel de credibilidad.",
     "synonyms": [],
@@ -119,7 +138,9 @@
   {
     "text": "Arajooo",
     "meaning": "Expresión usada para denotar sorpresa",
-    "synonyms": ["wow, increible, soprendente"],
+    "synonyms": [
+      "wow, increible, soprendente"
+    ],
     "examples": [
       "‘Arajooo cule de moto’",
       "‘Arajooo niño tiempo sin verte’"
