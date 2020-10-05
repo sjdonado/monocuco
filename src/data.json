@@ -119,7 +119,9 @@
   {
     "text": "Arajooo",
     "meaning": "Expresión usada para denotar sorpresa",
-    "synonyms": ["wow, increible, soprendente"],
+    "synonyms": [
+      "wow, increible, soprendente"
+    ],
     "examples": [
       "‘Arajooo cule de moto’",
       "‘Arajooo niño tiempo sin verte’"
@@ -371,6 +373,26 @@
       {
         "name": "Javier Valencia",
         "link": "https://github.com/jvalenciae"
+      }
+    ]
+  },
+  {
+    "text": "Chance",
+    "meaning": "Palabra que segun el contexto puede tener varios significados:",
+    "synonyms": [
+      "loteria",
+      "transportar",
+      "oportunidad"
+    ],
+    "examples": [
+      "‘Hoy anoto y me gano el chance.’",
+      "‘Ey, hazme el chance hasta el centro.’",
+      "‘Dame un chance de salir contigo.’"
+    ],
+    "authors": [
+      {
+        "name": "Diego Camacho",
+        "link": "https://github.com/hackvan"
       }
     ]
   },
@@ -1120,6 +1142,20 @@
     ]
   },
   {
+    "text": "Puya el burro",
+    "meaning": "Expresión que quiere decir: Date prisa.",
+    "synonyms": [],
+    "examples": [
+      "‘Ey, puya el burro que nos deja el bus.’"
+    ],
+    "authors": [
+      {
+        "name": "Diego Camacho",
+        "link": "https://github.com/hackvan"
+      }
+    ]
+  },
+  {
     "text": "quedado",
     "meaning": "Cuando un hombre o mujer no es capaz de entender las indirectas",
     "synonyms": [
@@ -1243,20 +1279,6 @@
       {
         "name": "Johnny Villegas",
         "link": "https://github.com/C9-LinkRs"
-      }
-    ]
-  },
-  {
-    "text": "Puya el burro",
-    "meaning": "Expresión que quiere decir: Date prisa.",
-    "synonyms": [],
-    "examples": [
-      "‘Ey, puya el burro que nos deja el bus.’"
-    ],
-    "authors": [
-      {
-        "name": "Diego Camacho",
-        "link": "https://github.com/hackvan"
       }
     ]
   }
