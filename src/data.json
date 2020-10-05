@@ -119,7 +119,9 @@
   {
     "text": "Arajooo",
     "meaning": "Expresión usada para denotar sorpresa",
-    "synonyms": ["wow, increible, soprendente"],
+    "synonyms": [
+      "wow, increible, soprendente"
+    ],
     "examples": [
       "‘Arajooo cule de moto’",
       "‘Arajooo niño tiempo sin verte’"
@@ -283,6 +285,24 @@
       {
         "name": "Jorge Bolivar",
         "link": "https://github.com/jbolivard"
+      }
+    ]
+  },
+  {
+    "text": "cachaco",
+    "meaning": "persona del interior del pais",
+    "synonyms": [
+      "rolo",
+      "paisa",
+      "caleño"
+    ],
+    "examples": [
+      "vamos a rumbiar con los cachacos que llegaron hoy del interior"
+    ],
+    "authors": [
+      {
+        "name": "jvelezpo",
+        "link": "https://github.com/jvelezpo"
       }
     ]
   },
