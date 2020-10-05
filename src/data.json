@@ -90,6 +90,25 @@
     ]
   },
   {
+    "text": "Aja",
+    "meaning": "si",
+    "synonyms": [
+      "si",
+      "sizas",
+      "aja"
+    ],
+    "examples": [
+      "estas almorzando?",
+      "aja!`"
+    ],
+    "authors": [
+      {
+        "name": "jvelezpo",
+        "link": "https://github.com/jvelezpo"
+      }
+    ]
+  },
+  {
     "text": "Añoñi",
     "meaning": "Palabra utilizada para corroborar una acción con alto nivel de credibilidad.",
     "synonyms": [],
@@ -268,6 +287,24 @@
     ]
   },
   {
+    "text": "cachaco",
+    "meaning": "persona del interior del pais",
+    "synonyms": [
+      "rolo",
+      "paisa",
+      "caleño"
+    ],
+    "examples": [
+      "vamos a rumbiar con los cachacos que llegaron hoy del interior"
+    ],
+    "authors": [
+      {
+        "name": "jvelezpo",
+        "link": "https://github.com/jvelezpo"
+      }
+    ]
+  },
+  {
     "text": "Cachón",
     "meaning": "Persona que ha sufrido o provocado una infidelidad",
     "synonyms": [],
@@ -345,6 +382,26 @@
       {
         "name": "Javier Valencia",
         "link": "https://github.com/jvalenciae"
+      }
+    ]
+  },
+  {
+    "text": "Chance",
+    "meaning": "Palabra que segun el contexto puede tener varios significados:",
+    "synonyms": [
+      "loteria",
+      "transportar",
+      "oportunidad"
+    ],
+    "examples": [
+      "‘Hoy anoto y me gano el chance.’",
+      "‘Ey, hazme el chance hasta el centro.’",
+      "‘Dame un chance de salir contigo.’"
+    ],
+    "authors": [
+      {
+        "name": "Diego Camacho",
+        "link": "https://github.com/hackvan"
       }
     ]
   },
@@ -984,6 +1041,20 @@
       {
         "name": "Isaías De la Hoz",
         "link": "https://github.com/Isaiasdelahoz"
+      }
+    ]
+  },
+  {
+    "text": "Puya el burro",
+    "meaning": "Expresión que quiere decir: Date prisa.",
+    "synonyms": [],
+    "examples": [
+      "‘Ey, puya el burro que nos deja el bus.’"
+    ],
+    "authors": [
+      {
+        "name": "Diego Camacho",
+        "link": "https://github.com/hackvan"
       }
     ]
   },
