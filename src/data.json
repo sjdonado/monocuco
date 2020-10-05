@@ -1245,5 +1245,19 @@
         "link": "https://github.com/C9-LinkRs"
       }
     ]
+  },
+  {
+    "text": "Puya el burro",
+    "meaning": "Expresión que quiere decir: Date prisa.",
+    "synonyms": [],
+    "examples": [
+      "‘Ey, puya el burro que nos deja el bus.’"
+    ],
+    "authors": [
+      {
+        "name": "Diego Camacho",
+        "link": "https://github.com/hackvan"
+      }
+    ]
   }
 ]
