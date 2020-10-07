@@ -3,9 +3,7 @@
     "text": "¡A vaina!",
     "meaning": "Expresión utilizada para demostrar admiración.",
     "synonyms": [],
-    "examples": [
-      "‘¡A vaina!, por fin terminaste la carrera’"
-    ],
+    "examples": ["‘¡A vaina!, por fin terminaste la carrera’"],
     "authors": [
       {
         "name": "Javier Valencia",
@@ -14,13 +12,25 @@
     ]
   },
   {
+    "text": "¡Ay ombe!",
+    "meaning": "Exclamación que se utiliza para expresar mucho sentimiento y/o alegría. En ciertos contextos, también puede significar pena o lástima.",
+    "synonyms": [],
+    "examples": [
+      "'¡Ay ombe! dijimos mientras bailábamos cumbia.'",
+      "'Lo robaron y le quitaron su primer sueldo, ¡ay ombe!'"
+    ],
+    "authors": [
+      {
+        "name": "Yennifer Herrera",
+        "link": "https://github.com/Yenniferh"
+      }
+    ]
+  },
+  {
     "text": "'E",
     "meaning": "Contracción de la preposición de.",
     "synonyms": [],
-    "examples": [
-      "‘Bollo 'e yuca’",
-      "‘Mata 'e plátano’"
-    ],
+    "examples": ["‘Bollo 'e yuca’", "‘Mata 'e plátano’"],
     "authors": [
       {
         "name": "Yennifer Herrera",
@@ -32,9 +42,7 @@
     "text": "'Erda",
     "meaning": "Contracción de la palabra mierda.",
     "synonyms": [],
-    "examples": [
-      "'¡'Erda!, se cayó' "
-    ],
+    "examples": ["'¡'Erda!, se cayó' "],
     "authors": [
       {
         "name": "Yennifer Herrera",
@@ -61,10 +69,7 @@
     "text": "Aguacatao",
     "meaning": "Persona aburrida, triste o decepcionada.",
     "synonyms": [],
-    "examples": [
-      "‘Ese pelao está como aguacatao’",
-      "‘Ey, no estés tanto tiempo aguacatao’"
-    ],
+    "examples": ["‘Ese pelao está como aguacatao’", "‘Ey, no estés tanto tiempo aguacatao’"],
     "authors": [
       {
         "name": "Javier Valencia",
@@ -76,9 +81,7 @@
     "text": "Aguanta el burro",
     "meaning": "Expresión que quiere decir: Espera un momento.",
     "synonyms": [],
-    "examples": [
-      "‘Ey, aguanta el burro que me dejas atrás’"
-    ],
+    "examples": ["‘Ey, aguanta el burro que me dejas atrás’"],
     "authors": [
       {
         "name": "Javier Valencia",
@@ -124,10 +127,7 @@
     "text": "Apercollar",
     "meaning": "Abrazar fuertemente a la pareja de baile en medio de una buena canción. En esta acción deben encontrarse los cachetes de cada uno.",
     "synonyms": [],
-    "examples": [
-      "'¡Es hora de apercollar a su pareja!’",
-      "'Bailamos apercollados toda la noche."
-    ],
+    "examples": ["'¡Es hora de apercollar a su pareja!’", "'Bailamos apercollados toda la noche."],
     "authors": [
       {
         "name": "Kristell Urueta",
@@ -138,13 +138,8 @@
   {
     "text": "Arajooo",
     "meaning": "Expresión usada para denotar sorpresa",
-    "synonyms": [
-      "wow, increible, soprendente"
-    ],
-    "examples": [
-      "‘Arajooo cule de moto’",
-      "‘Arajooo niño tiempo sin verte’"
-    ],
+    "synonyms": ["wow, increible, soprendente"],
+    "examples": ["‘Arajooo cule de moto’", "‘Arajooo niño tiempo sin verte’"],
     "authors": [
       {
         "name": "Willian Garcia",
@@ -155,14 +150,8 @@
   {
     "text": "Aro",
     "meaning": "Palabra utilizada para afirmar algo.",
-    "synonyms": [
-      "Sisas",
-      "si"
-    ],
-    "examples": [
-      "A: Hey! quieres Cucayo?",
-      "B: Aro, eso no se pregunta."
-    ],
+    "synonyms": ["Sisas", "si"],
+    "examples": ["A: Hey! quieres Cucayo?", "B: Aro, eso no se pregunta."],
     "authors": [
       {
         "name": "Manlio Tejeda",
@@ -188,9 +177,7 @@
   {
     "text": "Bacano",
     "meaning": "Procedente del adjetivo Bacán. Hace referencia a algo agradable, muy bueno, estupendo",
-    "synonyms": [
-      "Chevere"
-    ],
+    "synonyms": ["Chevere"],
     "examples": [
       "Qué vaina bacana",
       "Ese lugar está bacanisimo",
@@ -222,10 +209,7 @@
     "text": "Billullo",
     "meaning": "Dinero en billetes.",
     "synonyms": [],
-    "examples": [
-      "‘Ando con billullo’",
-      "‘Me quedé sin billullo’"
-    ],
+    "examples": ["‘Ando con billullo’", "‘Me quedé sin billullo’"],
     "authors": [
       {
         "name": "Javier Valencia",
@@ -267,10 +251,7 @@
     "text": "Botar el chupo",
     "meaning": "Expresión que se usa para describir el enojo de una persona",
     "synonyms": [],
-    "examples": [
-      "‘Jhonny botó el chupo y se salió del grupo’",
-      "‘Vas a botar el chupo ?’"
-    ],
+    "examples": ["‘Jhonny botó el chupo y se salió del grupo’", "‘Vas a botar el chupo ?’"],
     "authors": [
       {
         "name": "Juan Rambal",
@@ -282,9 +263,7 @@
     "text": "Brete",
     "meaning": "Fiesta, desorden, bullicio.",
     "synonyms": [],
-    "examples": [
-      "‘Se armó el brete en la casa de Juan Sebastian.’"
-    ],
+    "examples": ["‘Se armó el brete en la casa de Juan Sebastian.’"],
     "authors": [
       {
         "name": "Kristell Urueta",
@@ -344,9 +323,7 @@
     "text": "Cajonero",
     "meaning": "Es aquel que intenta conquistar a la novida de un amigo.",
     "synonyms": [],
-    "examples": [
-      "¡ey! Ojo con este man que es cule cajonero"
-    ],
+    "examples": ["¡ey! Ojo con este man que es cule cajonero"],
     "authors": [
       {
         "name": "Rafael Villarreal",
@@ -358,10 +335,7 @@
     "text": "Calilla",
     "meaning": "Persona intensa o molesta.",
     "synonyms": [],
-    "examples": [
-      "‘Ese man si es calilla’",
-      "‘Oye deja la intensidad, no seas calilla’"
-    ],
+    "examples": ["‘Ese man si es calilla’", "‘Oye deja la intensidad, no seas calilla’"],
     "authors": [
       {
         "name": "Javier Valencia",
@@ -388,9 +362,7 @@
     "text": "Cañaña",
     "meaning": "Palabra empleada para referirse a alguien con mucha fuerza, o en su defecto, musculoso.",
     "synonyms": [],
-    "examples": [
-      "‘Ese tipo tiene cañaña para levantar el bulto e' yuca’"
-    ],
+    "examples": ["‘Ese tipo tiene cañaña para levantar el bulto e' yuca’"],
     "authors": [
       {
         "name": "Turiano Romero Guzman",
@@ -437,10 +409,7 @@
     "text": "Cipote",
     "meaning": "Palabra empleada para expresar exageración de una cualidad de algo.",
     "synonyms": [],
-    "examples": [
-      "‘Cipote e' plato pa' grande!’",
-      "‘¡Cipote pelao' lindo!’"
-    ],
+    "examples": ["‘Cipote e' plato pa' grande!’", "‘¡Cipote pelao' lindo!’"],
     "authors": [
       {
         "name": "Gabriela Monsalve",
@@ -452,9 +421,7 @@
     "text": "Coletera",
     "meaning": "Palabra empleada para referirse a un grupo de cole o coletos reunidos",
     "synonyms": [],
-    "examples": [
-      "‘Joda mira esa coletera que está allá’"
-    ],
+    "examples": ["‘Joda mira esa coletera que está allá’"],
     "authors": [
       {
         "name": "Turiano Romero Guzman",
@@ -465,9 +432,7 @@
   {
     "text": "Coleto/Coleta",
     "meaning": "Persona de malas mañas que genera desconfianza. Se puede abreviar como 'cole'.",
-    "synonyms": [
-      "delincuente, ladron, nea, ñero, chirrete"
-    ],
+    "synonyms": ["delincuente, ladron, nea, ñero, chirrete"],
     "examples": [
       "‘Hey mira ese cole que viene allá, vamos a cruzar de anden :v’",
       "‘Unos coletos nos asaltaron’"
@@ -487,9 +452,7 @@
     "text": "Compa",
     "meaning": "Palabra empleada para referirse a un amigo",
     "synonyms": [],
-    "examples": [
-      "‘Hey compa, acompañame al centro’"
-    ],
+    "examples": ["‘Hey compa, acompañame al centro’"],
     "authors": [
       {
         "name": "Turiano Romero Guzman",
@@ -501,10 +464,7 @@
     "text": "Corroncho",
     "meaning": "Ordinario, Tosco, sin estilo, ignorante",
     "synonyms": [],
-    "examples": [
-      "Ese man es un corroncho!’",
-      "Esa camiseta se ve corroncha, no la compraré"
-    ],
+    "examples": ["Ese man es un corroncho!’", "Esa camiseta se ve corroncha, no la compraré"],
     "authors": [
       {
         "name": "Andres Hugueth",
@@ -516,9 +476,7 @@
     "text": "Cuadro",
     "meaning": "Sinónimo de compañero, amigo, colega",
     "synonyms": [],
-    "examples": [
-      "‘Hey cuadro vamos a tomarnos unas frías’"
-    ],
+    "examples": ["‘Hey cuadro vamos a tomarnos unas frías’"],
     "authors": [
       {
         "name": "Juan Bojato",
@@ -529,12 +487,8 @@
   {
     "text": "Cucayo",
     "meaning": "arroz que queda adherido a la olla al terminar su cocción tomando una textura crocante",
-    "synonyms": [
-      "pega, pegao, concolón, concón"
-    ],
-    "examples": [
-      "‘Ese cucayo está delicioso’"
-    ],
+    "synonyms": ["pega, pegao, concolón, concón"],
+    "examples": ["‘Ese cucayo está delicioso’"],
     "authors": [
       {
         "name": "Isaías De la Hoz",
@@ -546,10 +500,7 @@
     "text": "Cule",
     "meaning": "Palabra empleada para hacer hincapié en una característica/adjetivo.",
     "synonyms": [],
-    "examples": [
-      "‘Cule pinta bacana’",
-      "'Me sirvieron la sopa en cule plato chiquito'"
-    ],
+    "examples": ["‘Cule pinta bacana’", "'Me sirvieron la sopa en cule plato chiquito'"],
     "authors": [
       {
         "name": "Yennifer Herrera",
@@ -561,9 +512,7 @@
     "text": "Dejar el pelero",
     "meaning": "Es una expresión utilizada para referirse al acto de huida o el hecho de irse, (en algunos casos sin avisar).",
     "synonyms": [],
-    "examples": [
-      "¡Ey! Este man dejó el pelero y nos tocó quedarnos aqui solos."
-    ],
+    "examples": ["¡Ey! Este man dejó el pelero y nos tocó quedarnos aqui solos."],
     "authors": [
       {
         "name": "Rafael Villarreal",
@@ -596,10 +545,7 @@
     "text": "Embala'o",
     "meaning": "Contracción de \"embalado\", que significa ir muy rápido. Otra acepción es estar drogado",
     "synonyms": [],
-    "examples": [
-      "'Ese man fumó algo, está embala'o'",
-      "'Se estrelló por ir embala'o'"
-    ],
+    "examples": ["'Ese man fumó algo, está embala'o'", "'Se estrelló por ir embala'o'"],
     "authors": [
       {
         "name": "Yennifer Herrera",
@@ -642,9 +588,7 @@
     "text": "Empaquitar",
     "meaning": "Acción de montarse/inventarse una historia a partir de suposiciones.",
     "synonyms": [],
-    "examples": [
-      "‘Se empaquitó solito.’"
-    ],
+    "examples": ["‘Se empaquitó solito.’"],
     "authors": [
       {
         "name": "Kristell Urueta",
@@ -656,9 +600,7 @@
     "text": "Emparapetar",
     "meaning": "Palabra empleada para referirse a algo remendado",
     "synonyms": [],
-    "examples": [
-      "‘Juanito emparapetó los zapatos para jugar’"
-    ],
+    "examples": ["‘Juanito emparapetó los zapatos para jugar’"],
     "authors": [
       {
         "name": "Turiano Romero Guzman",
@@ -670,10 +612,7 @@
     "text": "Emputao",
     "meaning": "Persona brava o enfadada.",
     "synonyms": [],
-    "examples": [
-      "‘Dejalo quieto que está emputao’",
-      "‘Deja de joder o me voy a emputar’"
-    ],
+    "examples": ["‘Dejalo quieto que está emputao’", "‘Deja de joder o me voy a emputar’"],
     "authors": [
       {
         "name": "Javier Valencia",
@@ -685,9 +624,7 @@
     "text": "Esa es la que te cae",
     "meaning": "Frase usada cuando una persona sale siempre con lo mismo.",
     "synonyms": [],
-    "examples": [
-      "‘Esa es la que te cae a ti, siempre con la misma vaina’"
-    ],
+    "examples": ["‘Esa es la que te cae a ti, siempre con la misma vaina’"],
     "authors": [
       {
         "name": "Javier Valencia",
@@ -699,9 +636,7 @@
     "text": "Espantajopo",
     "meaning": "Persona que presume o aparenta accesorios, viajes, comida, etc.",
     "synonyms": [],
-    "examples": [
-      "Ese man es cule espantajopo!’"
-    ],
+    "examples": ["Ese man es cule espantajopo!’"],
     "authors": [
       {
         "name": "Natasha De Marchena",
@@ -713,10 +648,7 @@
     "text": "Filo",
     "meaning": "Palabra que significa hambre",
     "synonyms": [],
-    "examples": [
-      "‘Tengo mucho filo.’",
-      "‘No he almorzado todavia, tengo filo.’"
-    ],
+    "examples": ["‘Tengo mucho filo.’", "‘No he almorzado todavia, tengo filo.’"],
     "authors": [
       {
         "name": "Jesus Santiago",
@@ -743,9 +675,7 @@
     "text": "Fría",
     "meaning": "Cerveza bien helada",
     "synonyms": [],
-    "examples": [
-      "‘Ey sirveme una fría’"
-    ],
+    "examples": ["‘Ey sirveme una fría’"],
     "authors": [
       {
         "name": "Fabian Osorio",
@@ -757,9 +687,7 @@
     "text": "Garnatada",
     "meaning": "Golpe dado en la mejilla con la palma de la mano",
     "synonyms": [],
-    "examples": [
-      "‘Te vas a llevar una garnatada’"
-    ],
+    "examples": ["‘Te vas a llevar una garnatada’"],
     "authors": [
       {
         "name": "Fabian Osorio",
@@ -801,9 +729,7 @@
     "text": "Huepaje",
     "meaning": "Grito para mostrar alegría.",
     "synonyms": [],
-    "examples": [
-      "‘¡Huepaje!, bailalo morena’"
-    ],
+    "examples": ["‘¡Huepaje!, bailalo morena’"],
     "authors": [
       {
         "name": "Javier Valencia",
@@ -815,10 +741,7 @@
     "text": "Jabao",
     "meaning": "Estrenando",
     "synonyms": [],
-    "examples": [
-      "‘Estoy Jabao con mi nuevo carro’",
-      "`Mucha jabadera tuya, ya no quieres salir`"
-    ],
+    "examples": ["‘Estoy Jabao con mi nuevo carro’", "`Mucha jabadera tuya, ya no quieres salir`"],
     "authors": [
       {
         "name": "Henri Lecoultre",
@@ -829,14 +752,8 @@
   {
     "text": "Joa",
     "meaning": "Expresión utilizada para demostrar cansancio, tristeza, resignación.",
-    "synonyms": [
-      "joda",
-      "jo'a"
-    ],
-    "examples": [
-      "‘joa perdió el Junior’",
-      "‘me tocó trasnochar hoy, joa’"
-    ],
+    "synonyms": ["joda", "jo'a"],
+    "examples": ["‘joa perdió el Junior’", "‘me tocó trasnochar hoy, joa’"],
     "authors": [
       {
         "link": "https://github.com/jcastell7",
@@ -848,10 +765,7 @@
     "text": "Joder",
     "meaning": "Molestar",
     "synonyms": [],
-    "examples": [
-      "¡No me jodas!",
-      "¡Tú sí jodes la vida, Juan!"
-    ],
+    "examples": ["¡No me jodas!", "¡Tú sí jodes la vida, Juan!"],
     "authors": [
       {
         "link": "https://github.com/krthr",
@@ -892,9 +806,7 @@
   {
     "text": "Lengua larga",
     "meaning": "Es una expresión usada para referirse a una persona poco prudente.",
-    "synonyms": [
-      "Imprudente"
-    ],
+    "synonyms": ["Imprudente"],
     "examples": [
       "No le voy a volver a contar nada a él, es un lengua larga, enseguida fue a contárselo a todo el mundo"
     ],
@@ -923,10 +835,7 @@
   {
     "text": "Llevao",
     "meaning": "Esta palabra se usa para referirse a alguien con poca fortaleza física o alguien sin dinero.",
-    "synonyms": [
-      "Debilucho",
-      "Mondao"
-    ],
+    "synonyms": ["Debilucho", "Mondao"],
     "examples": [
       "Mí­ralo, no puede cargar eso. Está es llevao",
       "No voy a poder ir a la fiesta del sábado, estoy es llevao"
@@ -942,10 +851,7 @@
     "text": "Mamonúo/a'",
     "meaning": "Sinónimo de grande.",
     "synonyms": [],
-    "examples": [
-      "'Cule casa mamonúa'",
-      "'Compró un camión bien mamonúo'"
-    ],
+    "examples": ["'Cule casa mamonúa'", "'Compró un camión bien mamonúo'"],
     "authors": [
       {
         "name": "Yennifer Herrera",
@@ -957,10 +863,7 @@
     "text": "Mani",
     "meaning": "Palabra para denotar a un amigo.",
     "synonyms": [],
-    "examples": [
-      "Ey mani, ven acá",
-      "Mani, colabórame con algo."
-    ],
+    "examples": ["Ey mani, ven acá", "Mani, colabórame con algo."],
     "authors": [
       {
         "name": "Oskhar Arrieta",
@@ -972,9 +875,7 @@
     "text": "Masacote",
     "meaning": "Palabra usada para señalar una mezcla bien cargada.",
     "synonyms": [],
-    "examples": [
-      "‘No le eches el arroz a la sopa, que vas hacer tremendo masacote!’"
-    ],
+    "examples": ["‘No le eches el arroz a la sopa, que vas hacer tremendo masacote!’"],
     "authors": [
       {
         "name": "Johnny Villegas",
@@ -985,12 +886,8 @@
   {
     "text": "Mondá",
     "meaning": "Dicese de miembro reproductor masculino.",
-    "synonyms": [
-      "pene, pipí, verga"
-    ],
-    "examples": [
-      "‘Ese man tiene la mondá grande’"
-    ],
+    "synonyms": ["pene, pipí, verga"],
+    "examples": ["‘Ese man tiene la mondá grande’"],
     "authors": [
       {
         "name": "Sharon Benjumea",
@@ -1002,10 +899,7 @@
     "text": "Monocuco",
     "meaning": "Palabra utilizada para referirse a algo que está bien o es bonito. Figura del carnaval de barranquilla.",
     "synonyms": [],
-    "examples": [
-      "‘Con esta pinta nueva quedé monocuco’",
-      "‘Mira, ahí viene bailando el monocuco’"
-    ],
+    "examples": ["‘Con esta pinta nueva quedé monocuco’", "‘Mira, ahí viene bailando el monocuco’"],
     "authors": [
       {
         "name": "Javier Valencia",
@@ -1017,9 +911,7 @@
     "text": "Montar imperio",
     "meaning": "Expresión empleada para afirmar que una persona quiere tener problemas con uno",
     "synonyms": [],
-    "examples": [
-      "‘Ese man es nuevo en la cuadra y ya quiere venir a montar imperio’"
-    ],
+    "examples": ["‘Ese man es nuevo en la cuadra y ya quiere venir a montar imperio’"],
     "authors": [
       {
         "name": "Juan Bojato",
@@ -1060,10 +952,7 @@
     "text": "Nojoda",
     "meaning": "Expresión utilizada demostrar decepción o alegría.",
     "synonyms": [],
-    "examples": [
-      "‘Nojodaaa, tremendo idiota.’",
-      "'Nojoda, ¡qué vaina linda!'"
-    ],
+    "examples": ["‘Nojodaaa, tremendo idiota.’", "'Nojoda, ¡qué vaina linda!'"],
     "authors": [
       {
         "name": "Kristell Urueta",
@@ -1074,14 +963,8 @@
   {
     "text": "Ñopito",
     "meaning": "Ropa o algo que queda ajustado",
-    "synonyms": [
-      "Apretado",
-      "ajustado"
-    ],
-    "examples": [
-      "Esa camisa te queda ñopita",
-      "No me pongo este pantalon porque me queda ñopito"
-    ],
+    "synonyms": ["Apretado", "ajustado"],
+    "examples": ["Esa camisa te queda ñopita", "No me pongo este pantalon porque me queda ñopito"],
     "authors": [
       {
         "name": "Francisco Quintero",
@@ -1093,9 +976,7 @@
     "text": "Pasarse de piña",
     "meaning": "Expresión que significa: Abusar de la confianza de una persona o sacar provecho de alguien.",
     "synonyms": [],
-    "examples": [
-      "‘Yo te ayudo con el trabajo, pero no te pases de piña’"
-    ],
+    "examples": ["‘Yo te ayudo con el trabajo, pero no te pases de piña’"],
     "authors": [
       {
         "name": "Javier Valencia",
@@ -1107,10 +988,7 @@
     "text": "Pava",
     "meaning": "Palabra que se utiliza para denotar pereza o flojera",
     "synonyms": [],
-    "examples": [
-      "‘Tengo pava de hacer esa tarea.’",
-      "‘Me da mucha pava empezar todo de nuevo.’"
-    ],
+    "examples": ["‘Tengo pava de hacer esa tarea.’", "‘Me da mucha pava empezar todo de nuevo.’"],
     "authors": [
       {
         "name": "Jesus Santiago",
@@ -1122,9 +1000,7 @@
     "text": "Pechiche",
     "meaning": "Consentir o mimar.",
     "synonyms": [],
-    "examples": [
-      "‘Te voy a pechichar toda la vida.’"
-    ],
+    "examples": ["‘Te voy a pechichar toda la vida.’"],
     "authors": [
       {
         "name": "Kristell Urueta",
@@ -1136,9 +1012,7 @@
     "text": "Piñuo",
     "meaning": "Palabra empleada para referirse a alguien musculoso(a).",
     "synonyms": [],
-    "examples": [
-      "‘Esa lea está Piñua’"
-    ],
+    "examples": ["‘Esa lea está Piñua’"],
     "authors": [
       {
         "name": "Turiano Romero Guzman",
@@ -1150,9 +1024,7 @@
     "text": "Pluma",
     "meaning": "Palabra para referirse al grifo de la regadera, lavamanos, etc.",
     "synonyms": [],
-    "examples": [
-      "Cierra la pluma que está botando agua"
-    ],
+    "examples": ["Cierra la pluma que está botando agua"],
     "authors": [
       {
         "name": "Oskhar Arrieta",
@@ -1163,14 +1035,8 @@
   {
     "text": "Pupi",
     "meaning": "Persona o lugar de estrato alto, o que goza de una buena situación económica.",
-    "synonyms": [
-      "rico",
-      "exclusivo"
-    ],
-    "examples": [
-      "Ese lugar es muy pupi’",
-      "Esa persona es pupi"
-    ],
+    "synonyms": ["rico", "exclusivo"],
+    "examples": ["Ese lugar es muy pupi’", "Esa persona es pupi"],
     "authors": [
       {
         "name": "Isaías De la Hoz",
@@ -1195,10 +1061,7 @@
   {
     "text": "quedado",
     "meaning": "Cuando un hombre o mujer no es capaz de entender las indirectas",
-    "synonyms": [
-      "lento",
-      "despistado"
-    ],
+    "synonyms": ["lento", "despistado"],
     "examples": [
       "Ese muchacho es muy quedado, no entiende nada de lo que le digo.",
       "Tu estÃ¡s es quedado, tienes que ponerte las pilas"
@@ -1214,9 +1077,7 @@
     "text": "Rasquiñita",
     "meaning": "Es una palabra usada para referirse a un conflicto o pendiente con alguien más.",
     "synonyms": [],
-    "examples": [
-      "Le tengo cule rasquiñita a ese man"
-    ],
+    "examples": ["Le tengo cule rasquiñita a ese man"],
     "authors": [
       {
         "name": "Rafael Villarreal",
@@ -1228,9 +1089,7 @@
     "text": "Sisas",
     "meaning": "Forma alternativa de decir sí",
     "synonyms": [],
-    "examples": [
-      "‘-¿Me compras algo? -Sisas’"
-    ],
+    "examples": ["‘-¿Me compras algo? -Sisas’"],
     "authors": [
       {
         "name": "Juan Bojato",
@@ -1257,9 +1116,7 @@
     "text": "Uy zona",
     "meaning": "Expresión empleada para denotar sorpresa",
     "synonyms": [],
-    "examples": [
-      "‘Uy zona, esa vieja esta buena’"
-    ],
+    "examples": ["‘Uy zona, esa vieja esta buena’"],
     "authors": [
       {
         "name": "Juan Bojato",
@@ -1270,11 +1127,7 @@
   {
     "text": "Vacile",
     "meaning": "Palabra empleada para expresar que algo o alguien es muy agradable, chévere, chistoso, bacano. También se usa para referirse a un tipo de relación sentimental sin un compromiso serio u oficial.",
-    "synonyms": [
-      "vacilar",
-      "vacila",
-      "vacilón"
-    ],
+    "synonyms": ["vacilar", "vacila", "vacilón"],
     "examples": [
       "‘Esa discoteca es un vacile’",
       "‘Ese man se la vacila’",
@@ -1290,14 +1143,8 @@
   {
     "text": "Vaina",
     "meaning": "Expresión utilizada para referirse a cualquier objeto, animal, persona y en general a lo que sea.",
-    "synonyms": [
-      "Cosa",
-      "Eso"
-    ],
-    "examples": [
-      "‘Pásame esa vaina’",
-      "'Ya se dañó la vaina esa'"
-    ],
+    "synonyms": ["Cosa", "Eso"],
+    "examples": ["‘Pásame esa vaina’", "'Ya se dañó la vaina esa'"],
     "authors": [
       {
         "name": "Juan Felipe Calao",
@@ -1309,9 +1156,7 @@
     "text": "Valecita",
     "meaning": "Palabra utilizada para denotar a alguien como un gran amigo.",
     "synonyms": [],
-    "examples": [
-      "‘Yo no te voy a prestar el celular, ni que fueras mi valecita.’"
-    ],
+    "examples": ["‘Yo no te voy a prestar el celular, ni que fueras mi valecita.’"],
     "authors": [
       {
         "name": "Johnny Villegas",
