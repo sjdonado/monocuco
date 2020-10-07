@@ -98,6 +98,7 @@ Si tienes alguna duda respecto a tu contribución puedes unirte a nuestro canal 
     <td align="center"><a href="https://github.com/wgarcia1309"><img src="https://avatars0.githubusercontent.com/u/20034079?s=460&v=4" width="460" alt="Willian Garcia"/><br /><sub><b>Willian Garcia</b></sub></a></td>
     <td align="center"><a href="https://github.com/gmmonsalve"><img src="https://avatars0.githubusercontent.com/u/30907973?s=460&u=7ad8f8e43b1edd78c7d4844fcb33368cd448f5bc&v=4" width="460" alt="Gabriela Monsalve"/><br /><sub><b>Gabriela Monsalve</b></sub></a></td>
     <td align="center"><a href="https://github.com/hackvan"><img src="https://avatars2.githubusercontent.com/u/179497?s=460&u=e039e64cb75b8012675addbf3cfee5ccc111b7c4&v=4" width="460" alt="Diego Camacho"/><br /><sub><b>Diego Camacho</b></sub></a></td>
+    <td align="center"><a href="https://github.com/ferch5003"><img src="https://avatars2.githubusercontent.com/u/26355409?s=400&u=a18ba62869f17624086b0812101edaa9c1a04162&v=4" width="460" alt="Fernando Visbal"/><br /><sub><b>Fernando Visbal</b></sub></a></td>
   </tr>
 <table>
 
