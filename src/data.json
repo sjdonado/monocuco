@@ -961,6 +961,20 @@
     ]
   },
   {
+    "text": "Nombe",
+    "meaning": "Palabra que denota negación.",
+    "synonyms": ["No"],
+    "examples": [
+      "‘-¿Listo pa' la rumba de hoy? -Nombe, mañana trabajo.’"
+    ],
+    "authors": [
+      {
+        "name": "Yennifer Herrera",
+        "link": "https://github.com/Yenniferh"
+      }
+    ]
+  },
+  {
     "text": "Ñopito",
     "meaning": "Ropa o algo que queda ajustado",
     "synonyms": ["Apretado", "ajustado"],
