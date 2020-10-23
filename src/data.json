@@ -1381,5 +1381,23 @@
         "link": "https://github.com/C9-LinkRs"
       }
     ]
+  },
+  {
+    "text": "Añuñío",
+    "meaning": "Comprimido. Dícese de algo que esta apretujado",
+    "synonyms": [
+      "Embutio",
+      "Apiñado"
+    ],
+    "examples": [
+      "‘Viejo man, mira como dejaste las cosas dentro del maletín. Todo está añuñío.’",
+      "'Ayúdame a empacar. No importa que quede añuñío.'"
+    ],
+    "authors": [
+      {
+        "name": "Javier Daza",
+        "link": "https://github.com/javierdaza"
+      }
+    ]
   }
 ]
