@@ -29,6 +29,23 @@
     ]
   },
   {
+    "text": "bolita",
+    "meaning": "Hace referencia a los juegos de azar y apuestas",
+    "synonyms": [
+      "chance"
+    ],
+    "examples": [
+      "'Niño, apuntame la bolita'",
+      "'Salió le número y no apunte la bolita'"
+    ],
+    "authors": [
+      {
+        "name": "Brayan García",
+        "link": "https://github.com/bgarcia92"
+      }
+    ]
+  },
+  {
     "text": "'E",
     "meaning": "Contracción de la preposición de.",
     "synonyms": [],
