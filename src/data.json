@@ -29,23 +29,6 @@
     ]
   },
   {
-    "text": "bolita",
-    "meaning": "Hace referencia a los juegos de azar y apuestas",
-    "synonyms": [
-      "chance"
-    ],
-    "examples": [
-      "'Niño, apuntame la bolita'",
-      "'Salió le número y no apunte la bolita'"
-    ],
-    "authors": [
-      {
-        "name": "Brayan García",
-        "link": "https://github.com/bgarcia92"
-      }
-    ]
-  },
-  {
     "text": "'E",
     "meaning": "Contracción de la preposición de.",
     "synonyms": [],
@@ -149,6 +132,24 @@
       {
         "name": "Jose Guzman",
         "link": "https://github.com/pygabo"
+      }
+    ]
+  },
+  {
+    "text": "Añuñío",
+    "meaning": "Comprimido. Dícese de algo que esta apretujado",
+    "synonyms": [
+      "Embutio",
+      "Apiñado"
+    ],
+    "examples": [
+      "‘Viejo man, mira como dejaste las cosas dentro del maletín. Todo está añuñío.’",
+      "'Ayúdame a empacar. No importa que quede añuñío.'"
+    ],
+    "authors": [
+      {
+        "name": "Javier Daza",
+        "link": "https://github.com/javierdaza"
       }
     ]
   },
@@ -279,6 +280,23 @@
       {
         "name": "Fernando Visbal",
         "link": "https://github.com/ferch5003"
+      }
+    ]
+  },
+  {
+    "text": "bolita",
+    "meaning": "Hace referencia a los juegos de azar y apuestas",
+    "synonyms": [
+      "chance"
+    ],
+    "examples": [
+      "'Niño, apuntame la bolita'",
+      "'Salió le número y no apunte la bolita'"
+    ],
+    "authors": [
+      {
+        "name": "Brayan García",
+        "link": "https://github.com/bgarcia92"
       }
     ]
   },
@@ -1005,6 +1023,25 @@
     ]
   },
   {
+    "text": "Mamar gallo",
+    "meaning": "Se refiere a molestar, perder el tiempo, bromear",
+    "synonyms": [
+      "Molestando",
+      "bromeando"
+    ],
+    "examples": [
+      "Deja de mamar gallo y ponte a trabajar.",
+      "¿Tu me estás mamando gallo o me lo dices de verdad?",
+      "No se lo dije encerio, se lo dije mamando gallo"
+    ],
+    "authors": [
+      {
+        "name": "Roberto Acuña",
+        "link": "https://github.com/rmacuna"
+      }
+    ]
+  },
+  {
     "text": "Mamonúo/a'",
     "meaning": "Sinónimo de grande.",
     "synonyms": [],
@@ -1108,21 +1145,6 @@
     ]
   },
   {
-    "text": "Ñapa",
-    "meaning": "Pequeño agregado, gratis, que un vendedor da como compensación a un cliente que ha hecho una buena compra.",
-    "synonyms": [],
-    "examples": [
-      "‘¡Negocio colombiano que se respete da Ñapa!’",
-      "En frutera: ‘Hey valecita tirate la ñapa del jugo de zapote ahí de bacan’"
-    ],
-    "authors": [
-      {
-        "name": "John Barbosa",
-        "link": "https://github.com/JohnDBR"
-      }
-    ]
-  },
-  {
     "text": "Nojoda",
     "meaning": "Expresión utilizada demostrar decepción o alegría.",
     "synonyms": [],
@@ -1140,7 +1162,9 @@
   {
     "text": "Nombe",
     "meaning": "Palabra que denota negación.",
-    "synonyms": ["No"],
+    "synonyms": [
+      "No"
+    ],
     "examples": [
       "‘-¿Listo pa' la rumba de hoy? -Nombe, mañana trabajo.’"
     ],
@@ -1148,6 +1172,21 @@
       {
         "name": "Yennifer Herrera",
         "link": "https://github.com/Yenniferh"
+      }
+    ]
+  },
+  {
+    "text": "Ñapa",
+    "meaning": "Pequeño agregado, gratis, que un vendedor da como compensación a un cliente que ha hecho una buena compra.",
+    "synonyms": [],
+    "examples": [
+      "‘¡Negocio colombiano que se respete da Ñapa!’",
+      "En frutera: ‘Hey valecita tirate la ñapa del jugo de zapote ahí de bacan’"
+    ],
+    "authors": [
+      {
+        "name": "John Barbosa",
+        "link": "https://github.com/JohnDBR"
       }
     ]
   },
@@ -1396,24 +1435,6 @@
       {
         "name": "Johnny Villegas",
         "link": "https://github.com/C9-LinkRs"
-      }
-    ]
-  },
-  {
-    "text": "Añuñío",
-    "meaning": "Comprimido. Dícese de algo que esta apretujado",
-    "synonyms": [
-      "Embutio",
-      "Apiñado"
-    ],
-    "examples": [
-      "‘Viejo man, mira como dejaste las cosas dentro del maletín. Todo está añuñío.’",
-      "'Ayúdame a empacar. No importa que quede añuñío.'"
-    ],
-    "authors": [
-      {
-        "name": "Javier Daza",
-        "link": "https://github.com/javierdaza"
       }
     ]
   }
