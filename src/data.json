@@ -537,6 +537,23 @@
     ]
   },
   {
+    "text": "Chechere",
+    "meaning": "Objeto cualquiera que no tiene un uso específico o útil.",
+    "synonyms": [
+      "Objeto",
+      "Cachivache"
+    ],
+    "examples": [
+      "Mi garaje está lleno de checheres."
+    ],
+    "authors": [
+      {
+        "name": "Jair Barcasnegras",
+        "link": "https://github.com/barcasnerd"
+      }
+    ]
+  },
+  {
     "text": "Cipote",
     "meaning": "Palabra empleada para expresar exageración de una cualidad de algo.",
     "synonyms": [],
