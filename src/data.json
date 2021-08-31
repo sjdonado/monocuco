@@ -219,6 +219,25 @@
     ]
   },
   {
+    "text": "Avispado",
+    "meaning": "Persona muy atenta, persona que saca provecho de una situación",
+    "synonyms": [
+      "Atento",
+      "Activo",
+      "Directo",
+      "Aprovechado"
+    ],
+    "examples": [
+      "Parece ser que tu hijo es muy avispado en la escuela."
+    ],
+    "authors": [
+      {
+        "name": "Jair Barcasnegras",
+        "link": "https://github.com/barcasnerd"
+      }
+    ]
+  },
+  {
     "text": "Bacano",
     "meaning": "Procedente del adjetivo Bacán. Hace referencia a algo agradable, muy bueno, estupendo",
     "synonyms": [
