@@ -103,6 +103,7 @@ Si tienes alguna duda respecto a tu contribución puedes unirte a nuestro canal 
   <tr>
     <td align="center"><a href="https://github.com/javierdaza"><img src="https://avatars2.githubusercontent.com/u/3085051?s=460&v=4" width="460" alt="Javier Daza"/><br /><sub><b>Javier Daza</b></sub></a></td>
     <td align="center"><a href="https://github.com/rmacuna"><img src="https://avatars3.githubusercontent.com/u/25620714?s=460&u=74bc4e41b88d89aff50d1abd1df9f14b27b83c69&v=4" width="460" alt="Roberto Acuña"/><br /><sub><b>Roberto Acuña</b></sub></a></td>
+        <td align="center"><a href="https://github.com/barcasnerd"><img src="https://avatars.githubusercontent.com/u/49013288?v=4" width="460" alt="Jair Barcasnegras"/><br /><sub><b>Jair Barcasnegras</b></sub></a></td>
   </tr>
 <table>
 

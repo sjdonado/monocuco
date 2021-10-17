@@ -219,6 +219,25 @@
     ]
   },
   {
+    "text": "Avispado",
+    "meaning": "Persona muy atenta, persona que saca provecho de una situación",
+    "synonyms": [
+      "Atento",
+      "Activo",
+      "Directo",
+      "Aprovechado"
+    ],
+    "examples": [
+      "Parece ser que tu hijo es muy avispado en la escuela."
+    ],
+    "authors": [
+      {
+        "name": "Jair Barcasnegras",
+        "link": "https://github.com/barcasnerd"
+      }
+    ]
+  },
+  {
     "text": "Bacano",
     "meaning": "Procedente del adjetivo Bacán. Hace referencia a algo agradable, muy bueno, estupendo",
     "synonyms": [
@@ -518,6 +537,23 @@
     ]
   },
   {
+    "text": "Chechere",
+    "meaning": "Objeto cualquiera que no tiene un uso específico o útil.",
+    "synonyms": [
+      "Objeto",
+      "Cachivache"
+    ],
+    "examples": [
+      "Mi garaje está lleno de checheres."
+    ],
+    "authors": [
+      {
+        "name": "Jair Barcasnegras",
+        "link": "https://github.com/barcasnerd"
+      }
+    ]
+  },
+  {
     "text": "Cipote",
     "meaning": "Palabra empleada para expresar exageración de una cualidad de algo.",
     "synonyms": [],
@@ -794,6 +830,22 @@
     ]
   },
   {
+    "text": "Farto",
+    "meaning": "Persona que pretende mostrar un alto estatus social sin poseerlo.",
+    "synonyms": [
+      "Egocentrico"
+    ],
+    "examples": [
+      "Ese man es muy farto y ni tiene nada."
+    ],
+    "authors": [
+      {
+        "name": "Jair Barcasnegras",
+        "link": "https://github.com/barcasnerd"
+      }
+    ]
+  },
+  {
     "text": "Filo",
     "meaning": "Palabra que significa hambre",
     "synonyms": [],
@@ -834,6 +886,24 @@
       {
         "name": "Fabian Osorio",
         "link": "https://github.com/fokobot"
+      }
+    ]
+  },
+  {
+    "text": "Fundillo",
+    "meaning": "Parte rota o degradada de una prenda de vestir. Fondo de una botella. Trasero.",
+    "synonyms": [
+      "Roto",
+      "trasero",
+      "nalga"
+    ],
+    "examples": [
+      "A mi amiga se le rompió su short y se le veía todo el fundillo"
+    ],
+    "authors": [
+      {
+        "name": "Jair Barcasnegras",
+        "link": "https://github.com/barcasnerd"
       }
     ]
   },
@@ -1344,6 +1414,24 @@
     ]
   },
   {
+    "text": "Recocha",
+    "meaning": "Palabra utilizada para expresar desorden, euforia o alegría",
+    "synonyms": [
+      "Desorden",
+      "Euforia",
+      "Alegría"
+    ],
+    "examples": [
+      "La fiesta estuvo muy buena, hicimos recocha"
+    ],
+    "authors": [
+      {
+        "name": "Jair Barcasnegras",
+        "link": "https://github.com/barcasnerd"
+      }
+    ]
+  },
+  {
     "text": "Sisas",
     "meaning": "Forma alternativa de decir sí",
     "synonyms": [],
@@ -1354,6 +1442,22 @@
       {
         "name": "Juan Bojato",
         "link": "https://github.com/Juandavid716"
+      }
+    ]
+  },
+  {
+    "text": "Tramacazo",
+    "meaning": "Golpe muy fuerte",
+    "synonyms": [
+      "Golpe"
+    ],
+    "examples": [
+      "Me peguÃ© un tramacazo con la puerta."
+    ],
+    "authors": [
+      {
+        "name": "Jair Barcasnegras",
+        "link": "https://github.com/barcasnerd"
       }
     ]
   },
