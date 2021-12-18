@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import accents from 'remove-accents';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -10,37 +9,27 @@ import Search from './components/Search/Search';
 import Word from './components/Word/Word';
 import GithubButtons from './components/GithubButtons/GithubButtons';
 import Header from './components/Header/Header';
-
-import words from './data.json';
+import { search, TOTAL_WORDS, FIRST_WORDS } from './services/search';
 
 const App: React.FC = function App() {
-  const [filteredWords, setFilteredWords] = useState<Word[]>(words);
+  const [filteredWords, setFilteredWords] = useState<Word[]>(FIRST_WORDS);
   const [currentWord, setCurrentWord] = useState<string>('');
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
 
   const handleUpdate = (word: string): void => {
     setCurrentWord(word);
-    const parsedWord = accents.remove(word).toLowerCase();
 
     if (searchTimeout) {
       clearTimeout(searchTimeout);
     }
 
+    if (!word) {
+      setFilteredWords(FIRST_WORDS);
+      return;
+    }
+
     setSearchTimeout(setTimeout(() => {
-      let newFilteredWords = words.filter(({ text, synonyms }) => {
-        const parsedText = accents.remove(text).toLocaleLowerCase();
-        const parsedSynonyms = accents.remove(synonyms.join(',')).toLocaleLowerCase();
-        return parsedText.includes(parsedWord) || parsedSynonyms.includes(parsedWord);
-      });
-
-      // Otherwise search by examples
-      if (newFilteredWords.length === 0) {
-        newFilteredWords = words.filter(({ examples }) => {
-          const parsedExamples = accents.remove(examples.join(',')).toLocaleLowerCase();
-          return parsedExamples.includes(parsedWord);
-        });
-      }
-
+      const newFilteredWords = search(word);
       setFilteredWords(newFilteredWords);
     }, 300));
   };
@@ -53,7 +42,7 @@ const App: React.FC = function App() {
         <Search
           word={currentWord}
           onUpdateWord={handleUpdate}
-          totalWords={words.length}
+          totalWords={TOTAL_WORDS}
           resultStats={filteredWords.length}
         />
       </div>
