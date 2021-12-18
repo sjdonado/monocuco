@@ -1,11 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Highlighter from 'react-highlight-words';
 import accents from 'remove-accents';
 
 import './Word.scss';
 
-function Word({ word, currentWord }) {
+interface Props {
+  word: Word;
+  currentWord: string;
+}
+
+const Word: React.FC<Props> = function Word({
+  word,
+  currentWord,
+}) {
   return (
     <div className="word-container">
       <Highlighter
@@ -55,24 +62,6 @@ function Word({ word, currentWord }) {
       </div>
     </div>
   );
-}
-
-Word.propTypes = {
-  word: PropTypes.shape({
-    text: PropTypes.string.isRequired,
-    meaning: PropTypes.string.isRequired,
-    synonyms: PropTypes.arrayOf(PropTypes.string).isRequired,
-    examples: PropTypes.arrayOf(PropTypes.string).isRequired,
-    authors: PropTypes.arrayOf(PropTypes.shape({
-      link: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-    })),
-  }).isRequired,
-  currentWord: PropTypes.string,
-};
-
-Word.defaultProps = {
-  currentWord: null,
 };
 
 export default Word;

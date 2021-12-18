@@ -15,9 +15,7 @@ jobs:
       - name: Install Dependencies
         run: npm install
       - name: Build
-        run: |
-          npm run sort-data
-          npm run build
+        run: npm run build
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
