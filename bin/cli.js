@@ -75,7 +75,7 @@ const receiver = async () => {
   fs.writeFile(DATA_PATH, JSON.stringify(words, null, 2), (err) => {
     if (err) throw err;
     console.log('\n¡Nueva palabra agregada correctamente! ¡Gracias!');
-    console.log('Ya puedes hacer commit y realizar el PR. ;)');
+    console.log('Ya puedes crear el commit y subir el PR. ;)');
   });
 };
 
