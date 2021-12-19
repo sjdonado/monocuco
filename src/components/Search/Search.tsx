@@ -11,12 +11,12 @@ interface Props {
   resultStats: number;
 }
 
-const Search: React.FC<Props> = function Search({
+const Search = function Search({
   word,
   onUpdateWord,
   totalWords,
   resultStats,
-}) {
+}: Props) {
   return (
     <div className="search-container">
       <div className="search-wrapper">

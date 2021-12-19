@@ -13,7 +13,7 @@ import Header from './components/Header/Header';
 
 import { search, TOTAL_WORDS, searchPaginator } from './services/search';
 
-const App: React.FC = function App() {
+const App = function App() {
   const [results, setResults] = useState<Word[]>(searchPaginator.firstResults);
   const [currentWord, setCurrentWord] = useState<string>('');
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();

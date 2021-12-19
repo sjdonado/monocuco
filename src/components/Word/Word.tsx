@@ -8,10 +8,10 @@ interface Props {
   currentWord: string;
 }
 
-const Word: React.FC<Props> = function Word({
+const Word = function Word({
   word,
   currentWord,
-}) {
+}: Props) {
   const authors = word.authors.map(({ name }) => name).join(', ');
   const synonyms = word.synonyms.join(', ');
 

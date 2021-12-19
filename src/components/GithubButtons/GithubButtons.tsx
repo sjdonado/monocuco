@@ -1,6 +1,6 @@
 import React from 'react';
 
-const GithubButtons: React.FC = function GithubButtons() {
+const GithubButtons = function GithubButtons() {
   return (
     <div className="info">
       <div className="github-buttons-wrapper">

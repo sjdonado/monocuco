@@ -2,7 +2,7 @@ import React from 'react';
 
 import icon from '../../icon.jpg';
 
-const Header: React.FC = function Header() {
+const Header = function Header() {
   return (
     <>
       <img

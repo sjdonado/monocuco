@@ -5,10 +5,10 @@ interface Props {
   word: string,
 }
 
-const Input: React.FC<Props> = function Input({
+const Input = function Input({
   onUpdateWord,
   word,
-}) {
+}: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
