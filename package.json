@@ -7,7 +7,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "cli": "node bin/cli.js"
+    "cli": "node bin/cli.js",
+    "check": "ajv validate -s schema.json -d src/data.json"
   },
   "eslintConfig": {
     "extends": [
@@ -47,6 +48,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-highlight-words": "^0.17.0",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-scripts": "^5.0.0",
     "typescript": "^4.5.4"
   },

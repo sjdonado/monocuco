@@ -36,7 +36,13 @@ const App: React.FC = function App() {
     }, 300));
   };
 
+  const isSearching = currentWord.length > 0;
+  const emptyResults = results.length === 0;
+
   const fetch = () => {
+    if (isSearching) {
+      return;
+    }
     setTimeout(() => {
       const data = searchPaginator.fetch(results.length);
       setResults(data);
@@ -55,39 +61,38 @@ const App: React.FC = function App() {
           resultStats={results.length}
         />
       </div>
-      {results.length > 0 ? (
-        <InfiniteScroll
-          dataLength={results.length}
-          next={fetch}
-          hasMore={results.length < TOTAL_WORDS}
-          loader={(
-            <div className="content-wrapper">
-              <div className="spinner-border text-primary" role="status">
-                <span className="sr-only">Cargando...</span>
-              </div>
-            </div>
-          )}
-          endMessage={(
-            <div className="content-wrapper">
-              <p className="font-weight-bold">
-                Has llegado al final, no es mucho pero es trabajo honesto 🥲
-              </p>
-            </div>
-          )}
-        >
+      <InfiniteScroll
+        dataLength={results.length}
+        next={fetch}
+        hasMore={!isSearching && results.length < TOTAL_WORDS}
+        loader={(
           <div className="content-wrapper">
-            {
-              results.map((word) => (
-                <Word
-                  key={word.text}
-                  word={word}
-                  currentWord={currentWord}
-                />
-              ))
-            }
+            <div className="spinner-border text-primary" role="status">
+              <span className="sr-only">Cargando...</span>
+            </div>
           </div>
-        </InfiniteScroll>
-      ) : (
+        )}
+        endMessage={!isSearching && (
+          <div className="content-wrapper">
+            <p className="font-weight-bold">
+              Has llegado al final, no es mucho pero es trabajo honesto 🥲
+            </p>
+          </div>
+        )}
+      >
+        <div className="content-wrapper">
+          {
+            results.map((word) => (
+              <Word
+                key={word.text}
+                word={word}
+                currentWord={currentWord}
+              />
+            ))
+          }
+        </div>
+      </InfiniteScroll>
+      {emptyResults && isSearching && (
         <div className="content-wrapper">
           <p className="font-weight-bold">No se han encontrado resultados 🙁</p>
         </div>
