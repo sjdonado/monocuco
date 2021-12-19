@@ -33,4 +33,15 @@ export const search = (word: string): Word[] => {
 
 export const TOTAL_WORDS: number = DATA.length;
 
-export const FIRST_WORDS = [...DATA].slice(0, 6);
+export const searchPaginator: SearchPaginator = {
+  perPage: 6,
+  firstResults: DATA.slice(0, 6),
+  fetch: function fetch(lastIndex: number) {
+    const nextIndex = lastIndex + this.perPage;
+    if (nextIndex > DATA.length) {
+      return DATA;
+    }
+    const result = DATA.slice(0, nextIndex);
+    return result;
+  },
+};

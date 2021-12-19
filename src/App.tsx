@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 import './App.scss';
 
@@ -9,10 +10,11 @@ import Search from './components/Search/Search';
 import Word from './components/Word/Word';
 import GithubButtons from './components/GithubButtons/GithubButtons';
 import Header from './components/Header/Header';
-import { search, TOTAL_WORDS, FIRST_WORDS } from './services/search';
+
+import { search, TOTAL_WORDS, searchPaginator } from './services/search';
 
 const App: React.FC = function App() {
-  const [filteredWords, setFilteredWords] = useState<Word[]>(FIRST_WORDS);
+  const [results, setResults] = useState<Word[]>(searchPaginator.firstResults);
   const [currentWord, setCurrentWord] = useState<string>('');
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
 
@@ -24,14 +26,21 @@ const App: React.FC = function App() {
     }
 
     if (!word) {
-      setFilteredWords(FIRST_WORDS);
+      setResults(searchPaginator.firstResults);
       return;
     }
 
     setSearchTimeout(setTimeout(() => {
-      const newFilteredWords = search(word);
-      setFilteredWords(newFilteredWords);
+      const newresults = search(word);
+      setResults(newresults);
     }, 300));
+  };
+
+  const fetch = () => {
+    setTimeout(() => {
+      const data = searchPaginator.fetch(results.length);
+      setResults(data);
+    }, 300);
   };
 
   return (
@@ -43,20 +52,46 @@ const App: React.FC = function App() {
           word={currentWord}
           onUpdateWord={handleUpdate}
           totalWords={TOTAL_WORDS}
-          resultStats={filteredWords.length}
+          resultStats={results.length}
         />
       </div>
-      <div className="content-wrapper">
-        {
-          filteredWords.map((word) => (
-            <Word
-              key={word.text}
-              word={word}
-              currentWord={currentWord}
-            />
-          ))
-        }
-      </div>
+      {results.length > 0 ? (
+        <InfiniteScroll
+          dataLength={results.length}
+          next={fetch}
+          hasMore={results.length < TOTAL_WORDS}
+          loader={(
+            <div className="content-wrapper">
+              <div className="spinner-border text-primary" role="status">
+                <span className="sr-only">Cargando...</span>
+              </div>
+            </div>
+          )}
+          endMessage={(
+            <div className="content-wrapper">
+              <p className="font-weight-bold">
+                Has llegado al final, no es mucho pero es trabajo honesto 🥲
+              </p>
+            </div>
+          )}
+        >
+          <div className="content-wrapper">
+            {
+              results.map((word) => (
+                <Word
+                  key={word.text}
+                  word={word}
+                  currentWord={currentWord}
+                />
+              ))
+            }
+          </div>
+        </InfiniteScroll>
+      ) : (
+        <div className="content-wrapper">
+          <p className="font-weight-bold">No se han encontrado resultados 🙁</p>
+        </div>
+      )}
     </div>
   );
 };

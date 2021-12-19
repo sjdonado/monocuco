@@ -10,3 +10,9 @@ declare interface Word {
   examples: string[];
   authors: Author[];
 }
+
+declare interface SearchPaginator {
+  perPage: number;
+  firstResults: Word[];
+  fetch: (lastIndex: number) => Word[];
+}
