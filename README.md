@@ -1,29 +1,34 @@
 # Monocuco
+
 > Diccionario de palabras y frases costeñas.
 
-<div align="center">
-  <a href="monocuco-f4976.firebaseapp.com">
-    <img src="/src/icon.jpg" alt="Monocuco" width="300px" />
-  </a>
-</div>
+![Uptime Badge](https://uptime.sjdonado.de/api/badge/4/uptime/24) ![Uptime Badge](https://uptime.sjdonado.de/api/badge/4/ping/24)
+
+<img width="1400" alt="image" src="https://user-images.githubusercontent.com/27580836/233056568-b9985fb4-27ae-47e5-a663-48d9c1619411.png">
 
 ## Objetivo
+
 Construir el más grande disccionario de palabras y frases propias de la Costa Caribe Colombiana.
 
 ## ¿Cómo contribuir?
+
 Si has trabajado antes con React crea/selecciona un issue y sube el PR con la mejora.
 Si deseas añadir nuevas palabras al diccionario, realiza los siguientes pasos:
 
 ### Si eres desarrollador
+
 1. Haz un fork de este repo
 2. Para añadir una nueva palabra lo puedes hacer de dos maneras:
 
 **Usando el CLI (Nuevo!)**
 Ingresa a tu consola:
+
 ```bash
   npm run cli
 ```
+
 Y luego ingresas la información en consola a medida que se vaya pidiendo:
+
 ```bash
 ? Palabra Jodido
 ? Significado Persona que está mal
@@ -52,12 +57,15 @@ Agrega la nueva palabra directamente en el archivo `src/data.json`, asegurate de
     "link": "https://github.com/jvalenciae"
   }]
 ```
+
 3. Crea el pull request
 4. (Opcional) Añade tu perfil a la lista de contribuidores 😎 (no cambies el orden)
 5. ¡Listo!
 
 ### Si no eres desarrollador
+
 1. Envíame un email [jsrd98@gmail.com](mailto:jsrd98@gmail.com) con la siguiente información:
+
 - Palabra
 - Significado
 - Sinónimos (opcional)
@@ -69,6 +77,7 @@ Agrega la nueva palabra directamente en el archivo `src/data.json`, asegurate de
 3. ¡Listo!
 
 ## Contribuidores
+
 <table>
   <tr>
     <td align="center">
@@ -296,5 +305,6 @@ Agrega la nueva palabra directamente en el archivo `src/data.json`, asegurate de
   </tr>
 <table>
 
-## Agradecimientos especiales
+## Agradecimientos
+
 - Andres Urquina: Autor del icono [Ilustración Bailarina - Carnaval de Barranquilla, Colombia.](https://www.flickr.com/photos/andresurquina/16246891029)
