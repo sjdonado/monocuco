@@ -1,8 +1,7 @@
 # Monocuco
-
 > Diccionario de palabras y frases costeñas.
 
-![Uptime Badge](https://uptime.sjdonado.de/api/badge/4/uptime/24) ![Uptime Badge](https://uptime.sjdonado.de/api/badge/4/ping/24)
+![Uptime Badge](https://uptime.donado.co/api/badge/4/uptime/24) ![Uptime Badge](https://uptime.donado.co/api/badge/4/ping/24)
 
 <img width="1400" alt="image" src="https://user-images.githubusercontent.com/27580836/233056568-b9985fb4-27ae-47e5-a663-48d9c1619411.png">
 
