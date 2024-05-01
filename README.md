@@ -301,7 +301,20 @@ Agrega la nueva palabra directamente en el archivo `src/data.json`, asegurate de
         </sub>
       </a>
     </td>
+    </tr>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/LJossue">
+        <img src="https://avatars.githubusercontent.com/u/101231796?s=460" alt="Leandro Ramírez" />
+        <br />
+        <sub>
+          <b>Leandro Ramírez</b>
+        </sub>
+      </a>
+    </td>
   </tr>
+     
+  
 <table>
 
 ## Agradecimientos
