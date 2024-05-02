@@ -68,6 +68,7 @@
   "trustedDependencies": [
     "@fortawesome/fontawesome-free",
     "core-js",
-    "core-js-pure"
+    "core-js-pure",
+    "node-sass"
   ]
 }

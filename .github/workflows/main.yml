@@ -1,4 +1,4 @@
-name: Build and Deploy client
+name: Build and deploy
 
 on:
   push:
