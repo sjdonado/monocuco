@@ -1,4 +1,4 @@
-name: Build and Deploy client
+name: Build and deploy
 
 on:
   push:
@@ -9,16 +9,23 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@master
-      - name: Install Dependencies
-        run: npm install
-      - name: Build
-        run: npm run build
-      - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+    - uses: actions/checkout@v4
+    - uses: oven-sh/setup-bun@v1
+
+    - name: Install dependencies
+      run: bun install
+
+    - name: Build
+      run: bun run build
+
+    - name: Install Firebase CLI
+      run: bun install -g firebase-tools
+
+    - name: Deploy to Firebase
+      env:
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      run: |
+        firebase use --token $FIREBASE_TOKEN
+        firebase deploy --only hosting --non-interactive --token $FIREBASE_TOKEN
