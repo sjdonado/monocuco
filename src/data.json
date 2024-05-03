@@ -303,7 +303,7 @@
     ]
   },
   {
-    "text": "bolita",
+    "text": "Bolita",
     "meaning": "Hace referencia a los juegos de azar y apuestas",
     "synonyms": [
       "chance"
@@ -513,6 +513,23 @@
       {
         "name": "Javier Valencia",
         "link": "https://github.com/jvalenciae"
+      }
+    ]
+  },
+   {
+    "text": "Cascar",
+    "meaning": "Pegarle a una persona.",
+    "synonyms": [
+      "Pegar",
+      "Golpear"],
+    "examples": [
+      "'Lo voy a cascar si no se comporta.'",
+      "'Ayer se cascaron a Wilmer y no sabemos quién fue.'"
+    ],
+    "authors": [
+      {
+        "name": "Leandro Ramírez",
+        "link": "https://github.com/LJossue"
       }
     ]
   },
@@ -1010,6 +1027,23 @@
       {
         "link": "https://github.com/krthr",
         "name": "Wilson Tovar"
+      }
+    ]
+  },
+  {
+    "text": "Jopo",
+    "meaning": "Nalga, Trasero. / Aburrido, malo.",
+    "synonyms": [
+      "Culo"
+    ],
+    "examples": [
+      "Le dieron un golpe en el jopo",
+      "¡Esa fiesta está jopo, yo mejor no voy!"
+    ],
+    "authors": [
+      {
+         "name": "Leandro Ramírez",
+        "link": "https://github.com/LJossue"
       }
     ]
   },
