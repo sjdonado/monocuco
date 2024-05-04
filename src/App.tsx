@@ -1,22 +1,16 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '@fortawesome/fontawesome-free/css/all.min.css';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import GithubButtons from './components/GithubButtons';
+import Header from './components/Header';
+import SearchBar from './components/SearchBar';
+import LazyLoadingSearchResults from './components/LazyLoadingSearchResults';
 
-import './App.scss';
-
-import Search from './components/Search/Search';
-import Word from './components/Word/Word';
-import GithubButtons from './components/GithubButtons/GithubButtons';
-import Header from './components/Header/Header';
-
-import { search, TOTAL_WORDS, searchPaginator } from './services/search';
+import { search, initSearchResults } from './services/search';
 
 const App = function App() {
-  const [results, setResults] = useState<Word[]>(searchPaginator.firstResults);
+  const [results, setResults] = useState<SearchResult[]>(initSearchResults);
   const [currentWord, setCurrentWord] = useState<string>('');
-  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
+  const [searchTimeout, setSearchBarTimeout] = useState<NodeJS.Timeout>();
 
   const handleUpdate = (word: string): void => {
     setCurrentWord(word);
@@ -26,77 +20,47 @@ const App = function App() {
     }
 
     if (!word) {
-      setResults(searchPaginator.firstResults);
+      setResults(initSearchResults);
       return;
     }
 
-    setSearchTimeout(setTimeout(() => {
-      const newresults = search(word);
-      setResults(newresults);
-    }, 300));
+    setSearchBarTimeout(
+      setTimeout(() => {
+        const newresults = search(word);
+        setResults(newresults);
+      }, 100),
+    );
   };
 
-  const isSearching = currentWord.length > 0;
+  const isSearchBaring = currentWord.length > 0;
   const emptyResults = results.length === 0;
 
-  const fetch = () => {
-    if (isSearching) {
-      return;
-    }
-    setTimeout(() => {
-      const data = searchPaginator.fetch(results.length);
-      setResults(data);
-    }, 300);
-  };
-
   return (
-    <div className="body-top-highlight">
+    <div className="flex min-h-screen w-full flex-col justify-start gap-12 border-t-4 border-red-600 p-4">
       <GithubButtons />
-      <div className="navigation-wrapper">
+      <div className="flex flex-col items-center">
         <Header />
-        <Search
+        <SearchBar
           word={currentWord}
-          onUpdateWord={handleUpdate}
-          totalWords={TOTAL_WORDS}
+          onSearch={handleUpdate}
+          totalWords={initSearchResults.length}
           resultStats={results.length}
         />
       </div>
-      <InfiniteScroll
-        dataLength={results.length}
-        next={fetch}
-        hasMore={!isSearching && results.length < TOTAL_WORDS}
-        loader={(
-          <div className="content-wrapper">
-            <div className="spinner-border text-primary" role="status">
-              <span className="sr-only">Cargando...</span>
-            </div>
-          </div>
-        )}
-        endMessage={!isSearching && (
-          <div className="content-wrapper">
-            <p className="font-weight-bold">
-              Has llegado al final, no es mucho pero es trabajo honesto 🥲
-            </p>
-          </div>
-        )}
-      >
-        <div className="content-wrapper">
-          {
-            results.map((word) => (
-              <Word
-                key={word.text}
-                word={word}
-                currentWord={currentWord}
-              />
-            ))
-          }
-        </div>
-      </InfiniteScroll>
-      {emptyResults && isSearching && (
-        <div className="content-wrapper">
-          <p className="font-weight-bold">No se han encontrado resultados 🙁</p>
+      {!emptyResults && (
+        <LazyLoadingSearchResults className="flex-1" results={results} currentWord={currentWord} />
+      )}
+      {emptyResults && isSearchBaring && (
+        <div className="flex w-full flex-1 items-center justify-center">
+          <p className="font-semibold">No se han encontrado resultados 🙁</p>
         </div>
       )}
+      <footer className="mt-12 flex justify-center gap-1 text-sm">
+        <p>Hecho con ❤️ por</p>
+        <a href="https://sjdonado.github.io" target="_blank" rel="noreferrer" className="underline">
+          @sjdonado
+        </a>
+      </footer>
     </div>
   );
 };

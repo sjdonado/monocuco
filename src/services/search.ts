@@ -1,47 +1,26 @@
-import lunr from 'lunr';
+import MiniSearch from 'minisearch';
 
-import DATA from '../data.json';
+import allWords from '../data.json';
 
-const index = lunr(function init() {
-  this.field('text');
-  this.field('meaning');
-  this.field('synonyms');
-  this.field('examples');
+const documents = allWords.map((doc, idx) => ({ id: idx, ...doc }));
 
-  (DATA as Word[]).forEach(({
-    text,
-    meaning,
-    synonyms,
-    examples,
-  }, idx) => {
-    this.add({
-      id: idx,
-      text,
-      meaning,
-      synonyms: synonyms.join(', '),
-      examples: examples.join(', '),
-    });
-  });
+const miniSearch = new MiniSearch({
+  fields: ['text', 'meaning', 'synonyms', 'examples'],
+  searchOptions: {
+    fuzzy: 0.3,
+  },
 });
 
-export const search = (word: string): Word[] => {
-  const matches = index.search(word);
-  const words = matches.filter(({ score }) => score >= 1)
-    .map(({ ref }) => DATA[Number(ref)]);
+miniSearch.addAll(documents);
+
+export const search = (word: string): SearchResult[] => {
+  const matches = miniSearch.search(word);
+
+  const words = matches
+    .filter(({ score }) => score > 1)
+    .map(({ id }) => ({ id, word: documents[id] }));
+
   return words;
 };
 
-export const TOTAL_WORDS: number = DATA.length;
-
-export const searchPaginator: SearchPaginator = {
-  perPage: 6,
-  firstResults: DATA.slice(0, 6),
-  fetch: function fetch(lastIndex: number) {
-    const nextIndex = lastIndex + this.perPage;
-    if (nextIndex > DATA.length) {
-      return DATA;
-    }
-    const result = DATA.slice(0, nextIndex);
-    return result;
-  },
-};
+export const initSearchResults = documents.map(({ id, ...word }) => ({ id, word }));
