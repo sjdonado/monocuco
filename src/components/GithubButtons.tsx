@@ -2,7 +2,7 @@ import GitHubButton from 'react-github-btn';
 
 export default function GithubButtons() {
   return (
-    <div className="flex w-full justify-start items-end flex-col h-full p-3 text-xs mb-1.5">
+    <div className="mb-1.5 flex size-full flex-col items-end justify-start p-3 text-xs">
       <div className="flex gap-2">
         <GitHubButton
           href="https://github.com/sjdonado/monocuco/fork"

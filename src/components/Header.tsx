@@ -10,7 +10,7 @@ export default function Header() {
       />
       <div className="title text-center">
         <h1 className="text-5xl">Monocuco</h1>
-        <h5 className="text-xl font-italic">Diccionario de palabras y frases costeñas</h5>
+        <h5 className="font-italic text-xl">Diccionario de palabras y frases costeñas</h5>
       </div>
     </>
   );

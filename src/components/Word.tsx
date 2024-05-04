@@ -26,19 +26,19 @@ export default function Word({ word, currentWord }: Props) {
   );
 
   return (
-    <div className="relative flex flex-col items-center justify-start text-center min-h-[282px] w-[380px] shadow-md bg-white m-6 p-[22px_16px]">
-      <div className="word-header-wrapper flex flex-row items-center justify-center h-24">
-        <div className="word-header__header text-6xl h-full">{highlightText(word.text)}</div>
+    <div className="relative m-6 flex min-h-[282px] w-[380px] flex-col items-center justify-start bg-white p-[22px_16px] text-center shadow-md">
+      <div className="word-header-wrapper flex h-24 flex-row items-center justify-center">
+        <div className="word-header__header h-full text-6xl">{highlightText(word.text)}</div>
       </div>
       <h6 className="mt-6 text-justify">{word.meaning}</h6>
       {synonyms.length > 0 && (
-        <div className="synonyms-list flex flex-col font-italic">
-          <span className="list-title font-bold text-sm mt-4">Sinónimos</span>
+        <div className="synonyms-list font-italic flex flex-col">
+          <span className="list-title mt-4 text-sm font-bold">Sinónimos</span>
           {highlightText(synonyms)}
         </div>
       )}
-      <div className="examples-list flex flex-col font-italic mt-6 mb-12">
-        <span className="list-title font-bold text-sm">Ejemplos</span>
+      <div className="examples-list font-italic mb-12 mt-6 flex flex-col">
+        <span className="list-title text-sm font-bold">Ejemplos</span>
         {word.examples.map((example) => highlightText(example, example))}
       </div>
       <div className="credits absolute bottom-4 right-4">
