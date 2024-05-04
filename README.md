@@ -1,34 +1,25 @@
 # Monocuco
-> Diccionario de palabras y frases costeñas.
+> Diccionario de palabras y frases oriundas de la Región Caribe Colombiana
 
 ![Uptime Badge](https://uptime.donado.co/api/badge/4/uptime/24) ![Uptime Badge](https://uptime.donado.co/api/badge/4/ping/24)
 
-<img width="1400" alt="image" src="https://user-images.githubusercontent.com/27580836/233056568-b9985fb4-27ae-47e5-a663-48d9c1619411.png">
-
-## Objetivo
-
-Construir el más grande disccionario de palabras y frases propias de la Costa Caribe Colombiana.
+<img width="2032" alt="Screenshot 2024-05-05 at 00 52 13" src="https://github.com/sjdonado/monocuco/assets/27580836/6dc68821-e206-4f6a-8d8f-2d8482d519a2">
 
 ## ¿Cómo contribuir?
 
-Si has trabajado antes con React crea/selecciona un issue y sube el PR con la mejora.
-Si deseas añadir nuevas palabras al diccionario, realiza los siguientes pasos:
+1. Añade nuevas palabras a través del CLI o manualmente editando el archivo fuente:
 
-### Si eres desarrollador
-
-1. Haz un fork de este repo
-2. Para añadir una nueva palabra lo puedes hacer de dos maneras:
-
-**Usando el CLI (Nuevo!)**
+### Via CLI
 Ingresa a tu consola:
 
-```bash
+```sh
+  npm install
   npm run cli
 ```
 
-Y luego ingresas la información en consola a medida que se vaya pidiendo:
+Ingresa la información solicitada:
 
-```bash
+```sh
 ? Palabra Jodido
 ? Significado Persona que está mal
 ? Sinónimos (separados por coma) salado
@@ -40,8 +31,8 @@ Y luego ingresas la información en consola a medida que se vaya pidiendo:
 Ya puedes crear el commit y subir el PR. ;)
 ```
 
-**Editando archivo**
-Agrega la nueva palabra directamente en el archivo `src/data.json`, asegurate de seguir esta estructura:
+### Editando archivo fuente
+Agrega la nueva palabra directamente en el archivo `src/data.json`, asegurate de seguir la estructura:
 
 ```json
   "text": "Monocuco",
@@ -57,26 +48,12 @@ Agrega la nueva palabra directamente en el archivo `src/data.json`, asegurate de
   }]
 ```
 
-3. Crea el pull request
-4. (Opcional) Añade tu perfil a la lista de contribuidores 😎 (no cambies el orden)
-5. ¡Listo!
+2. **Opcional:** Añade tu perfil a la lista de contribuidores 😎 (no cambies el orden)
+3. Abre un Pull Request con los cambios https://www.freecodecamp.org/espanol/news/como-hacer-tu-primer-pull-request-en-github/
 
-### Si no eres desarrollador
-
-1. Envíame un email [jsrd98@gmail.com](mailto:jsrd98@gmail.com) con la siguiente información:
-
-- Palabra
-- Significado
-- Sinónimos (opcional)
-- Ejemplos (máximo dos)
-- Tu página personal, o algún link para que puedan buscarte
-- Tu nombre
-
-2. En el asunto coloca: Nueva palabra - Monocuco
-3. ¡Listo!
+---
 
 ## Contribuidores
-
 <table>
   <tr>
     <td align="center">
@@ -303,20 +280,17 @@ Agrega la nueva palabra directamente en el archivo `src/data.json`, asegurate de
     </td>
     </tr>
   <tr>
-    <td align="center">
-      <a href="https://github.com/LJossue">
-        <img src="https://avatars.githubusercontent.com/u/101231796?s=460" alt="Leandro Ramírez" />
-        <br />
-        <sub>
-          <b>Leandro Ramírez</b>
-        </sub>
-      </a>
-    </td>
-  </tr>
-     
-  
+  <td align="center">
+    <a href="https://github.com/LJossue">
+      <img src="https://avatars.githubusercontent.com/u/101231796?s=460" alt="Leandro Ramírez" />
+      <br />
+      <sub>
+        <b>Leandro Ramírez</b>
+      </sub>
+    </a>
+  </td>
+</tr>
 <table>
 
 ## Agradecimientos
-
 - Andres Urquina: Autor del icono [Ilustración Bailarina - Carnaval de Barranquilla, Colombia.](https://www.flickr.com/photos/andresurquina/16246891029)
