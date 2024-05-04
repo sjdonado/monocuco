@@ -1,32 +1,26 @@
-import lunr from 'lunr';
+import MiniSearch from 'minisearch';
 
-import DATA from '../data.json';
+import allWords from '../data.json';
 
-const index = lunr(function init() {
-  this.field('text');
-  this.field('meaning');
-  this.field('synonyms');
-  this.field('examples');
+const documents = allWords.map((doc, idx) => ({ id: idx, ...doc }));
 
-  (DATA as Word[]).forEach(({ text, meaning, synonyms, examples }, idx) => {
-    this.add({
-      id: idx,
-      text,
-      meaning,
-      synonyms: synonyms.join(', '),
-      examples: examples.join(', '),
-    });
-  });
+const miniSearch = new MiniSearch({
+  fields: ['text', 'meaning', 'synonyms', 'examples'],
+  searchOptions: {
+    fuzzy: 0.3,
+  },
 });
 
+miniSearch.addAll(documents);
+
 export const search = (word: string): SearchResult[] => {
-  const matches = index.search(word);
+  const matches = miniSearch.search(word);
 
   const words = matches
-    .filter(({ score }) => score >= 1)
-    .map(({ ref }) => ({ idx: ref, word: DATA[Number(ref)] }));
+    .filter(({ score }) => score > 1)
+    .map(({ id }) => ({ id, word: documents[id] }));
 
   return words;
 };
 
-export const initSearchResults = DATA.map((word, idx) => ({ idx: String(idx), word }));
+export const initSearchResults = documents.map(({ id, ...word }) => ({ id, word }));

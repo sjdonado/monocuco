@@ -47,9 +47,11 @@ const App = function App() {
           resultStats={results.length}
         />
       </div>
-      <LazyLoadingSearchResults className="flex-1" results={results} currentWord={currentWord} />
+      {!emptyResults && (
+        <LazyLoadingSearchResults className="flex-1" results={results} currentWord={currentWord} />
+      )}
       {emptyResults && isSearchBaring && (
-        <div className="flex w-full flex-1 flex-wrap items-center justify-center">
+        <div className="flex w-full flex-1 items-center justify-center">
           <p className="font-semibold">No se han encontrado resultados 🙁</p>
         </div>
       )}

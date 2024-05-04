@@ -12,6 +12,6 @@ declare interface Word {
 }
 
 declare interface SearchResult {
-  idx: string;
+  id: number;
   word: Word;
 }

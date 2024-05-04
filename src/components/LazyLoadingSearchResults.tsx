@@ -15,7 +15,7 @@ export default function LazyLoadingSearchResults({
 }) {
   const firstResults = results
     .slice(0, CHUNK_SIZE)
-    .map((result) => <WordCard key={result.idx} word={result.word} currentWord={currentWord} />);
+    .map((result) => <WordCard key={result.id} word={result.word} currentWord={currentWord} />);
 
   const [lazyLoaded, setLazyLoaded] = useState<JSX.Element[]>([]);
 
@@ -29,7 +29,7 @@ export default function LazyLoadingSearchResults({
           results
             .slice(CHUNK_SIZE, results.length)
             .map((result) => (
-              <WordCard key={result.idx} word={result.word} currentWord={currentWord} />
+              <WordCard key={result.id} word={result.word} currentWord={currentWord} />
             )),
         );
       }, 100);
