@@ -9,7 +9,7 @@ interface Props {
 
 export default function SearchBar({ word, onSearch, totalWords, resultStats }: Props) {
   return (
-    <div className="mx-auto mt-10 flex w-[480px] flex-col gap-1 sm:w-9/12">
+    <div className="mx-auto mt-10 flex w-full flex-col gap-1 md:w-2/3 lg:w-1/2">
       <Input onSearch={onSearch} word={word} />
       <span className="text-gray-500">{`Resultados búsqueda: ${resultStats} de ${totalWords}`}</span>
     </div>

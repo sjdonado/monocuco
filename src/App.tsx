@@ -4,7 +4,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import SearchBar from './components/SearchBar';
-import Word from './components/Word';
+import WordCard from './components/WordCard';
 import GithubButtons from './components/GithubButtons';
 import Header from './components/Header';
 
@@ -49,9 +49,9 @@ const App = function App() {
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col justify-between border-red-600">
+    <div className="flex min-h-screen w-full flex-col justify-between gap-12 border-t-4 border-red-600 p-4">
       <GithubButtons />
-      <div className="mt-12 flex flex-col items-center justify-end">
+      <div className="flex flex-col items-center">
         <Header />
         <SearchBar
           word={currentWord}
@@ -65,16 +65,16 @@ const App = function App() {
         next={fetch}
         hasMore={!isSearchBaring && results.length < TOTAL_WORDS}
         loader={
-          <div className="m-[24px_auto] flex w-full flex-wrap items-center justify-center">
+          <div className="flex w-full flex-wrap items-center justify-center">
             <div className="text-red-600" role="status">
               <span className="sr-only">Cargando...</span>
             </div>
           </div>
         }
       >
-        <div className="m-[24px_auto] flex w-full flex-wrap items-center justify-center">
+        <div className="flex w-full flex-wrap items-start justify-center gap-4">
           {results.map((word) => (
-            <Word key={word.text} word={word} currentWord={currentWord} />
+            <WordCard key={word.text} word={word} currentWord={currentWord} />
           ))}
         </div>
       </InfiniteScroll>
