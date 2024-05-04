@@ -19,23 +19,14 @@ const index = lunr(function init() {
   });
 });
 
-export const search = (word: string): Word[] => {
+export const search = (word: string): SearchResult[] => {
   const matches = index.search(word);
-  const words = matches.filter(({ score }) => score >= 1).map(({ ref }) => DATA[Number(ref)]);
+
+  const words = matches
+    .filter(({ score }) => score >= 1)
+    .map(({ ref }) => ({ idx: ref, word: DATA[Number(ref)] }));
+
   return words;
 };
 
-export const TOTAL_WORDS: number = DATA.length;
-
-export const searchPaginator: SearchPaginator = {
-  perPage: 24,
-  firstResults: DATA.slice(0, 24),
-  fetch: function fetch(lastIndex: number) {
-    const nextIndex = lastIndex + this.perPage;
-    if (nextIndex > DATA.length) {
-      return DATA;
-    }
-    const result = DATA.slice(0, nextIndex);
-    return result;
-  },
-};
+export const initSearchResults = DATA.map((word, idx) => ({ idx: String(idx), word }));

@@ -11,8 +11,7 @@ declare interface Word {
   authors: Author[];
 }
 
-declare interface SearchPaginator {
-  perPage: number;
-  firstResults: Word[];
-  fetch: (lastIndex: number) => Word[];
+declare interface SearchResult {
+  idx: string;
+  word: Word;
 }
