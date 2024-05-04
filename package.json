@@ -3,72 +3,39 @@
   "version": "0.1.0",
   "author": "sjdonado",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
     "cli": "node bin/cli.js",
     "check": "ajv validate -s schema.json -d src/data.json"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.5.2",
-    "@testing-library/jest-dom": "^6.4.2",
-    "@testing-library/react": "^15.0.6",
-    "@testing-library/user-event": "^14.5.2",
-    "@types/jest": "^29.5.12",
-    "@types/lunr": "^2.3.7",
-    "@types/node": "^20.12.8",
-    "@types/react": "^18.3.1",
-    "@types/react-dom": "^18.3.0",
-    "@types/react-highlight-words": "^0.16.7",
-    "bootstrap": "^5.3.3",
     "commander": "^12.0.0",
     "inquirer": "^9.2.20",
     "lunr": "^2.3.9",
-    "node-sass": "^9.0.0",
-    "prop-types": "^15.8.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-highlight-words": "^0.20.0",
-    "react-infinite-scroll-component": "^6.1.0",
-    "react-scripts": "^5.0.1",
-    "typescript": "^5.4.5"
+    "react-infinite-scroll-component": "^6.1.0"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
-    "@typescript-eslint/parser": "^7.8.0",
-    "ajv-cli": "^5.0.0",
-    "eslint": "^9.1.1",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-airbnb-typescript": "^18.0.0",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jsx-a11y": "^6.8.0",
-    "eslint-plugin-react": "^7.34.1",
-    "eslint-plugin-react-hooks": "^4.6.2"
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0"
   },
   "trustedDependencies": [
     "@fortawesome/fontawesome-free",
     "core-js",
     "core-js-pure",
+    "esbuild",
     "node-sass"
   ]
 }
