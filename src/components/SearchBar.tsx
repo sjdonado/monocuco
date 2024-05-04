@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 interface Props {
   word: string;
@@ -39,7 +40,7 @@ function Input({ onSearch, word }: { onSearch: (value: string) => void; word: st
         value={word}
       />
       <div className="flex h-12 items-center justify-center rounded-r-lg border border-l-0 border-gray-400">
-        <i className="fas fa-search mr-4 text-2xl text-gray-400" />
+        <MagnifyingGlassIcon className="mr-4 w-5 text-gray-400" />
       </div>
     </div>
   );

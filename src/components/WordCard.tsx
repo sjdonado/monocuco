@@ -28,11 +28,10 @@ export default function WordCard({ word, currentWord }: Props) {
     <div className="relative flex w-full flex-col items-center justify-start gap-5 rounded-lg border p-4 text-center lg:w-[672px] lg:max-w-2xl">
       <div className="flex w-full flex-col gap-2">
         {synonyms.length > 0 && (
-          <div className="flex justify-end">
-            {highlightText(synonyms, 'border rounded-lg px-2 text-sm')}
-          </div>
+          <div className="flex justify-end text-sm">Sin. {highlightText(synonyms, 'px-2')}</div>
         )}
         {highlightText(word.text, 'h-full text-3xl')}
+        <span className="mx-auto w-20 border-t-2 border-red-400" />
       </div>
       <h3 className="text-justify italic">"{word.meaning}"</h3>
       <ul className="w-full list-inside list-disc text-left">

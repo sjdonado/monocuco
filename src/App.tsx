@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import '@fortawesome/fontawesome-free/css/all.min.css';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import SearchBar from './components/SearchBar';

@@ -11,7 +11,7 @@
     "check": "ajv validate -s schema.json -d src/data.json"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.5.2",
+    "@heroicons/react": "^2.1.3",
     "commander": "^12.0.0",
     "inquirer": "^9.2.20",
     "lunr": "^2.3.9",
@@ -38,7 +38,6 @@
     "vite": "^5.2.0"
   },
   "trustedDependencies": [
-    "@fortawesome/fontawesome-free",
     "esbuild"
   ]
 }
