@@ -1,14 +1,11 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 
 interface Props {
-  onUpdateWord: (value: string) => void,
-  word: string,
+  onUpdateWord: (value: string) => void;
+  word: string;
 }
 
-const Input = function Input({
-  onUpdateWord,
-  word,
-}: Props) {
+export default function Input({ onUpdateWord, word }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -21,7 +18,7 @@ const Input = function Input({
     <input
       ref={inputRef}
       id="search-input"
-      className="search__input"
+      className="w-full h-20 border border-gray-400 border-r-0 rounded-none appearance-none text-2xl text-left px-7 outline-none leading-9"
       type="text"
       autoComplete="off"
       autoCapitalize="off"
@@ -30,6 +27,4 @@ const Input = function Input({
       value={word}
     />
   );
-};
-
-export default Input;
+}

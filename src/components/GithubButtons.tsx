@@ -1,11 +1,8 @@
-import React from 'react';
-
-const GithubButtons = function GithubButtons() {
+export default function GithubButtons() {
   return (
-    <div className="info">
-      <div className="github-buttons-wrapper">
+    <div className="flex w-full justify-start items-end flex-col h-full p-3 text-xs mb-1.5">
+      <div className="flex gap-6">
         <a
-          className="github-button"
           href="https://github.com/sjdonado/monocuco/fork"
           data-icon="octicon-repo-forked"
           data-show-count="true"
@@ -14,7 +11,6 @@ const GithubButtons = function GithubButtons() {
           Fork
         </a>
         <a
-          className="github-button"
           href="https://github.com/sjdonado/monocuco"
           data-icon="octicon-star"
           data-show-count="true"
@@ -32,6 +28,4 @@ const GithubButtons = function GithubButtons() {
       </a>
     </div>
   );
-};
-
-export default GithubButtons;
+}

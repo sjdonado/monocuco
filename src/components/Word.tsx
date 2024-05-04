@@ -1,17 +1,11 @@
-import React from 'react';
 import Highlighter from 'react-highlight-words';
-
-import './Word.scss';
 
 interface Props {
   word: Word;
   currentWord: string;
 }
 
-const Word = function Word({
-  word,
-  currentWord,
-}: Props) {
+export default function Word({ word, currentWord }: Props) {
   const authors = word.authors.map(({ name }) => name).join(', ');
   const synonyms = word.synonyms.join(', ');
 
@@ -32,28 +26,30 @@ const Word = function Word({
   );
 
   return (
-    <div className="word-container">
-      {highlightText(word.text)}
-      <div className="underline" />
-      <h6>{word.meaning}</h6>
+    <div className="relative flex flex-col items-center justify-start text-center min-h-[282px] w-[380px] shadow-md bg-white m-6 p-[22px_16px]">
+      <div className="word-header-wrapper flex flex-row items-center justify-center h-24">
+        <div className="word-header__header text-6xl h-full">{highlightText(word.text)}</div>
+      </div>
+      <h6 className="mt-6 text-justify">{word.meaning}</h6>
       {synonyms.length > 0 && (
-        <div className="synonyms-list">
-          <span className="list-title">Sinónimos</span>
+        <div className="synonyms-list flex flex-col font-italic">
+          <span className="list-title font-bold text-sm mt-4">Sinónimos</span>
           {highlightText(synonyms)}
         </div>
       )}
-      <div className="examples-list">
-        <span className="list-title">Ejemplos</span>
+      <div className="examples-list flex flex-col font-italic mt-6 mb-12">
+        <span className="list-title font-bold text-sm">Ejemplos</span>
         {word.examples.map((example) => highlightText(example, example))}
       </div>
-      <div className="credits">
-        <span>Añadida por: </span>
+      <div className="credits absolute bottom-4 right-4">
+        <span className="mr-2 text-xs">Añadida por: </span>
         {word.authors.map(({ link }) => (
           <a
             key={`${word.text}-${link}`}
             href={link}
             target="_blank"
             rel="noopener noreferrer"
+            className="text-xs"
           >
             {authors}
           </a>
@@ -61,6 +57,4 @@ const Word = function Word({
       </div>
     </div>
   );
-};
-
-export default Word;
+}
