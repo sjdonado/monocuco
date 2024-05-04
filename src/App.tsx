@@ -49,7 +49,7 @@ const App = function App() {
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col justify-between gap-12 border-t-4 border-red-600 p-4">
+    <div className="flex min-h-screen w-full flex-col justify-start gap-12 border-t-4 border-red-600 p-4">
       <GithubButtons />
       <div className="flex flex-col items-center">
         <Header />
@@ -65,11 +65,25 @@ const App = function App() {
         next={fetch}
         hasMore={!isSearchBaring && results.length < TOTAL_WORDS}
         loader={
-          <div className="flex w-full flex-wrap items-center justify-center">
-            <div className="text-red-600" role="status">
+          <div className="my-24 flex w-full justify-center transition-opacity">
+            <div className="relative flex size-12">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-red-400 opacity-75"></span>
               <span className="sr-only">Cargando...</span>
             </div>
           </div>
+        }
+        endMessage={
+          <footer className="mt-12 flex justify-center gap-1 text-sm">
+            <p>Hecho con ❤️ por</p>
+            <a
+              href="https://sjdonado.github.io"
+              target="_blank"
+              rel="noreferrer"
+              className="underline"
+            >
+              @sjdonado
+            </a>
+          </footer>
         }
       >
         <div className="flex w-full flex-wrap items-start justify-center gap-4">
@@ -79,8 +93,8 @@ const App = function App() {
         </div>
       </InfiniteScroll>
       {emptyResults && isSearchBaring && (
-        <div className="m-[24px_auto] flex w-full flex-wrap items-center justify-center">
-          <p className="font-bold">No se han encontrado resultados 🙁</p>
+        <div className="flex w-full flex-wrap items-center justify-center">
+          <p className="font-semibold">No se han encontrado resultados 🙁</p>
         </div>
       )}
     </div>

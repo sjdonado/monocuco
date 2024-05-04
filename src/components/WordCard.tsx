@@ -6,7 +6,6 @@ interface Props {
 }
 
 export default function WordCard({ word, currentWord }: Props) {
-  const authors = word.authors.map(({ name }) => name).join(', ');
   const synonyms = word.synonyms.join(', ');
 
   const searchWords = currentWord.split(' ');
@@ -15,8 +14,9 @@ export default function WordCard({ word, currentWord }: Props) {
     mainWords.push(currentWord);
   }
 
-  const highlightText = (text: string) => (
+  const highlightText = (text: string, className?: string) => (
     <Highlighter
+      className={className}
       highlightClassName="highlight"
       searchWords={mainWords}
       autoEscape
@@ -25,23 +25,24 @@ export default function WordCard({ word, currentWord }: Props) {
   );
 
   return (
-    <div className="relative flex w-full flex-col items-center justify-start gap-4 rounded-lg border p-4 text-center lg:w-[512px] lg:max-w-lg">
-      <div className="h-full text-3xl">{highlightText(word.text)}</div>
+    <div className="relative flex w-full flex-col items-center justify-start gap-5 rounded-lg border p-4 text-center lg:w-[672px] lg:max-w-2xl">
+      <div className="flex w-full flex-col gap-2">
+        {synonyms.length > 0 && (
+          <div className="flex justify-end">
+            {highlightText(synonyms, 'border rounded-lg px-2 text-sm')}
+          </div>
+        )}
+        {highlightText(word.text, 'h-full text-3xl')}
+      </div>
       <h3 className="text-justify italic">"{word.meaning}"</h3>
-      {synonyms.length > 0 && (
-        <div className="flex w-full flex-col">
-          <span className="text-sm font-semibold">Sinónimos</span>
-          {highlightText(synonyms)}
-        </div>
-      )}
-      <ul className="list-inside list-disc w-full text-left">
+      <ul className="w-full list-inside list-disc text-left">
         {word.examples.map((example, idx) => (
           <li key={idx}>{highlightText(example)}</li>
         ))}
       </ul>
       <div className="flex w-full justify-end gap-1 text-xs">
         <span>Añadida por:</span>
-        {word.authors.map(({ link }) => (
+        {word.authors.map(({ name, link }) => (
           <a
             key={`${word.text}-${link}`}
             href={link}
@@ -49,7 +50,7 @@ export default function WordCard({ word, currentWord }: Props) {
             rel="noopener noreferrer"
             className="underline"
           >
-            {authors}
+            {name}
           </a>
         ))}
       </div>
