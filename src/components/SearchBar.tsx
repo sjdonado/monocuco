@@ -31,7 +31,7 @@ function Input({ onSearch, word }: { onSearch: (value: string) => void; word: st
       <input
         ref={inputRef}
         type="text"
-        className="h-12 w-full appearance-none rounded-lg rounded-r-none border border-r-0 border-gray-400 px-4 leading-9 outline-none"
+        className="h-12 w-full appearance-none rounded-lg rounded-r-none border border-r-0 border-gray-400 px-4 leading-9 outline-none dark:border-gray-700 dark:bg-gray-900"
         autoComplete="off"
         autoCapitalize="off"
         autoCorrect="off"
@@ -39,7 +39,7 @@ function Input({ onSearch, word }: { onSearch: (value: string) => void; word: st
         placeholder="Buscar palabra"
         value={word}
       />
-      <div className="flex h-12 items-center justify-center rounded-r-lg border border-l-0 border-gray-400">
+      <div className="flex h-12 items-center justify-center rounded-r-lg border border-l-0 border-gray-400 dark:border-gray-700">
         <MagnifyingGlassIcon className="mr-4 w-5 text-gray-400" />
       </div>
     </div>

@@ -25,7 +25,7 @@ export default function WordCard({ word, currentWord }: Props) {
   );
 
   return (
-    <div className="relative flex w-full flex-col items-center justify-start gap-5 rounded-lg border p-4 text-center lg:w-[672px] lg:max-w-2xl">
+    <div className="relative flex w-full flex-col items-center justify-start gap-5 rounded-lg border p-4 text-center lg:w-[672px] lg:max-w-2xl dark:border-gray-700">
       <div className="flex w-full flex-col gap-2">
         {synonyms.length > 0 && (
           <div className="flex justify-end text-sm">Sin. {highlightText(synonyms, 'px-2')}</div>
