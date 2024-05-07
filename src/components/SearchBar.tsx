@@ -39,7 +39,7 @@ function Input({ onSearch, word }: { onSearch: (value: string) => void; word: st
         placeholder="Buscar palabra"
         value={word}
       />
-      <div className="flex h-12 items-center justify-center rounded-r-lg border border-l-0 border-gray-400 dark:border-gray-700">
+      <div className="flex h-12 items-center justify-center rounded-r-lg border border-l-0 border-gray-400 bg-white dark:border-gray-700 dark:bg-gray-900">
         <MagnifyingGlassIcon className="mr-4 w-5 text-gray-400" />
       </div>
     </div>
