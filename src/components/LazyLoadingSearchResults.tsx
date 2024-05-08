@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, startTransition, useEffect, useState } from 'react';
 
 import WordCard from './WordCard';
 
@@ -24,7 +24,7 @@ export default function LazyLoadingSearchResults({
       firstResults.length + lazyLoaded.length !== results.length ||
       (results.length > CHUNK_SIZE && lazyLoaded.length === 0)
     ) {
-      setTimeout(() => {
+      startTransition(() => {
         setLazyLoaded(
           results
             .slice(CHUNK_SIZE, results.length)
@@ -32,7 +32,7 @@ export default function LazyLoadingSearchResults({
               <WordCard key={result.id} word={result.word} currentWord={currentWord} />
             )),
         );
-      }, 100);
+      });
     }
   }, [results, currentWord, firstResults, lazyLoaded]);
 

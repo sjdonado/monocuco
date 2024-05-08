@@ -36,7 +36,7 @@ const App = function App() {
   const emptyResults = results.length === 0;
 
   return (
-    <div className="flex min-h-screen w-full flex-col justify-start gap-12 border-t-4 border-red-600 p-4">
+    <div className="flex min-h-screen w-full flex-col justify-start gap-12 border-t-4 border-red-600 bg-gray-50 p-4 dark:bg-gray-900 dark:text-gray-300">
       <GithubButtons />
       <div className="flex flex-col items-center">
         <Header />
