@@ -3,7 +3,8 @@
 
 ![Uptime Badge](https://uptime.donado.co/api/badge/4/uptime/24) ![Uptime Badge](https://uptime.donado.co/api/badge/4/ping/24)
 
-<img width="2032" alt="Screenshot 2024-05-05 at 00 52 13" src="https://github.com/sjdonado/monocuco/assets/27580836/6dc68821-e206-4f6a-8d8f-2d8482d519a2">
+<img width="2032" alt="Screenshot 2024-05-08 at 05 42 01" src="https://github.com/sjdonado/monocuco/assets/27580836/ff3e7242-6133-4469-98c8-aa83f1bb0617">
+<img width="2032" alt="Screenshot 2024-05-08 at 05 42 12" src="https://github.com/sjdonado/monocuco/assets/27580836/6f30a3b9-69b8-4c03-a492-20d9d036b5cf">
 
 ## ¿Cómo contribuir?
 
@@ -294,3 +295,4 @@ Agrega la nueva palabra directamente en el archivo `src/data.json`, asegurate de
 
 ## Agradecimientos
 - Andres Urquina: Autor del icono [Ilustración Bailarina - Carnaval de Barranquilla, Colombia.](https://www.flickr.com/photos/andresurquina/16246891029)
+ Andres Urquina: Autor del icono [Ilustración Bailarina - Carnaval de Barranquilla, Colombia.](https://www.flickr.com/photos/andresurquina/16246891029)
