@@ -1,11 +1,6 @@
 # Monocuco
 > Diccionario de palabras y frases oriundas de la Región Caribe Colombiana
 
-![Uptime Badge](https://uptime.donado.co/api/badge/4/uptime/24) ![Uptime Badge](https://uptime.donado.co/api/badge/4/ping/24)
-
-<img width="2032" alt="Screenshot 2024-05-08 at 05 42 01" src="https://github.com/sjdonado/monocuco/assets/27580836/ff3e7242-6133-4469-98c8-aa83f1bb0617">
-<img width="2032" alt="Screenshot 2024-05-08 at 05 42 12" src="https://github.com/sjdonado/monocuco/assets/27580836/6f30a3b9-69b8-4c03-a492-20d9d036b5cf">
-
 ## ¿Cómo contribuir?
 
 1. Añade nuevas palabras a través del CLI o manualmente editando el archivo fuente:
