@@ -1575,5 +1575,21 @@
         "link": "https://github.com/C9-LinkRs"
       }
     ]
+  },
+  {
+    "text": "Juma",
+    "meaning": "Palabra que se utiliza para expresar un estado de resaca o borrachera.",
+    "synonyms": ["Guayabo, Resaca"],
+    "examples": [
+      "'La juma de ayer ya se me pasó.'",
+      "'Qué juma tan berrionda tengo hoy!'",
+      "'Dame un sal de frutas pa' esta juma que tengo.'"
+    ],
+    "authors": [
+      {
+        "name": "Andrés Villay",
+        "link": "https://github.com/anfvc"
+      }
+    ]
   }
 ]

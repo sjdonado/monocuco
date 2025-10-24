@@ -285,6 +285,15 @@ Agrega la nueva palabra directamente en el archivo `src/data.json`, asegurate de
       </sub>
     </a>
   </td>
+  <td align="center">
+    <a href="https://github.com/anfvc">
+      <img src="https://avatars.githubusercontent.com/u/96877542?v=4" alt="Andrés Villay" />
+      <br />
+      <sub>
+        <b>Andres Villay</b>
+      </sub>
+    </a>
+  </td>
 </tr>
 <table>
 
