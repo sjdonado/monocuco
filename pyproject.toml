@@ -1,0 +1,10 @@
+[project]
+name = "monocuco-tools"
+version = "0.1.0"
+description = "Utility scripts for Monocuco dataset management"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ["pyarrow>=21,<22"]
+
+[tool.uv]
+package = false
