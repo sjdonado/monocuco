@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { env } from '$env/dynamic/public';
 	import { createForm } from '@tanstack/svelte-form';
-	import { zodValidator } from '@tanstack/zod-form-adapter';
 	import { z } from 'zod';
 	import { AlertCircleIcon, CheckCircle2Icon, Loader2Icon } from '@lucide/svelte';
 
@@ -39,7 +38,6 @@
 
 	const form = createForm(() => ({
 		defaultValues: { ...initialValues },
-		validatorAdapter: zodValidator(),
 		validators: {
 			onChange: schema,
 			onSubmit: schema
