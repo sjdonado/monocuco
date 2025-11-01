@@ -131,22 +131,14 @@
 		void loadWords(term, cursorToken);
 	});
 
-	const buildShareUrl = (
-		wordId: string,
-		currentPage: number | null,
-		currentCursor: string | null,
-		searchValue: string | null
-	): string => {
+	const buildShareUrl = (wordId: string, word: string): string => {
 		const url = new URL('/', window.location.origin);
 
 		url.searchParams.set('word', wordId);
+		url.searchParams.set('q', word);
 
-		if (searchValue) {
-			url.searchParams.set('q', searchValue);
-		}
-
-		if (currentPage && currentPage > 1 && currentCursor) {
-			url.searchParams.set('cursor', currentCursor);
+		if (isSearching && currentPage && currentPage > 1 && result?.currentCursor) {
+			url.searchParams.set('cursor', result.currentCursor);
 		}
 
 		return url.toString();
@@ -251,15 +243,7 @@
 	{:else}
 		<div class="grid gap-6 sm:grid-cols-2">
 			{#each items as entry (entry.id)}
-				<WordCard
-					{entry}
-					shareUrl={buildShareUrl(
-						entry.id,
-						result?.currentPage ?? null,
-						result?.currentCursor ?? null,
-						searchValue
-					)}
-				/>
+				<WordCard {entry} shareUrl={buildShareUrl(entry.id, entry.word)} />
 			{/each}
 		</div>
 	{/if}

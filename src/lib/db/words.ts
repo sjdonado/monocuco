@@ -1,4 +1,4 @@
-import type { AsyncDuckDB, AsyncDuckDBConnection } from '@duckdb/duckdb-wasm';
+import type { AsyncDuckDB, AsyncDuckDBConnection, AsyncPreparedStatement } from '@duckdb/duckdb-wasm';
 import type { Table } from 'apache-arrow';
 import { getConnection } from './duckdb';
 
@@ -97,23 +97,59 @@ export const queryAll = async (options: QueryAllOptions = {}): Promise<QueryAllR
 
 	const isSearch = term.length > 0;
 
-	const rankedOrder = "ORDER BY LOWER(word), word, id";
-
 	const rankedCte = isSearch
-		? `WITH ranked AS (
-			SELECT id, word, definition, example, createdByName, createdByWebsite, createdAt,
-				ROW_NUMBER() OVER (${rankedOrder}) AS rn
-			FROM (
-				SELECT id, word, definition, example, createdByName, createdByWebsite, createdAt
+		? `WITH base AS (
+				SELECT
+					id,
+					word,
+					definition,
+					example,
+					createdByName,
+					createdByWebsite,
+					createdAt,
+					CASE
+						WHEN fts_main_words.match_bm25(id, ?, fields := 'word') IS NOT NULL THEN 1
+						ELSE 0
+					END AS word_match
 				FROM ${WORDS_TABLE}
 				WHERE fts_main_words.match_bm25(id, ?, fields := 'word,definition') IS NOT NULL
-			)
-		)`
-		: `WITH ranked AS (
-			SELECT id, word, definition, example, createdByName, createdByWebsite, createdAt,
-				ROW_NUMBER() OVER (${rankedOrder}) AS rn
-			FROM ${WORDS_TABLE}
-		)`;
+			),
+			ranked AS (
+				SELECT
+					id,
+					word,
+					definition,
+					example,
+					createdByName,
+					createdByWebsite,
+					createdAt,
+					ROW_NUMBER() OVER (ORDER BY word_match DESC, LOWER(word), word, id) AS rn
+				FROM base
+			)`
+		: `WITH base AS (
+				SELECT
+					id,
+					word,
+					definition,
+					example,
+					createdByName,
+					createdByWebsite,
+					createdAt,
+					0 AS word_match
+				FROM ${WORDS_TABLE}
+			),
+			ranked AS (
+				SELECT
+					id,
+					word,
+					definition,
+					example,
+					createdByName,
+					createdByWebsite,
+					createdAt,
+					ROW_NUMBER() OVER (ORDER BY word_match DESC, LOWER(word), word, id) AS rn
+				FROM base
+			)`;
 
 	const totalSql = `${rankedCte}
 		SELECT COUNT(*)::BIGINT AS total
@@ -149,11 +185,18 @@ export const queryAll = async (options: QueryAllOptions = {}): Promise<QueryAllR
 		return 0;
 	};
 
+	const runQuery = async (statement: AsyncPreparedStatement<any>, ...args: unknown[]) => {
+		if (isSearch) {
+			return statement.query(term, term, ...args);
+		}
+		return statement.query(...args);
+	};
+
 	const totalStatement = await connection.prepare(totalSql);
 	let total = 0;
 
 	try {
-		const totalTable = isSearch ? await totalStatement.query(term) : await totalStatement.query();
+		const totalTable = await runQuery(totalStatement);
 		const totalRow = tableToRows<CountRow>(totalTable)[0];
 		total = toNumber(totalRow?.total);
 	} finally {
@@ -165,9 +208,7 @@ export const queryAll = async (options: QueryAllOptions = {}): Promise<QueryAllR
 	if (cursor) {
 		const lookupStatement = await connection.prepare(lookupSql);
 		try {
-			const lookupTable = isSearch
-				? await lookupStatement.query(term, cursor)
-				: await lookupStatement.query(cursor);
+			const lookupTable = await runQuery(lookupStatement, cursor);
 			const lookupRow = tableToRows<RowNumberRow>(lookupTable)[0];
 			const rowNumber = toNumber(lookupRow?.rn);
 			if (rowNumber > 0 && rowNumber <= total) {
@@ -203,9 +244,7 @@ export const queryAll = async (options: QueryAllOptions = {}): Promise<QueryAllR
 	let items: Word[] = [];
 
 	try {
-		const pageTable = isSearch
-			? await pageStatement.query(term, startIndex, endIndex)
-			: await pageStatement.query(startIndex, endIndex);
+		const pageTable = await runQuery(pageStatement, startIndex, endIndex);
 		items = tableToRows<WordParquetRow>(pageTable).map(toWordRecord);
 	} finally {
 		await pageStatement.close();
@@ -217,9 +256,7 @@ export const queryAll = async (options: QueryAllOptions = {}): Promise<QueryAllR
 
 	const fetchCursorAt = async (index: number): Promise<string | null> => {
 		if (index < 1 || index > total) return null;
-		const table = isSearch
-			? await cursorStatement.query(term, index)
-			: await cursorStatement.query(index);
+		const table = await runQuery(cursorStatement, index);
 		const row = tableToRows<CursorRow>(table)[0];
 		return row?.id ?? null;
 	};
@@ -244,7 +281,7 @@ export const queryAll = async (options: QueryAllOptions = {}): Promise<QueryAllR
 
 		const MAX_PAGE_LINKS = 4;
 		let startPage = Math.max(1, currentPage - Math.floor(MAX_PAGE_LINKS / 2));
-		let endPage = Math.min(totalPages, startPage + MAX_PAGE_LINKS - 1);
+		const endPage = Math.min(totalPages, startPage + MAX_PAGE_LINKS - 1);
 		const visibleCount = endPage - startPage + 1;
 		if (visibleCount < MAX_PAGE_LINKS) {
 			startPage = Math.max(1, endPage - MAX_PAGE_LINKS + 1);
@@ -301,33 +338,50 @@ export const querySuggestions = async (options: QuerySuggestionsOptions): Promis
 	const limit = Math.max(1, options.limit ?? 5);
 	const connection = await getConnection();
 	const suggestionSql = `
-		WITH fts_results AS (
-			SELECT id, word, definition,
-				fts_main_words.match_bm25(id, ?, fields := 'word,definition') AS score
+		WITH fts_base AS (
+			SELECT
+				id,
+				word,
+				definition,
+				fts_main_words.match_bm25(id, ?, fields := 'word,definition') AS score,
+				fts_main_words.match_bm25(id, ?, fields := 'word') AS word_score
 			FROM ${WORDS_TABLE}
+		),
+		fts_results AS (
+			SELECT
+				id,
+				word,
+				definition,
+				score,
+				CASE WHEN word_score IS NOT NULL THEN 1 ELSE 0 END AS word_match
+			FROM fts_base
 			WHERE score IS NOT NULL
 		),
 		prefix_results AS (
-			SELECT id, word, definition,
-				CAST(NULL AS DOUBLE) AS score
+			SELECT
+				id,
+				word,
+				definition,
+				CAST(NULL AS DOUBLE) AS score,
+				1 AS word_match
 			FROM ${WORDS_TABLE}
 			WHERE lower(word) LIKE lower(?)
 				AND id NOT IN (SELECT id FROM fts_results)
 		),
 		combined AS (
-			SELECT id, word, definition, score, 1 AS priority FROM fts_results
+			SELECT id, word, definition, score, word_match, 1 AS priority FROM fts_results
 			UNION ALL
-			SELECT id, word, definition, score, 2 AS priority FROM prefix_results
+			SELECT id, word, definition, score, word_match, 2 AS priority FROM prefix_results
 		)
 		SELECT id, word, definition
 		FROM combined
-		ORDER BY priority, score DESC NULLS LAST, word
+		ORDER BY priority, word_match DESC, score DESC NULLS LAST, LOWER(word), word, id
 		LIMIT ?`;
 
 	const suggestionStatement = await connection.prepare(suggestionSql);
 	try {
 		const prefixTerm = `${term}%`;
-		const table = await suggestionStatement.query(term, prefixTerm, limit);
+		const table = await suggestionStatement.query(term, term, prefixTerm, limit);
 		return tableToRows<WordSuggestion>(table);
 	} finally {
 		await suggestionStatement.close();

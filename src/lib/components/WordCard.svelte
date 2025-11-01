@@ -32,7 +32,6 @@
 			if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
 				await navigator.share({
 					title: entry.word,
-					text: entry.word,
 					url: shareUrl
 				});
 				return;
