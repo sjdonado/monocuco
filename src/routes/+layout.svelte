@@ -1,7 +1,6 @@
 <script lang="ts">
 	import '../app.css';
 	import { env } from '$env/dynamic/public';
-	import favicon from '$lib/assets/favicon.ico';
 	import logo from '$lib/assets/logo.webp';
 	import { onMount } from 'svelte';
 	import { MenuIcon } from '@lucide/svelte';
@@ -32,7 +31,6 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
 	{#if env.PUBLIC_MODE === 'production'}
 		<script
 			defer

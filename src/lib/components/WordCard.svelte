@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Share2Icon } from '@lucide/svelte';
-	import { marked } from 'marked';
-	import { onDestroy } from 'svelte';
 	import type { Word } from '$lib/db/words';
+	import { parseMarkdown } from '$lib/markdown';
+	import { onDestroy } from 'svelte';
 
 	const {
 	entry,
@@ -11,11 +11,6 @@
 	entry: Word;
 	shareUrl: string | null;
 	}>();
-
-	const parseMarkdown = (value: string | null | undefined): string => {
-		if (!value) return '';
-		return marked.parse(value, { breaks: true }) as string;
-	};
 
 	const definitionHtml = $derived(parseMarkdown(entry.definition));
 	const exampleHtml = $derived(parseMarkdown(entry.example));
@@ -74,7 +69,7 @@
 
 <article id={entry.id} class="card bg-base-100 shadow-lg border border-base-200 dark:border-gray-700">
 		<div class="card-body gap-4">
-			<header class="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+			<header class="flex gap-2 items-center justify-between">
 				<h2 class="card-title text-3xl leading-snug">{entry.word}</h2>
 				{#if shareUrl}
 					<div class="flex items-center gap-2" aria-live="polite">
@@ -110,7 +105,7 @@
 
 		<footer class="flex flex-wrap items-center justify-between gap-2 text-sm font-semibold">
 			<div>
-				<span>Añadida por</span>
+				<span>por</span>
 				{#if entry.createdBy?.website}
 					<a
 						class="link link-primary"

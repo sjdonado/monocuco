@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto, afterNavigate } from '$app/navigation';
 	import { querySuggestions, type WordSuggestion } from '$lib/db/words';
+	import { parseMarkdown } from '$lib/markdown';
 	import { SearchIcon } from '@lucide/svelte';
 
 	const SUGGESTION_LIMIT = 4;
@@ -175,7 +176,8 @@
 							>
 								<span class="font-semibold">{suggestion.word}</span>
 								<span class="text-xs text-base-content/70">
-									{suggestion.definition}
+									<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+									{@html parseMarkdown(suggestion.definition)}
 								</span>
 							</button>
 						</li>
