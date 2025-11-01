@@ -1,1 +1,3 @@
-// place files you want to import through the `$lib` alias in this folder.
+export { default as WordCard } from './components/WordCard.svelte';
+export { default as SearchInput } from './components/SearchInput.svelte';
+export * from './db/words';

@@ -1,38 +1,51 @@
-# sv
+# Monocuco
+Diccionario abierto y gratuito de [Español barranquillero](https://es.wikipedia.org/wiki/Espa%C3%B1ol_barranquillero).
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+## ¿Cómo contribuir?
 
-## Creating a project
+Antes de escribir una definición, por favor revisa nuestras [pautas de contenido](https://monocuco.sjdonado.com/guidelines). En resumen: comparte definiciones útiles para otras personas y nunca publiques discursos de odio ni información personal.
 
-If you're seeing this, you've probably already done this step. Congrats!
+Tienes dos formas de aportar nuevas palabras al diccionario:
 
-```sh
-# create a new project in the current directory
-npx sv create
+### 1. Usar el CLI oficial
 
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Requisitos: [`uv`](https://docs.astral.sh/uv/).
 
 ```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+uv run bin/add_word.py \
+  --word "Jodido" \
+  --definition "Persona que está mal" \
+  --example "Quedé jodido con ese aguacero" \
+  --author "Wilson Tovar" \
+  --website "https://github.com/krthr"
 ```
 
-## Building
+El comando generará o actualizará `static/data.parquet` y, si corresponde, `static/data.json`. Después de ejecutarlo:
 
-To create a production version of your app:
+1. Revisa que la palabra se vea bien en la interfaz (`npm run dev`).
+2. Crea tu commit con el archivo actualizado.
+3. Abre un Pull Request en este repositorio (https://www.freecodecamp.org/espanol/news/como-hacer-tu-primer-pull-request-en-github/)
+4. **Opcional:** añade tu foto de perfil a la lista de contribuidores 😎.
 
-```sh
-npm run build
-```
+### 2. Enviar la palabra desde la web
 
-You can preview the production build with `npm run preview`.
+Si no tienes cuenta en GitHub o prefieres una opción más rápida, visita [https://monocuco.sjdonado.com/add](https://monocuco.sjdonado.com/add). El formulario envía tu propuesta a nuestro flujo editorial en n8n; te avisaremos cuando se publique.
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+---
+
+## Contribuidores
+
+<div align="center">
+
+| | | | | | |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| <a href="https://github.com/sjdonado"><img src="https://avatars.githubusercontent.com/u/27580836?s=100" width="100px;" alt="Juan Rodriguez"/><br /><sub><b>Juan Rodriguez</b></sub></a> | <a href="https://github.com/krthr"><img src="https://avatars.githubusercontent.com/u/18665740?s=100" width="100px;" alt="Wilson Tovar"/><br /><sub><b>Wilson Tovar</b></sub></a> | <a href="https://github.com/jvalenciae"><img src="https://avatars.githubusercontent.com/u/44078264?s=100" width="100px;" alt="Javier Valencia"/><br /><sub><b>Javier Valencia</b></sub></a> | <a href="https://github.com/C9-LinkRs"><img src="https://avatars.githubusercontent.com/u/23248296?s=100" width="100px;" alt="Johnny Villegas"/><br /><sub><b>Johnny Villegas</b></sub></a> | <a href="https://github.com/fokobot"><img src="https://avatars.githubusercontent.com/u/25647093?s=100" width="100px;" alt="fokobot"/><br /><sub><b>fokobot</b></sub></a> | <a href="https://github.com/herasj"><img src="https://avatars.githubusercontent.com/u/25647268?s=100" width="100px;" alt="Juan Rambal"/><br /><sub><b>Juan Rambal</b></sub></a> |
+| <a href="https://github.com/Yenniferh"><img src="https://avatars.githubusercontent.com/u/19285706?s=100" width="100px;" alt="Yennifer Herrera"/><br /><sub><b>Yennifer Herrera</b></sub></a> | <a href="https://github.com/jaravad"><img src="https://avatars.githubusercontent.com/u/30931849?s=100" width="100px;" alt="Jesus Santiago"/><br /><sub><b>Jesus Santiago</b></sub></a> | <a href="https://github.com/oskhar1099"><img src="https://avatars.githubusercontent.com/u/44534546?s=100" width="100px;" alt="Oskhar Arrieta"/><br /><sub><b>Oskhar Arrieta</b></sub></a> | <a href="https://github.com/kristellu"><img src="https://avatars.githubusercontent.com/u/28717626?s=100" width="100px;" alt="Kristell Urueta"/><br /><sub><b>Kristell Urueta</b></sub></a> | <a href="https://github.com/juandavid716"><img src="https://avatars.githubusercontent.com/u/42303342?s=100" width="100px;" alt="Juan Bojato"/><br /><sub><b>Juan Bojato</b></sub></a> | <a href="https://github.com/pygabo"><img src="https://avatars.githubusercontent.com/u/17889145?s=100" width="100px;" alt="Jose Guzman"/><br /><sub><b>Jose Guzman</b></sub></a> |
+| <a href="https://github.com/Rafaell416"><img src="https://avatars.githubusercontent.com/u/18080929?s=100" width="100px;" alt="Rafael Villarreal"/><br /><sub><b>Rafael Villarreal</b></sub></a> | <a href="https://github.com/Rome96"><img src="https://avatars.githubusercontent.com/u/19671381?s=100" width="100px;" alt="Turiano Romero"/><br /><sub><b>Turiano Romero</b></sub></a> | <a href="https://github.com/Isaiasdelahoz"><img src="https://avatars.githubusercontent.com/u/25128103?s=100" width="100px;" alt="Isaias De la Hoz"/><br /><sub><b>Isaías De la Hoz</b></sub></a> | <a href="https://github.com/jbolivard"><img src="https://avatars.githubusercontent.com/u/62828937?s=100" width="100px;" alt="Jorge Bolivar"/><br /><sub><b>Jorge Bolivar</b></sub></a> | <a href="https://github.com/cesc1989"><img src="https://avatars.githubusercontent.com/u/1375981?s=100" width="100px;" alt="Francisco Quintero"/><br /><sub><b>Francisco Quintero</b></sub></a> | <a href="https://github.com/wgarcia1309"><img src="https://avatars.githubusercontent.com/u/20034079?s=100" width="100px;" alt="Willian Garcia"/><br /><sub><b>Willian Garcia</b></sub></a> |
+| <a href="https://github.com/gmmonsalve"><img src="https://avatars.githubusercontent.com/u/30907973?s=100" width="100px;" alt="Gabriela Monsalve"/><br /><sub><b>Gabriela Monsalve</b></sub></a> | <a href="https://github.com/hackvan"><img src="https://avatars.githubusercontent.com/u/179497?s=100" width="100px;" alt="Diego Camacho"/><br /><sub><b>Diego Camacho</b></sub></a> | <a href="https://github.com/ferch5003"><img src="https://avatars.githubusercontent.com/u/26355409?s=100" width="100px;" alt="Fernando Visbal"/><br /><sub><b>Fernando Visbal</b></sub></a> | <a href="https://github.com/javierdaza"><img src="https://avatars.githubusercontent.com/u/3085051?s=100" width="100px;" alt="Javier Daza"/><br /><sub><b>Javier Daza</b></sub></a> | <a href="https://github.com/rmacuna"><img src="https://avatars.githubusercontent.com/u/25620714?s=100" width="100px;" alt="Roberto Acuña"/><br /><sub><b>Roberto Acuña</b></sub></a> | <a href="https://github.com/barcasnerd"><img src="https://avatars.githubusercontent.com/u/49013288?s=100" width="100px;" alt="Jair Barcasnegras"/><br /><sub><b>Jair Barcasnegras</b></sub></a> |
+| <a href="https://github.com/LJossue"><img src="https://avatars.githubusercontent.com/u/101231796?s=100" width="100px;" alt="Leandro Ramírez"/><br /><sub><b>Leandro Ramírez</b></sub></a> | <a href="https://github.com/anfvc"><img src="https://avatars.githubusercontent.com/u/96877542?s=100" width="100px;" alt="Andrés Villay"/><br /><sub><b>Andres Villay</b></sub></a> | | | | |
+
+</div>
+
+## Agradecimientos
+- Andres Urquina: Autor del icono [Ilustración Bailarina - Carnaval de Barranquilla, Colombia.](https://www.flickr.com/photos/andresurquina/16246891029)

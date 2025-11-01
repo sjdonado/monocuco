@@ -41,5 +41,13 @@
 		"vite": "^7.1.10",
 		"vitest": "^3.2.4",
 		"vitest-browser-svelte": "^1.1.0"
+	},
+	"dependencies": {
+		"@duckdb/duckdb-wasm": "^1.30.0",
+		"@lucide/svelte": "^0.552.0",
+		"@tanstack/svelte-form": "^1.23.8",
+		"@tanstack/zod-form-adapter": "^0.42.1",
+		"marked": "^16.4.1",
+		"zod": "^4.1.12"
 	}
 }
