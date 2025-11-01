@@ -97,20 +97,21 @@ export const queryAll = async (options: QueryAllOptions = {}): Promise<QueryAllR
 
 	const isSearch = term.length > 0;
 
+	const rankedOrder = "ORDER BY LOWER(word), word, id";
+
 	const rankedCte = isSearch
 		? `WITH ranked AS (
-			SELECT id, word, definition, example, createdByName, createdByWebsite, createdAt, score,
-				ROW_NUMBER() OVER (ORDER BY score DESC, word, id) AS rn
+			SELECT id, word, definition, example, createdByName, createdByWebsite, createdAt,
+				ROW_NUMBER() OVER (${rankedOrder}) AS rn
 			FROM (
-				SELECT id, word, definition, example, createdByName, createdByWebsite, createdAt,
-					fts_main_words.match_bm25(id, ?, fields := 'word,definition') AS score
+				SELECT id, word, definition, example, createdByName, createdByWebsite, createdAt
 				FROM ${WORDS_TABLE}
+				WHERE fts_main_words.match_bm25(id, ?, fields := 'word,definition') IS NOT NULL
 			)
-			WHERE score IS NOT NULL
 		)`
 		: `WITH ranked AS (
 			SELECT id, word, definition, example, createdByName, createdByWebsite, createdAt,
-				ROW_NUMBER() OVER (ORDER BY word, id) AS rn
+				ROW_NUMBER() OVER (${rankedOrder}) AS rn
 			FROM ${WORDS_TABLE}
 		)`;
 
