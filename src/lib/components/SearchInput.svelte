@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto, afterNavigate } from '$app/navigation';
+	import { querySuggestions, type WordSuggestion } from '$lib/db/words';
 	import { SearchIcon } from '@lucide/svelte';
-	import { querySuggestions, type WordSuggestion } from '$lib';
 
 	const SUGGESTION_LIMIT = 4;
 
