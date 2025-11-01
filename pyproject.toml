@@ -5,6 +5,7 @@ description = "Utility scripts for Monocuco dataset management"
 readme = "README.md"
 requires-python = ">=3.9,<3.13"
 dependencies = [
+    "click>=8,<9",
     "pyarrow>=16,<19",
     "pyarrow-stubs>=17.19",
 ]

@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import argparse
 import json
 import uuid
 from collections.abc import Iterable
@@ -161,30 +160,12 @@ def save_json(entries: list[NormalisedEntry], json_path: Path) -> None:
     )
 
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--json",
-        type=Path,
-        default=DEFAULT_JSON_PATH,
-        help=f"Source JSON file (default: {DEFAULT_JSON_PATH})",
-    )
-    parser.add_argument(
-        "--parquet",
-        type=Path,
-        default=DEFAULT_PARQUET_PATH,
-        help=f"Destination Parquet file (default: {DEFAULT_PARQUET_PATH})",
-    )
-    return parser.parse_args()
-
-
 def main() -> None:
-    args = parse_args()
-    data = load_json(args.json)
+    data = load_json(DEFAULT_JSON_PATH)
     entries = transform_entries(data)
-    save_json(entries, args.json)
-    write_parquet(entries, args.parquet)
-    print(f"✅ Migrated {len(entries)} entries from {args.json} -> {args.parquet}")
+    save_json(entries, DEFAULT_JSON_PATH)
+    write_parquet(entries, DEFAULT_PARQUET_PATH)
+    print(f"✅ Migrated {len(entries)} entries from {DEFAULT_JSON_PATH} -> {DEFAULT_PARQUET_PATH}")
 
 
 if __name__ == "__main__":
