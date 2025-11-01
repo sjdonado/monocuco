@@ -16,7 +16,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 DEFAULT_PARQUET_PATH = Path("static/data.parquet")
-DEFAULT_JSON_PATH = Path("static/data.json")
+DEFAULT_JSON_PATH = Path("data.json")
 README_PATH = Path("README.md")
 CONTRIBUTORS_HEADER = "## Contribuidores"
 
@@ -62,6 +62,26 @@ def _normalize_created_by(
         "name": name.strip() if name else None,
         "website": website.strip() if website else None,
     }
+
+
+def _normalize_example(example: str | None) -> str:
+    if not example:
+        return ""
+    lines = [line.strip() for line in example.splitlines() if line.strip()]
+    if not lines:
+        return ""
+    formatted: list[str] = []
+    for line in lines:
+        if line.startswith('"') and line.endswith('"'):
+            formatted.append(line)
+        else:
+            formatted.append(f'"{line}"')
+    return "\n".join(formatted)
+
+
+def _normalize_word(word: str) -> str:
+    trimmed = word.strip()
+    return trimmed[:1].upper() + trimmed[1:] if trimmed else ""
 
 
 def _table_from_entry(schema: pa.Schema, entry: dict[str, Any]) -> pa.Table:
@@ -426,12 +446,13 @@ def add_entry(
 
     created_at_value = created_at or _iso_now()
     entry_id = str(uuid.uuid4())
+    normalized_example = _normalize_example(example)
 
     entry = {
         "id": entry_id,
-        "word": word.strip(),
+        "word": _normalize_word(word),
         "definition": definition.strip(),
-        "example": example.strip(),
+        "example": normalized_example,
         "createdBy": _normalize_created_by(author, website),
         "createdAt": created_at_value,
     }
