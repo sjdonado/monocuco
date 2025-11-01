@@ -12,7 +12,9 @@ Tienes dos formas de aportar nuevas palabras al diccionario:
 Requisitos: [`uv`](https://docs.astral.sh/uv/).
 
 ```sh
-uv run bin/add_word.py \
+cd bin
+uv sync
+uv run add_word.py \
   --word "Jodido" \
   --definition "Persona que está mal" \
   --example "Quedé jodido con ese aguacero" \

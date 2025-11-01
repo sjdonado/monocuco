@@ -12,8 +12,8 @@ from typing import Any, TypedDict, cast
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-DEFAULT_JSON_PATH = Path("data.json")
-DEFAULT_PARQUET_PATH = Path("static/data.parquet")
+DEFAULT_JSON_PATH = Path("../data.json")
+DEFAULT_PARQUET_PATH = Path("../static/data.parquet")
 
 
 class CreatedBy(TypedDict, total=False):

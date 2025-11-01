@@ -15,9 +15,9 @@ import click
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-DEFAULT_PARQUET_PATH = Path("static/data.parquet")
-DEFAULT_JSON_PATH = Path("data.json")
-README_PATH = Path("README.md")
+DEFAULT_PARQUET_PATH = Path("../static/data.parquet")
+DEFAULT_JSON_PATH = Path("../data.json")
+README_PATH = Path("../README.md")
 CONTRIBUTORS_HEADER = "## Contribuidores"
 
 
