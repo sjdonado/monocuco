@@ -6,6 +6,7 @@
 	import { MenuIcon } from '@lucide/svelte';
 	import { dev } from '$app/environment';
 	import SearchInput from '$lib/components/SearchInput.svelte';
+	import { APP_VERSION } from '$lib/config';
 
 	const { children } = $props();
 
@@ -88,4 +89,14 @@
 	<main class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8">
 		{@render children()}
 	</main>
+	<footer>
+		<p class="flex items-center justify-center gap-1 text-xs text-base-content/70 mb-2">
+			v{APP_VERSION}
+			•
+			Desarollado por
+			<a href="https://sjdonado.com" target="_blank" rel="noreferrer" class="link">
+				@sjdonado
+			</a>
+		</p>
+	</footer>
 </div>
