@@ -30,16 +30,13 @@ export interface Word {
 
 export type WordSuggestion = Pick<Word, 'id' | 'word' | 'definition'>;
 
-export const runWordsMigration = async (
-	connection: AsyncDuckDBConnection,
-	db: AsyncDuckDB
-): Promise<void> => {
+export const runWordsMigration = async (connection: AsyncDuckDBConnection, db: AsyncDuckDB) => {
 	const response = await fetch(`/${DATA_FILE_NAME}`);
 	const buffer = new Uint8Array(await response.arrayBuffer());
 	await db.registerFileBuffer(DATA_FILE_NAME, buffer);
 
 	await connection.query(`CREATE OR REPLACE TABLE ${WORDS_TABLE} AS
-		SELECT
+    SELECT
 			id,
 			word,
 			definition,
@@ -47,25 +44,15 @@ export const runWordsMigration = async (
 			createdBy.name AS createdByName,
 			createdBy.website AS createdByWebsite,
 			createdAt
-		FROM read_parquet('${DATA_FILE_NAME}')`);
+    FROM read_parquet('${DATA_FILE_NAME}')`);
 
-	await connection.query('INSTALL fts');
 	await connection.query('LOAD fts');
-
-	try {
-		await connection.query(`PRAGMA drop_fts_index('${WORDS_TABLE}')`);
-	} catch {
-		// ignore missing index
-	}
-
 	await connection.query(
-		`PRAGMA create_fts_index('${WORDS_TABLE}', 'id', 'word', 'definition', 'example')`
+		`PRAGMA create_fts_index('${WORDS_TABLE}', 'id', 'word', 'definition', 'example', overwrite=1)`
 	);
 
 	await connection.query(`CREATE INDEX IF NOT EXISTS idx_words_id ON ${WORDS_TABLE}(id)`);
-	await connection.query(
-		`CREATE INDEX IF NOT EXISTS idx_words_word ON ${WORDS_TABLE}(word, id)`
-	);
+	await connection.query(`CREATE INDEX IF NOT EXISTS idx_words_word ON ${WORDS_TABLE}(word, id)`);
 };
 
 export interface QueryAllOptions {
@@ -179,6 +166,7 @@ export const queryAll = async (options: QueryAllOptions = {}): Promise<QueryAllR
 		return 0;
 	};
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const runQuery = async (statement: AsyncPreparedStatement<any>, ...args: unknown[]) => {
 		if (isSearch) {
 			return statement.query(term, term, ...args);
