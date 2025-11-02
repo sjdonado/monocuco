@@ -36,7 +36,7 @@ export const runWordsMigration = async (connection: AsyncDuckDBConnection, db: A
 	await db.registerFileBuffer(DATA_FILE_NAME, buffer);
 
 	await connection.query(`CREATE OR REPLACE TABLE ${WORDS_TABLE} AS
-    SELECT 
+    SELECT
 			id,
 			word,
 			definition,
@@ -166,6 +166,7 @@ export const queryAll = async (options: QueryAllOptions = {}): Promise<QueryAllR
 		return 0;
 	};
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const runQuery = async (statement: AsyncPreparedStatement<any>, ...args: unknown[]) => {
 		if (isSearch) {
 			return statement.query(term, term, ...args);
