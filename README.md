@@ -12,7 +12,7 @@ Tienes dos formas de aportar nuevas palabras al diccionario:
 Requisitos: [`uv`](https://docs.astral.sh/uv/).
 
 ```sh
-cd bin
+cd cli
 uv sync
 uv run add_word.py \
   --word "Jodido" \
