@@ -3,7 +3,19 @@ import type { AsyncDuckDBConnection } from '@duckdb/duckdb-wasm';
 import * as duckdb from '@duckdb/duckdb-wasm';
 import { runWordsMigration } from './words';
 
-const JSDELIVR_BUNDLES = duckdb.getJsDelivrBundles();
+// Manual bundle configuration: workers from same origin, WASM from CDN
+const CDN_BASE = 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.30.0/dist';
+
+const MANUAL_BUNDLES: duckdb.DuckDBBundles = {
+	mvp: {
+		mainModule: `${CDN_BASE}/duckdb-mvp.wasm`,
+		mainWorker: '/duckdb-browser-mvp.worker.js'
+	},
+	eh: {
+		mainModule: `${CDN_BASE}/duckdb-eh.wasm`,
+		mainWorker: '/duckdb-browser-eh.worker.js'
+	}
+};
 
 let connectionPromise: Promise<AsyncDuckDBConnection> | null = null;
 
@@ -13,13 +25,8 @@ async function initialiseConnection(): Promise<AsyncDuckDBConnection> {
 	}
 
 	const logger = new duckdb.ConsoleLogger();
-	const bundle = await duckdb.selectBundle(JSDELIVR_BUNDLES);
-
-	// Fetch worker script and create a blob URL to avoid CORS issues
-	const workerResponse = await fetch(bundle.mainWorker!);
-	const workerBlob = await workerResponse.blob();
-	const workerUrl = URL.createObjectURL(workerBlob);
-	const worker = new Worker(workerUrl);
+	const bundle = await duckdb.selectBundle(MANUAL_BUNDLES);
+	const worker = new Worker(bundle.mainWorker!);
 
 	const db = new duckdb.AsyncDuckDB(logger, worker);
 	await db.instantiate(bundle.mainModule, bundle.pthreadWorker ?? null);
