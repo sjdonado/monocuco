@@ -166,14 +166,8 @@ export const queryAll = async (options: QueryAllOptions = {}): Promise<QueryAllR
 		WHERE rn BETWEEN ? AND ?
 		ORDER BY rn`;
 
-	const cursorAtSql = `${rankedCte}
-		SELECT id
-		FROM ranked
-		WHERE rn = ?`;
-
 	type CountRow = { total: bigint | number };
 	type RowNumberRow = { rn: bigint | number | null };
-	type CursorRow = { id: string };
 
 	const toNumber = (value: bigint | number | null | undefined): number => {
 		if (typeof value === 'bigint') {
@@ -252,59 +246,87 @@ export const queryAll = async (options: QueryAllOptions = {}): Promise<QueryAllR
 
 	const currentCursor = items[0]?.id ?? null;
 
-	const cursorStatement = await connection.prepare(cursorAtSql);
-
-	const fetchCursorAt = async (index: number): Promise<string | null> => {
-		if (index < 1 || index > total) return null;
-		const table = await runQuery(cursorStatement, index);
-		const row = tableToRows<CursorRow>(table)[0];
-		return row?.id ?? null;
-	};
-
+	// Calculate which cursor positions we need to fetch
 	let prevCursor: string | null = null;
 	let nextCursor: string | null = null;
 	const pages: Array<{ number: number; cursor: string | null }> = [];
 
-	try {
-		if (currentPage > 1) {
-			if (currentPage === 2) {
-				prevCursor = null;
-			} else {
-				const prevStartIndex = Math.max(1, startIndex - pageSize);
-				prevCursor = await fetchCursorAt(prevStartIndex);
-			}
-		} else {
-			prevCursor = null;
-		}
+	const MAX_PAGE_LINKS = 4;
+	let startPageNum = Math.max(1, currentPage - Math.floor(MAX_PAGE_LINKS / 2));
+	const endPageNum = Math.min(totalPages, startPageNum + MAX_PAGE_LINKS - 1);
+	const visibleCount = endPageNum - startPageNum + 1;
+	if (visibleCount < MAX_PAGE_LINKS) {
+		startPageNum = Math.max(1, endPageNum - MAX_PAGE_LINKS + 1);
+	}
 
-		nextCursor = endIndex < total ? await fetchCursorAt(endIndex + 1) : null;
+	// Collect all row numbers we need to fetch at once
+	const rowNumbersToFetch: number[] = [];
 
-		const MAX_PAGE_LINKS = 4;
-		let startPage = Math.max(1, currentPage - Math.floor(MAX_PAGE_LINKS / 2));
-		const endPage = Math.min(totalPages, startPage + MAX_PAGE_LINKS - 1);
-		const visibleCount = endPage - startPage + 1;
-		if (visibleCount < MAX_PAGE_LINKS) {
-			startPage = Math.max(1, endPage - MAX_PAGE_LINKS + 1);
-		}
+	// Prev cursor position
+	if (currentPage > 1 && currentPage !== 2) {
+		const prevStartIndex = Math.max(1, startIndex - pageSize);
+		rowNumbersToFetch.push(prevStartIndex);
+	}
 
-		for (let pageNumber = startPage; pageNumber <= endPage; pageNumber += 1) {
-			if (pageNumber === 1) {
-				pages.push({ number: pageNumber, cursor: null });
-				continue;
-			}
-			if (pageNumber === currentPage) {
-				pages.push({
-					number: pageNumber,
-					cursor: currentPage === 1 ? null : currentCursor
-				});
-				continue;
-			}
+	// Next cursor position
+	if (endIndex < total) {
+		rowNumbersToFetch.push(endIndex + 1);
+	}
+
+	// Page cursor positions
+	for (let pageNumber = startPageNum; pageNumber <= endPageNum; pageNumber += 1) {
+		if (pageNumber > 1 && pageNumber !== currentPage) {
 			const pageStartIndex = (pageNumber - 1) * pageSize + 1;
-			const cursor = await fetchCursorAt(pageStartIndex);
+			rowNumbersToFetch.push(pageStartIndex);
+		}
+	}
+
+	// Fetch all cursors in a single query to avoid Safari transaction issues
+	const cursorsMap = new Map<number, string>();
+	if (rowNumbersToFetch.length > 0) {
+		const batchCursorSql = `${rankedCte}
+			SELECT rn, id
+			FROM ranked
+			WHERE rn IN (${rowNumbersToFetch.join(',')})`;
+
+		const batchStatement = await connection.prepare(batchCursorSql);
+		try {
+			const batchTable = await runQuery(batchStatement);
+			const batchRows = tableToRows<{ rn: bigint | number; id: string }>(batchTable);
+			for (const row of batchRows) {
+				cursorsMap.set(toNumber(row.rn), row.id);
+			}
+		} finally {
+			await batchStatement.close();
+		}
+	}
+
+	// Assign cursors from the fetched batch
+	if (currentPage > 1) {
+		if (currentPage === 2) {
+			prevCursor = null;
+		} else {
+			const prevStartIndex = Math.max(1, startIndex - pageSize);
+			prevCursor = cursorsMap.get(prevStartIndex) ?? null;
+		}
+	}
+
+	nextCursor = endIndex < total ? (cursorsMap.get(endIndex + 1) ?? null) : null;
+
+	// Build pages array
+	for (let pageNumber = startPageNum; pageNumber <= endPageNum; pageNumber += 1) {
+		if (pageNumber === 1) {
+			pages.push({ number: pageNumber, cursor: null });
+		} else if (pageNumber === currentPage) {
+			pages.push({
+				number: pageNumber,
+				cursor: currentPage === 1 ? null : currentCursor
+			});
+		} else {
+			const pageStartIndex = (pageNumber - 1) * pageSize + 1;
+			const cursor = cursorsMap.get(pageStartIndex) ?? null;
 			pages.push({ number: pageNumber, cursor });
 		}
-	} finally {
-		await cursorStatement.close();
 	}
 
 	const loadTimeSeconds = (Date.now() - startedAt) / 1000;
@@ -321,7 +343,7 @@ export const queryAll = async (options: QueryAllOptions = {}): Promise<QueryAllR
 		totalPages,
 		pages,
 		loadTimeSeconds
-	};
+	}
 };
 
 export interface QuerySuggestionsOptions {

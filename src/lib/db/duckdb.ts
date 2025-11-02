@@ -4,7 +4,7 @@ import * as duckdb from '@duckdb/duckdb-wasm';
 import { runWordsMigration } from './words';
 
 // Manual bundle configuration: workers from same origin, WASM from CDN
-const CDN_BASE = 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.30.0/dist';
+const CDN_BASE = 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.31.0/dist';
 
 const MANUAL_BUNDLES: duckdb.DuckDBBundles = {
 	mvp: {

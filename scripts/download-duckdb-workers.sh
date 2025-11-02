@@ -2,7 +2,7 @@
 # Download DuckDB worker files for same-origin serving
 # This avoids Safari CORS issues with blob URLs while keeping large WASM files on CDN
 
-VERSION="1.30.0"
+VERSION="1.31.0"
 CDN_BASE="https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@${VERSION}/dist"
 STATIC_DIR="static"
 
