@@ -11,4 +11,4 @@ echo "Downloading DuckDB worker files v${VERSION}..."
 curl -o "${STATIC_DIR}/duckdb-browser-eh.worker.js" "${CDN_BASE}/duckdb-browser-eh.worker.js"
 curl -o "${STATIC_DIR}/duckdb-browser-mvp.worker.js" "${CDN_BASE}/duckdb-browser-mvp.worker.js"
 
-echo "✓ Worker files downloaded successfully"
+echo "Worker files downloaded successfully"

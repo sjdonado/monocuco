@@ -9,12 +9,12 @@ Tienes dos formas de aportar nuevas palabras al diccionario:
 
 ### 1. Usar el CLI oficial
 
-Requisitos: [`uv`](https://docs.astral.sh/uv/).
+Requisitos: Node.js (o Bun).
 
 ```sh
-cd cli
-uv sync
-uv run add_word.py \
+bun install
+
+bun run add-word -- \
   --word "Jodido" \
   --definition "Persona que está mal" \
   --example "Quedé jodido con ese aguacero" \
@@ -22,9 +22,17 @@ uv run add_word.py \
   --website "https://github.com/krthr"
 ```
 
-El comando generará o actualizará `static/data.parquet` y, si corresponde, `data.json`. Después de ejecutarlo:
+El comando actualizará `data.json` y el README automáticamente. Para actualizar el archivo Parquet, ejecuta:
 
-1. Revisa que la palabra se vea bien en la interfaz (`npm run dev`).
+```sh
+bun run generate-parquet
+```
+
+Este comando genera el archivo Parquet y automáticamente crea un archivo de metadatos (`static/data.parquet.json`) con un hash SHA-256 que permite detectar cambios y optimizar la carga en el navegador mediante OPFS (Origin Private File System).
+
+Después de ejecutarlo:
+
+1. Revisa que la palabra se vea bien en la interfaz (`bun run dev`).
 2. Crea tu commit con el archivo actualizado.
 3. Abre un Pull Request en este repositorio (https://www.freecodecamp.org/espanol/news/como-hacer-tu-primer-pull-request-en-github/)
 4. **Opcional:** añade tu foto de perfil a la lista de contribuidores 😎.
@@ -45,7 +53,7 @@ Si no tienes cuenta en GitHub o prefieres una opción más rápida, visita [http
 | <a href="https://github.com/Yenniferh"><img src="https://avatars.githubusercontent.com/u/19285706?s=460" width="460px;" alt="Yennifer Herrera"/><br /><sub><b>Yennifer Herrera</b></sub></a> | <a href="https://github.com/jaravad"><img src="https://avatars.githubusercontent.com/u/30931849?s=460" width="460px;" alt="Jesus Santiago"/><br /><sub><b>Jesus Santiago</b></sub></a> | <a href="https://github.com/oskhar1099"><img src="https://avatars.githubusercontent.com/u/44534546?s=460" width="460px;" alt="Oskhar Arrieta"/><br /><sub><b>Oskhar Arrieta</b></sub></a> | <a href="https://github.com/kristellu"><img src="https://avatars.githubusercontent.com/u/28717626?s=460" width="460px;" alt="Kristell Urueta"/><br /><sub><b>Kristell Urueta</b></sub></a> | <a href="https://github.com/juandavid716"><img src="https://avatars.githubusercontent.com/u/42303342?s=460" width="460px;" alt="Juan Bojato"/><br /><sub><b>Juan Bojato</b></sub></a> | <a href="https://github.com/pygabo"><img src="https://avatars.githubusercontent.com/u/17889145?s=460" width="460px;" alt="Jose Guzman"/><br /><sub><b>Jose Guzman</b></sub></a> |
 | <a href="https://github.com/Rafaell416"><img src="https://avatars.githubusercontent.com/u/18080929?s=460" width="460px;" alt="Rafael Villarreal"/><br /><sub><b>Rafael Villarreal</b></sub></a> | <a href="https://github.com/Rome96"><img src="https://avatars.githubusercontent.com/u/19671381?s=460" width="460px;" alt="Turiano Romero"/><br /><sub><b>Turiano Romero</b></sub></a> | <a href="https://github.com/Isaiasdelahoz"><img src="https://avatars.githubusercontent.com/u/25128103?s=460" width="460px;" alt="Isaias De la Hoz"/><br /><sub><b>Isaías De la Hoz</b></sub></a> | <a href="https://github.com/jbolivard"><img src="https://avatars.githubusercontent.com/u/62828937?s=460" width="460px;" alt="Jorge Bolivar"/><br /><sub><b>Jorge Bolivar</b></sub></a> | <a href="https://github.com/cesc1989"><img src="https://avatars.githubusercontent.com/u/1375981?s=460" width="460px;" alt="Francisco Quintero"/><br /><sub><b>Francisco Quintero</b></sub></a> | <a href="https://github.com/wgarcia1309"><img src="https://avatars.githubusercontent.com/u/20034079?s=460" width="460px;" alt="Willian Garcia"/><br /><sub><b>Willian Garcia</b></sub></a> |
 | <a href="https://github.com/gmmonsalve"><img src="https://avatars.githubusercontent.com/u/30907973?s=460" width="460px;" alt="Gabriela Monsalve"/><br /><sub><b>Gabriela Monsalve</b></sub></a> | <a href="https://github.com/hackvan"><img src="https://avatars.githubusercontent.com/u/179497?s=460" width="460px;" alt="Diego Camacho"/><br /><sub><b>Diego Camacho</b></sub></a> | <a href="https://github.com/ferch5003"><img src="https://avatars.githubusercontent.com/u/26355409?s=460" width="460px;" alt="Fernando Visbal"/><br /><sub><b>Fernando Visbal</b></sub></a> | <a href="https://github.com/javierdaza"><img src="https://avatars.githubusercontent.com/u/3085051?s=460" width="460px;" alt="Javier Daza"/><br /><sub><b>Javier Daza</b></sub></a> | <a href="https://github.com/rmacuna"><img src="https://avatars.githubusercontent.com/u/25620714?s=460" width="460px;" alt="Roberto Acuña"/><br /><sub><b>Roberto Acuña</b></sub></a> | <a href="https://github.com/barcasnerd"><img src="https://avatars.githubusercontent.com/u/49013288?s=460" width="460px;" alt="Jair Barcasnegras"/><br /><sub><b>Jair Barcasnegras</b></sub></a> |
-| <a href="https://github.com/LJossue"><img src="https://avatars.githubusercontent.com/u/101231796?s=460" width="460px;" alt="Leandro Ramírez"/><br /><sub><b>Leandro Ramírez</b></sub></a> | <a href="https://github.com/anfvc"><img src="https://avatars.githubusercontent.com/u/96877542?s=460" width="460px;" alt="Andrés Villay"/><br /><sub><b>Andres Villay</b></sub></a> | <a href="https://sites.google.com/site/jdvillalobos/barranquillerismos"><img src="https://lh3.googleusercontent.com/sitesv/AAzXCke0Nz9vZaHUFmBEExF3po-oS7YV7w1OHMwkjoLWmsmfuKJx3jLCw3R9FM4bTWrLf2tN4SNhxyol91ikJSnWat1Kk909CDYHMADpFgS7350bZxUOCpGW5BgGoOyUtwWkLPOFJ0Ex56l3oZILTuHqL8EJKZ6nDt4NEpHkNrsYYI7BLr894QY9VLNKyg3iREZq8TxR-gYt_2DjoYS0AZM" width="460px;" alt="La cuestión barranquillera"/><br /><sub><b>La cuestión barranquillera</b></sub></a> |  |  |  |
+| <a href="https://github.com/LJossue"><img src="https://avatars.githubusercontent.com/u/101231796?s=460" width="460px;" alt="Leandro Ramírez"/><br /><sub><b>Leandro Ramírez</b></sub></a> | <a href="https://github.com/anfvc"><img src="https://avatars.githubusercontent.com/u/96877542?s=460" width="460px;" alt="Andrés Villay"/><br /><sub><b>Andres Villay</b></sub></a> | <a href="https://sites.google.com/site/jdvillalobos/barranquillerismos"><img src="" width="460px;" alt="La cuestión barranquillera"/><br /><sub><b>La cuestión barranquillera</b></sub></a> |  |  |  |
 
 </div>
 
