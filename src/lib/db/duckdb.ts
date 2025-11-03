@@ -53,10 +53,10 @@ async function initialiseConnection(): Promise<AsyncDuckDBConnection> {
 			(async () => {
 				const db = await openDatabase();
 				const connection = await db.connect();
-				return { db, connection }
+				return { db, connection };
 			})(),
 			downloadParquetFile()
-		])
+		]);
 
 		splashScreenProgress.set({
 			isRunning: true,

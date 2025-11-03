@@ -13,9 +13,7 @@ const ASSET_CACHE = `asset-cache-${version}`;
 // Pre-cache everything SvelteKit knows about EXCEPT the parquet + its metadata.
 // (We want fine-grained invalidation for the parquet via the JSON manifest.)
 const PRECACHE = new Set(
-	[...build, ...files, ...prerendered].filter(
-		(p) => p !== PARQUET_PATH && p !== PARQUET_META_PATH
-	)
+	[...build, ...files, ...prerendered].filter((p) => p !== PARQUET_PATH && p !== PARQUET_META_PATH)
 );
 
 self.addEventListener('install', (event) => {
@@ -135,11 +133,7 @@ async function handleParquetRequest(request: Request): Promise<Response> {
 		if (freshMetaResp.ok) {
 			await cache.put(PARQUET_META_PATH, freshMetaResp.clone());
 			const freshMeta = await freshMetaResp.clone().json();
-			freshHash =
-				freshMeta?.hash ??
-				freshMeta?.version ??
-				freshMeta?.createdAt ??
-				null;
+			freshHash = freshMeta?.hash ?? freshMeta?.version ?? freshMeta?.createdAt ?? null;
 		}
 	} catch {
 		// Offline: we'll fall back to cached manifest below
@@ -151,11 +145,7 @@ async function handleParquetRequest(request: Request): Promise<Response> {
 	if (cachedMetaResp) {
 		try {
 			const cachedMeta = await cachedMetaResp.clone().json();
-			cachedHash =
-				cachedMeta?.hash ??
-				cachedMeta?.version ??
-				cachedMeta?.createdAt ??
-				null;
+			cachedHash = cachedMeta?.hash ?? cachedMeta?.version ?? cachedMeta?.createdAt ?? null;
 		} catch {
 			cachedHash = null;
 		}
