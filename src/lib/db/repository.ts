@@ -42,7 +42,7 @@ export async function downloadParquetFile(): Promise<{ name: string; buffer: Uin
 }
 
 export const runMigration = async (connection: AsyncDuckDBConnection) => {
-	splashScreenProgress.update(state => ({
+	splashScreenProgress.update((state) => ({
 		...state,
 		isRunning: true,
 		stage: 'creating-table',
@@ -61,7 +61,7 @@ export const runMigration = async (connection: AsyncDuckDBConnection) => {
       createdAt
     FROM read_parquet('${DATA_FILE_NAME}')`);
 
-	splashScreenProgress.update(state => ({
+	splashScreenProgress.update((state) => ({
 		...state,
 		isRunning: true,
 		stage: 'building-fts',
@@ -74,7 +74,7 @@ export const runMigration = async (connection: AsyncDuckDBConnection) => {
 		`PRAGMA create_fts_index('${WORDS_TABLE}', 'id', 'word', 'definition', 'example', overwrite=1)`
 	);
 
-	splashScreenProgress.update(state => ({
+	splashScreenProgress.update((state) => ({
 		...state,
 		isRunning: true,
 		stage: 'building-indexes',
@@ -85,7 +85,7 @@ export const runMigration = async (connection: AsyncDuckDBConnection) => {
 	await connection.query(`CREATE INDEX IF NOT EXISTS idx_words_id ON ${WORDS_TABLE}(id)`);
 	await connection.query(`CREATE INDEX IF NOT EXISTS idx_words_word ON ${WORDS_TABLE}(word, id)`);
 
-	splashScreenProgress.update(state => ({
+	splashScreenProgress.update((state) => ({
 		...state,
 		isRunning: false,
 		stage: 'complete',

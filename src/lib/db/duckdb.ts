@@ -30,7 +30,7 @@ async function isDataCached(): Promise<boolean> {
 
 	try {
 		// Wait a bit to ensure service worker has had time to activate
-		await new Promise(resolve => setTimeout(resolve, 50));
+		await new Promise((resolve) => setTimeout(resolve, 50));
 
 		const cacheNames = await caches.keys();
 		for (const cacheName of cacheNames) {
@@ -52,7 +52,7 @@ async function isDataCached(): Promise<boolean> {
 }
 
 async function openDatabase(): Promise<AsyncDuckDB> {
-	splashScreenProgress.update(state => ({
+	splashScreenProgress.update((state) => ({
 		...state,
 		isRunning: true,
 		stage: 'init',
@@ -64,7 +64,7 @@ async function openDatabase(): Promise<AsyncDuckDB> {
 	const bundle = await duckdb.selectBundle(MANUAL_BUNDLES);
 	const worker = new Worker(bundle.mainWorker!);
 
-	splashScreenProgress.update(state => ({
+	splashScreenProgress.update((state) => ({
 		...state,
 		isRunning: true,
 		stage: 'init',
@@ -86,7 +86,7 @@ async function initialiseConnection(): Promise<AsyncDuckDBConnection> {
 
 	// Check if data is cached and set the enabled flag accordingly
 	const isCached = await isDataCached();
-	splashScreenProgress.update(state => ({
+	splashScreenProgress.update((state) => ({
 		...state,
 		enabled: !isCached
 	}));
@@ -101,7 +101,7 @@ async function initialiseConnection(): Promise<AsyncDuckDBConnection> {
 			downloadParquetFile()
 		]);
 
-		splashScreenProgress.update(state => ({
+		splashScreenProgress.update((state) => ({
 			...state,
 			isRunning: true,
 			stage: 'init',
@@ -114,7 +114,7 @@ async function initialiseConnection(): Promise<AsyncDuckDBConnection> {
 
 		return connection;
 	} catch (error) {
-		splashScreenProgress.update(state => ({
+		splashScreenProgress.update((state) => ({
 			...state,
 			isRunning: false,
 			stage: 'idle',
