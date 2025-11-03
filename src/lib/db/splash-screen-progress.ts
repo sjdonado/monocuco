@@ -1,6 +1,7 @@
 import { writable } from 'svelte/store';
 
 export interface SplashScreenProgress {
+	enabled: boolean; // Whether to show splash screen (false if data is cached)
 	isRunning: boolean;
 	stage: 'idle' | 'init' | 'creating-table' | 'building-fts' | 'building-indexes' | 'complete';
 	percentage: number;
@@ -12,7 +13,8 @@ export interface SplashScreenProgress {
 }
 
 const initialState: SplashScreenProgress = {
-	isRunning: true,
+	enabled: false,
+	isRunning: false,
 	stage: 'idle',
 	percentage: 0,
 	message: 'Cargando...'

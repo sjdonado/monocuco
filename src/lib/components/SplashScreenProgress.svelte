@@ -2,6 +2,7 @@
 	import { splashScreenProgress, type SplashScreenProgress } from '$lib/db/splash-screen-progress';
 
 	let progress = $state<SplashScreenProgress>({
+		enabled: false,
 		isRunning: false,
 		stage: 'idle',
 		percentage: 0,
@@ -24,7 +25,7 @@
 	};
 </script>
 
-{#if progress.isRunning}
+{#if progress.enabled && progress.isRunning}
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-base-300/80 backdrop-blur-sm">
 		<div class="card w-full max-w-md bg-base-100 shadow-xl">
 			<div class="card-body">
