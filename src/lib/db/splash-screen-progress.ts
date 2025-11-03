@@ -2,7 +2,7 @@ import { writable } from 'svelte/store';
 
 export interface SplashScreenProgress {
 	isRunning: boolean;
-	stage: 'idle' | 'init' | 'downloading' | 'creating-table' | 'building-fts' | 'building-indexes' | 'complete';
+	stage: 'idle' | 'init' | 'creating-table' | 'building-fts' | 'building-indexes' | 'complete';
 	percentage: number;
 	message: string;
 	downloadProgress?: {

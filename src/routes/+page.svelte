@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import WordCard from '$lib/components/WordCard.svelte';
-	import { queryAll, type QueryAllResult, type Word } from '$lib/db/words';
+	import { queryAll, type QueryAllResult, type Word } from '$lib/db/repository';
 	import type { Page } from '@sveltejs/kit';
 
 	const PAGE_SIZE = 12;

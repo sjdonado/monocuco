@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto, afterNavigate } from '$app/navigation';
-	import { querySuggestions, type WordSuggestion } from '$lib/db/words';
+	import { querySuggestions, type WordSuggestion } from '$lib/db/repository';
 	import { parseMarkdown } from '$lib/markdown';
 	import { SearchIcon } from '@lucide/svelte';
 

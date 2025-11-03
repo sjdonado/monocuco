@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Share2Icon } from '@lucide/svelte';
-	import type { Word } from '$lib/db/words';
+	import type { Word } from '$lib/db/repository';
 	import { parseMarkdown } from '$lib/markdown';
 	import { onDestroy } from 'svelte';
 

@@ -3,7 +3,7 @@ import type { AsyncDuckDB, AsyncDuckDBConnection } from '@duckdb/duckdb-wasm';
 import * as duckdb from '@duckdb/duckdb-wasm';
 import duckdbWasmMvp from '@duckdb/duckdb-wasm/dist/duckdb-mvp.wasm?url';
 import duckdbWasmEh from '@duckdb/duckdb-wasm/dist/duckdb-eh.wasm?url';
-import { runWordsMigration } from './words';
+import { downloadParquetFile, runMigration } from './repository';
 import { splashScreenProgress } from './splash-screen-progress';
 
 const MANUAL_BUNDLES: duckdb.DuckDBBundles = {
@@ -51,17 +51,24 @@ async function initialiseConnection(): Promise<AsyncDuckDBConnection> {
 	}
 
 	try {
-		const db = await openDatabase();
-		const connection = await db.connect();
+		const [{ db, connection }, parquetFile] = await Promise.all([
+			(async () => {
+				const db = await openDatabase();
+				const connection = await db.connect();
+				return { db, connection }
+			})(),
+			downloadParquetFile()
+		])
 
 		splashScreenProgress.set({
 			isRunning: true,
 			stage: 'init',
-			percentage: 10,
+			percentage: 20,
 			message: 'Conneción creada...'
 		});
 
-		await runWordsMigration(connection, db);
+		await db.registerFileBuffer(parquetFile.name, parquetFile.buffer);
+		await runMigration(connection);
 
 		return connection;
 	} catch (error) {
