@@ -93,11 +93,8 @@
 	<footer>
 		<p class="flex items-center justify-center gap-1 text-xs text-base-content/70 mb-2">
 			v{APP_VERSION}
-			•
-			Desarollado por
-			<a href="https://sjdonado.com" target="_blank" rel="noreferrer" class="link">
-				@sjdonado
-			</a>
+			• Desarollado por
+			<a href="https://sjdonado.com" target="_blank" rel="noreferrer" class="link"> @sjdonado </a>
 		</p>
 	</footer>
 </div>

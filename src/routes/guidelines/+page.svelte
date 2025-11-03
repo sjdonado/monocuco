@@ -65,8 +65,11 @@
 				>este correo</a
 			>
 			o abre un issue en
-			<a class="link link-primary" href="https://github.com/sjdonado/monocuco/issues" target="_blank" rel="noreferer"
-				>Github</a
+			<a
+				class="link link-primary"
+				href="https://github.com/sjdonado/monocuco/issues"
+				target="_blank"
+				rel="noreferer">Github</a
 			>. Gracias por mantener viva la memoria lingüística de la Costa Caribe.
 		</p>
 	</section>

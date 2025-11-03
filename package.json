@@ -45,7 +45,7 @@
 		"vitest-browser-svelte": "^1.1.0"
 	},
 	"dependencies": {
-		"@duckdb/duckdb-wasm": "^1.30.0",
+		"@duckdb/duckdb-wasm": "^1.31.0",
 		"@lucide/svelte": "^0.552.0",
 		"@tanstack/svelte-form": "^1.23.8",
 		"commander": "^14.0.2",
