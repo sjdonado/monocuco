@@ -41,9 +41,7 @@ export async function downloadParquetFile(): Promise<{ name: string; buffer: Uin
 	return { name: DATA_FILE_NAME, buffer };
 }
 
-export const runMigration = async (
-	connection: AsyncDuckDBConnection,
-) => {
+export const runMigration = async (connection: AsyncDuckDBConnection) => {
 	splashScreenProgress.set({
 		isRunning: true,
 		stage: 'creating-table',
@@ -112,7 +110,7 @@ export interface QueryAllResult {
 	loadTimeSeconds: number;
 }
 
-export const queryAll = async (options: QueryAllOptions = {}): Promise<QueryAllResult> => {
+export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllResult> => {
 	const connection = await getConnection();
 	const startedAt = Date.now();
 	const term = options.term?.trim() ?? '';
@@ -324,7 +322,9 @@ export interface QuerySuggestionsOptions {
 	limit?: number;
 }
 
-export const querySuggestions = async (options: QuerySuggestionsOptions): Promise<WordSuggestion[]> => {
+export const findSuggestions = async (
+	options: QuerySuggestionsOptions
+): Promise<WordSuggestion[]> => {
 	const term = options.term.trim();
 	if (!term) return [];
 
@@ -369,6 +369,24 @@ export const querySuggestions = async (options: QuerySuggestionsOptions): Promis
 		return tableToRows<WordSuggestion>(table);
 	} finally {
 		await suggestionStatement.close();
+	}
+};
+
+export const findById = async (id: string): Promise<Word | null> => {
+	const connection = await getConnection();
+	const sql = `
+    SELECT id, word, definition, example, createdByName, createdByWebsite, createdAt
+    FROM ${WORDS_TABLE}
+    WHERE id = ?
+    LIMIT 1`;
+
+	const statement = await connection.prepare(sql);
+	try {
+		const table = await statement.query(id);
+		const rows = tableToRows<WordParquetRow>(table);
+		return rows.length > 0 ? toWordRecord(rows[0]) : null;
+	} finally {
+		await statement.close();
 	}
 };
 

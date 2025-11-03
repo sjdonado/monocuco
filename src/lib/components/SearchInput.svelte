@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto, afterNavigate } from '$app/navigation';
-	import { querySuggestions, type WordSuggestion } from '$lib/db/repository';
+	import { findSuggestions, type WordSuggestion } from '$lib/db/repository';
 	import { parseMarkdown } from '$lib/markdown';
 	import { SearchIcon } from '@lucide/svelte';
 
@@ -57,7 +57,7 @@
 
 		debounceId = setTimeout(async () => {
 			try {
-				const result = await querySuggestions({
+				const result = await findSuggestions({
 					term: trimmed,
 					limit: SUGGESTION_LIMIT
 				});

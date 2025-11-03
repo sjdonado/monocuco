@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import WordCard from '$lib/components/WordCard.svelte';
-	import { queryAll, type QueryAllResult, type Word } from '$lib/db/repository';
+	import { findAll, findById, type QueryAllResult, type Word } from '$lib/db/repository';
 	import type { Page } from '@sveltejs/kit';
 
 	const PAGE_SIZE = 12;
@@ -22,6 +22,13 @@
 	});
 
 	const searchValue = $derived((() => (pageData?.url.searchParams.get('q') ?? '').trim())());
+
+	const wordIdParam = $derived(
+		(() => {
+			const value = (pageData?.url.searchParams.get('word') ?? '').trim();
+			return value.length > 0 ? value : null;
+		})()
+	);
 
 	const cursorParam = $derived(
 		(() => {
@@ -82,6 +89,50 @@
 		});
 	};
 
+	async function loadWord(wordId: string) {
+		if (!browser) return;
+		const currentToken = ++fetchToken;
+		loading = true;
+		error = null;
+
+		try {
+			const word = await findById(wordId);
+
+			if (currentToken !== fetchToken) return;
+
+			if (word) {
+				items = [word];
+				result = {
+					items: [word],
+					total: 1,
+					currentCursor: null,
+					nextCursor: null,
+					prevCursor: null,
+					startIndex: 1,
+					endIndex: 1,
+					currentPage: 1,
+					totalPages: 1,
+					pages: [],
+					loadTimeSeconds: 0
+				};
+			} else {
+				items = [];
+				error = 'No encontramos la palabra solicitada.';
+				result = null;
+			}
+		} catch (err) {
+			console.error(err);
+			if (currentToken !== fetchToken) return;
+			items = [];
+			error = 'No pudimos cargar la palabra. Intenta nuevamente.';
+			result = null;
+		} finally {
+			if (currentToken === fetchToken) {
+				loading = false;
+			}
+		}
+	}
+
 	async function loadWords(term: string | null, cursorToken: string | null) {
 		if (!browser) return;
 		const currentToken = ++fetchToken;
@@ -89,7 +140,7 @@
 		error = null;
 
 		try {
-			const response = await queryAll({
+			const response = await findAll({
 				term: term ?? undefined,
 				cursor: cursorToken,
 				pageSize: PAGE_SIZE
@@ -126,9 +177,14 @@
 	}
 
 	$effect(() => {
-		const term = searchValue || null;
-		const cursorToken = cursorParam;
-		void loadWords(term, cursorToken);
+		const wordId = wordIdParam;
+		if (wordId) {
+			void loadWord(wordId);
+		} else {
+			const term = searchValue || null;
+			const cursorToken = cursorParam;
+			void loadWords(term, cursorToken);
+		}
 	});
 
 	const buildShareUrl = (wordId: string, word: string): string => {

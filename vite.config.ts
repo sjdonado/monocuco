@@ -14,9 +14,7 @@ export default defineConfig({
 	},
 	build: {
 		rollupOptions: {
-			external: [
-				/.*\.wasm$/,
-			]
+			external: [/.*\.wasm$/]
 		}
 	},
 	test: {
