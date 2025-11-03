@@ -1,18 +1,16 @@
 import { browser } from '$app/environment';
 import type { AsyncDuckDB, AsyncDuckDBConnection } from '@duckdb/duckdb-wasm';
 import * as duckdb from '@duckdb/duckdb-wasm';
-import duckdbWasmMvp from '@duckdb/duckdb-wasm/dist/duckdb-mvp.wasm?url';
-import duckdbWasmEh from '@duckdb/duckdb-wasm/dist/duckdb-eh.wasm?url';
 import { downloadParquetFile, runMigration } from './repository';
 import { splashScreenProgress } from './splash-screen-progress';
 
 const MANUAL_BUNDLES: duckdb.DuckDBBundles = {
 	mvp: {
-		mainModule: duckdbWasmMvp,
+		mainModule: '/duckdb-mvp.wasm',
 		mainWorker: '/duckdb-browser-mvp.worker.min.js'
 	},
 	eh: {
-		mainModule: duckdbWasmEh,
+		mainModule: '/duckdb-eh.wasm',
 		mainWorker: '/duckdb-browser-eh.worker.min.js'
 	}
 };
@@ -23,7 +21,7 @@ async function openDatabase(): Promise<AsyncDuckDB> {
 	splashScreenProgress.set({
 		isRunning: true,
 		stage: 'init',
-		percentage: 0,
+		percentage: 5,
 		message: 'Inicializando base de datos...'
 	});
 
@@ -34,7 +32,7 @@ async function openDatabase(): Promise<AsyncDuckDB> {
 	splashScreenProgress.set({
 		isRunning: true,
 		stage: 'init',
-		percentage: 5,
+		percentage: 10,
 		message: 'Configurando base de datos en el navegador...'
 	});
 

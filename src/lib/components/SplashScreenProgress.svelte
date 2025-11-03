@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { splashScreenProgress, type SplashScreenProgress } from '$lib/db/splash-screen-progress';
-	import { AlertCircleIcon } from '@lucide/svelte';
 
 	let progress = $state<SplashScreenProgress>({
 		isRunning: false,
