@@ -6,6 +6,7 @@
 	import { MenuIcon } from '@lucide/svelte';
 	import { dev } from '$app/environment';
 	import SearchInput from '$lib/components/SearchInput.svelte';
+	import MigrationProgress from '$lib/components/MigrationProgress.svelte';
 	import { APP_VERSION } from '$lib/config';
 
 	const { children } = $props();
@@ -100,3 +101,5 @@
 		</p>
 	</footer>
 </div>
+
+<MigrationProgress />

@@ -28,7 +28,7 @@ El comando actualizará `data.json` y el README automáticamente. Para actualiza
 bun run generate-parquet
 ```
 
-Este comando genera el archivo Parquet y automáticamente crea un archivo de metadatos (`static/data.parquet.json`) con un hash SHA-256 que permite detectar cambios y optimizar la carga en el navegador mediante OPFS (Origin Private File System).
+Este comando genera el archivo Parquet y automáticamente crea un archivo de metadatos (`static/data.parquet.json`) con un hash SHA-256 del archivo. El hash se utiliza para detectar cambios y optimizar la carga en el navegador mediante OPFS (Origin Private File System) - solo descarga datos nuevos cuando el hash cambia.
 
 Después de ejecutarlo:
 
