@@ -6,7 +6,7 @@
 	import { MenuIcon } from '@lucide/svelte';
 	import { dev } from '$app/environment';
 	import SearchInput from '$lib/components/SearchInput.svelte';
-	import SplashScreenProgress from '$lib/components/SplashScreenProgress.svelte';
+	import DatabaseLoading from '$lib/components/DatabaseLoading.svelte';
 	import { APP_VERSION } from '$lib/config';
 
 	const { children } = $props();
@@ -87,8 +87,9 @@
 			</div>
 		</div>
 	</nav>
-	<main class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8">
+	<main class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 min-h-[89vh]">
 		{@render children()}
+		<DatabaseLoading />
 	</main>
 	<footer>
 		<p class="flex items-center justify-center gap-1 text-xs text-base-content/70 mb-2">
@@ -98,5 +99,3 @@
 		</p>
 	</footer>
 </div>
-
-<SplashScreenProgress />

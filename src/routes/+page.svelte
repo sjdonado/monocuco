@@ -4,6 +4,7 @@
 	import { page } from '$app/stores';
 	import WordCard from '$lib/components/WordCard.svelte';
 	import { findAll, findById, type QueryAllResult, type Word } from '$lib/db/repository';
+	import { AlertCircleIcon } from '@lucide/svelte';
 	import type { Page } from '@sveltejs/kit';
 
 	const PAGE_SIZE = 12;
@@ -269,34 +270,15 @@
 
 	{#if error}
 		<div class="alert alert-error">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				class="size-6"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="1.5"
-					d="M12 9v4m0 4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-				/>
-			</svg>
+			<AlertCircleIcon class="size-5 shrink-0 text-error-content" aria-hidden="true" />
 			<span>{error}</span>
 		</div>
-	{:else if loading && items.length === 0}
-		<div class="flex justify-center py-20">
-			<span class="loading loading-lg text-primary" aria-label="Cargando resultados"></span>
+	{:else if !loading && items.length === 0}
+		<div class="alert alert-warning">
+			<AlertCircleIcon class="size-5 shrink-0 text-warning-content" aria-hidden="true" />
+			<span>No encontramos palabras para esta búsqueda.</span>
 		</div>
-	{:else if items.length === 0}
-		<div class="alert">
-			<span>
-				No encontramos palabras para esta vista. Intenta con otra búsqueda o revisa la lista
-				completa.
-			</span>
-		</div>
-	{:else}
+	{:else if !loading}
 		<div class="grid gap-6 sm:grid-cols-2">
 			{#each items as entry (entry.id)}
 				<WordCard {entry} shareUrl={buildShareUrl(entry.id, entry.word)} />

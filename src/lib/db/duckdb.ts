@@ -2,7 +2,7 @@ import { browser } from '$app/environment';
 import type { AsyncDuckDB, AsyncDuckDBConnection } from '@duckdb/duckdb-wasm';
 import * as duckdb from '@duckdb/duckdb-wasm';
 import { downloadParquetFile, runMigration } from './repository';
-import { splashScreenProgress } from './splash-screen-progress';
+import { databaseLoading } from './database-loading';
 
 const CDN_BASE = 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.31.0/dist';
 const OPFS_DB_PATH = 'opfs://monocuco.db';
@@ -19,6 +19,13 @@ const MANUAL_BUNDLES: duckdb.DuckDBBundles = {
 	}
 };
 
+const DUCKDB_T0 = performance.now();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function performanceLog(...msg: any[]) {
+	const elapsed = (performance.now() - DUCKDB_T0).toFixed(1);
+	console.log(`[DuckDB] +${elapsed}ms ${msg}`);
+}
+
 let connectionPromise: Promise<AsyncDuckDBConnection> | null = null;
 
 function isOpfsSupported(): boolean {
@@ -33,13 +40,15 @@ function isOpfsSupported(): boolean {
 
 async function getCurrentDataVersion(): Promise<string | null> {
 	try {
-		const response = await fetch('/data.parquet.json', { cache: 'no-store' });
+		// Service worker handles caching with stale-while-revalidate
+		// This allows offline support while keeping data fresh when online
+		const response = await fetch('/data.parquet.json');
 		if (!response.ok) return null;
 
 		const metadata = await response.json();
 		return metadata?.hash ?? metadata?.version ?? metadata?.createdAt ?? null;
 	} catch (error) {
-		console.warn('[DuckDB] Could not fetch data version:', error);
+		console.warn('[DuckDB] Could not fetch data version (offline?):', error);
 		return null;
 	}
 }
@@ -55,7 +64,7 @@ function getStoredDbVersion(): string | null {
 function storeDbVersion(version: string): void {
 	try {
 		localStorage.setItem(DB_VERSION_KEY, version);
-		console.log('[DuckDB] Stored database version:', version);
+		performanceLog('[DuckDB] Stored database version:', version);
 	} catch (error) {
 		console.warn('[DuckDB] Could not store database version:', error);
 	}
@@ -65,7 +74,7 @@ async function needsMigration(): Promise<{ needed: boolean; currentVersion: stri
 	const currentVersion = await getCurrentDataVersion();
 	const storedVersion = getStoredDbVersion();
 
-	console.log('[DuckDB] Version check:', { currentVersion, storedVersion });
+	performanceLog('[DuckDB] Version check:', { currentVersion, storedVersion });
 
 	// If we can't determine versions, run migrations to be safe
 	if (!currentVersion) {
@@ -74,50 +83,74 @@ async function needsMigration(): Promise<{ needed: boolean; currentVersion: stri
 
 	// If versions don't match or no stored version, migrations needed
 	const needed = currentVersion !== storedVersion;
-	console.log('[DuckDB] Migrations needed:', needed);
+	performanceLog('[DuckDB] Migrations needed:', needed);
 
 	return { needed, currentVersion };
 }
 
 async function openDatabase(): Promise<{ db: AsyncDuckDB; usingOpfs: boolean }> {
-	splashScreenProgress.update((state) => ({
-		...state,
+	databaseLoading.set({
 		isRunning: true,
-		stage: 'init',
 		percentage: 5,
 		message: 'Inicializando base de datos...'
-	}));
+	});
+
+	performanceLog('[DuckDB] Loading bundle');
 
 	const logger = new duckdb.ConsoleLogger();
 	const bundle = await duckdb.selectBundle(MANUAL_BUNDLES);
 	const worker = new Worker(bundle.mainWorker!);
 
-	splashScreenProgress.update((state) => ({
-		...state,
+	databaseLoading.set({
 		isRunning: true,
-		stage: 'init',
 		percentage: 10,
-		message: 'Configurando base de datos en el navegador...'
-	}));
+		message: 'Configurando extensiones base de datos...'
+	});
+
+	performanceLog('[DuckDB] Instantiate worker');
 
 	const db = new duckdb.AsyncDuckDB(logger, worker);
-	await db.instantiate(bundle.mainModule, bundle.pthreadWorker ?? null);
+
+	let total = 0;
+	await db.instantiate(bundle.mainModule, bundle.pthreadWorker ?? null, () => {
+		const percentage = 10 + Math.min(60, ((total += 1) / 600) * 60);
+		databaseLoading.set({
+			isRunning: true,
+			percentage,
+			message: 'Cargando archivos necesarios...'
+		});
+	});
+
+	databaseLoading.set({
+		isRunning: true,
+		percentage: 65,
+		message: 'Verificando compatibilidad...'
+	});
+
+	performanceLog('[DuckDB] Check OPFS supported');
 
 	// Try to use OPFS for persistence, fallback to in-memory
 	const opfsSupported = isOpfsSupported();
 	let usingOpfs = false;
 
+	databaseLoading.set({
+		isRunning: true,
+		percentage: 70,
+		message: 'Abriendo base de datos en el navegador...'
+	});
+
 	try {
 		if (opfsSupported) {
-			console.log('[DuckDB] Opening OPFS database:', OPFS_DB_PATH);
+			performanceLog('[DuckDB] Opening OPFS database:', OPFS_DB_PATH);
+
 			await db.open({
 				path: OPFS_DB_PATH,
 				accessMode: duckdb.DuckDBAccessMode.READ_WRITE
 			});
-			console.log('[DuckDB] OPFS database opened successfully');
+			performanceLog('[DuckDB] OPFS database opened successfully');
 			usingOpfs = true;
 		} else {
-			console.log('[DuckDB] OPFS not supported, using in-memory database');
+			performanceLog('[DuckDB] OPFS not supported, using in-memory database');
 			await db.open({ allowUnsignedExtensions: true });
 		}
 	} catch (error) {
@@ -128,7 +161,7 @@ async function openDatabase(): Promise<{ db: AsyncDuckDB; usingOpfs: boolean }> 
 		// Clear stored version since we can't use OPFS
 		try {
 			localStorage.removeItem(DB_VERSION_KEY);
-			console.log('[DuckDB] Cleared stored version due to OPFS failure');
+			performanceLog('[DuckDB] Cleared stored version due to OPFS failure');
 		} catch {
 			// Ignore localStorage errors
 		}
@@ -143,59 +176,59 @@ async function initialiseConnection(): Promise<AsyncDuckDBConnection> {
 	}
 
 	try {
-		// Step 1: Open database first to know if we're using OPFS or in-memory
-		const { db, usingOpfs } = await openDatabase();
-		const connection = await db.connect();
-
-		splashScreenProgress.update((state) => ({
-			...state,
-			isRunning: true,
-			stage: 'init',
-			percentage: 20,
-			message: 'Conexión creada...'
-		}));
-
-		// Step 2: Determine if migrations are needed
+		// Step 1: Check OPFS support and migrations FIRST (before opening database)
+		const opfsSupported = isOpfsSupported();
 		let shouldRunMigrations = false;
 		let currentVersion: string | null = null;
 
-		if (usingOpfs) {
-			// Check versions only if using OPFS
+		if (opfsSupported) {
+			// Check if migrations are needed
 			const { needed, currentVersion: version } = await needsMigration();
 			shouldRunMigrations = needed;
 			currentVersion = version;
 
-			// Update splash screen based on whether migrations are needed
-			splashScreenProgress.update((state) => ({
-				...state,
-				enabled: needed
-			}));
-
 			if (needed) {
-				console.log('[DuckDB] OPFS database needs migration for version:', currentVersion);
+				performanceLog('[DuckDB] Migrations needed for version:', currentVersion);
 			} else {
-				console.log('[DuckDB] Database is up-to-date, loading from OPFS');
+				performanceLog('[DuckDB] Database is up-to-date, will load from OPFS');
 			}
 		} else {
-			// Always run migrations for in-memory databases
+			// Always run migrations for in-memory fallback
 			shouldRunMigrations = true;
 			const { currentVersion: version } = await needsMigration();
 			currentVersion = version;
 
-			// Always show splash screen for in-memory fallback
-			splashScreenProgress.update((state) => ({
-				...state,
-				enabled: true
-			}));
-
-			console.log('[DuckDB] Using in-memory database, running migrations');
+			performanceLog('[DuckDB] OPFS not supported, will use in-memory with migrations');
 		}
+
+		// Step 2: Open database
+		const { db, usingOpfs } = await openDatabase();
+
+		databaseLoading.set({
+			isRunning: true,
+			percentage: 80,
+			message: 'Conectando a instancia base de datos...'
+		});
+
+		const connection = await db.connect();
 
 		// Step 3: Run migrations if needed
 		if (shouldRunMigrations) {
+			databaseLoading.set({
+				isRunning: true,
+				percentage: 90,
+				message: 'Descargando diccionario...'
+			});
+
 			// Download parquet file and register it
 			const parquetFile = await downloadParquetFile();
 			await db.registerFileBuffer(parquetFile.name, parquetFile.buffer);
+
+			databaseLoading.set({
+				isRunning: true,
+				percentage: 95,
+				message: 'Cargando migraciones...'
+			});
 
 			// Run migrations (create tables, indexes, FTS)
 			await runMigration(connection);
@@ -203,23 +236,30 @@ async function initialiseConnection(): Promise<AsyncDuckDBConnection> {
 			if (usingOpfs) {
 				// CRITICAL: Flush data to OPFS for persistence
 				await connection.query('CHECKPOINT');
-				console.log('[DuckDB] Database checkpointed to OPFS');
+				performanceLog('[DuckDB] Database checkpointed to OPFS');
 
 				// Store the version after successful migration
 				if (currentVersion) {
 					storeDbVersion(currentVersion);
 				}
 			} else {
-				console.log('[DuckDB] In-memory database ready (no persistence)');
+				performanceLog('[DuckDB] In-memory database ready (no persistence)');
 			}
+		} else {
+			performanceLog('[DuckDB] Loaded from OPFS, skipping migrations');
 		}
+
+		databaseLoading.set({
+			isRunning: false,
+			percentage: 100,
+			message: 'Configuración base de datos completada.'
+		});
 
 		return connection;
 	} catch (error) {
-		splashScreenProgress.update((state) => ({
+		databaseLoading.update((state) => ({
 			...state,
 			isRunning: false,
-			stage: 'idle',
 			percentage: 0,
 			message: 'Error al inicializar la base de datos'
 		}));

@@ -1,7 +1,6 @@
 import type { AsyncDuckDBConnection, AsyncPreparedStatement } from '@duckdb/duckdb-wasm';
 import type { Table } from 'apache-arrow';
 import { getConnection } from './duckdb';
-import { splashScreenProgress } from './splash-screen-progress';
 
 const DATA_FILE_NAME = 'data.parquet';
 const WORDS_TABLE = 'words';
@@ -42,14 +41,6 @@ export async function downloadParquetFile(): Promise<{ name: string; buffer: Uin
 }
 
 export const runMigration = async (connection: AsyncDuckDBConnection) => {
-	splashScreenProgress.update((state) => ({
-		...state,
-		isRunning: true,
-		stage: 'creating-table',
-		percentage: 40,
-		message: 'Creando tabla de palabras...'
-	}));
-
 	await connection.query(`CREATE OR REPLACE TABLE ${WORDS_TABLE} AS
     SELECT
       id,
@@ -61,37 +52,13 @@ export const runMigration = async (connection: AsyncDuckDBConnection) => {
       createdAt
     FROM read_parquet('${DATA_FILE_NAME}')`);
 
-	splashScreenProgress.update((state) => ({
-		...state,
-		isRunning: true,
-		stage: 'building-fts',
-		percentage: 50,
-		message: 'Construyendo índice de búsqueda...'
-	}));
-
 	await connection.query('LOAD fts');
 	await connection.query(
 		`PRAGMA create_fts_index('${WORDS_TABLE}', 'id', 'word', 'definition', 'example', overwrite=1)`
 	);
 
-	splashScreenProgress.update((state) => ({
-		...state,
-		isRunning: true,
-		stage: 'building-indexes',
-		percentage: 80,
-		message: 'Construyendo índices adicionales...'
-	}));
-
 	await connection.query(`CREATE INDEX IF NOT EXISTS idx_words_id ON ${WORDS_TABLE}(id)`);
 	await connection.query(`CREATE INDEX IF NOT EXISTS idx_words_word ON ${WORDS_TABLE}(word, id)`);
-
-	splashScreenProgress.update((state) => ({
-		...state,
-		isRunning: false,
-		stage: 'complete',
-		percentage: 100,
-		message: 'Base de datos lista'
-	}));
 };
 
 export interface QueryAllOptions {

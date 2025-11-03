@@ -9,7 +9,7 @@ Tienes dos formas de aportar nuevas palabras al diccionario:
 
 ### 1. Usar el CLI oficial
 
-Requisitos: Node.js (o Bun).
+Requisitos: Node.js (o [Bun](https://bun.sh/)).
 
 ```sh
 bun install
@@ -28,7 +28,7 @@ El comando actualizará `data.json` y el README automáticamente. Para actualiza
 bun run generate-parquet
 ```
 
-Este comando genera el archivo Parquet y automáticamente crea un archivo de metadatos (`static/data.parquet.json`) con un hash SHA-256 del archivo. El hash se utiliza para detectar cambios y optimizar la carga en el navegador mediante OPFS (Origin Private File System) - solo descarga datos nuevos cuando el hash cambia.
+Este comando genera el archivo Parquet y automáticamente crea un archivo de metadatos (`static/data.parquet.json`) con un hash SHA-256 del archivo. El hash se utiliza para detectar cambios y optimizar la carga en el navegador mediante OPFS (Origin Private File System), solo descarga datos nuevos cuando el hash cambia.
 
 Después de ejecutarlo:
 

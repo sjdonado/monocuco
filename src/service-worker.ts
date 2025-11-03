@@ -6,9 +6,9 @@ import { build, files, prerendered, version } from '$service-worker';
 declare const self: ServiceWorkerGlobalScope;
 
 const ASSET_CACHE = `asset-cache-${version}`;
+const DATA_META_PATH = '/data.parquet.json';
 
 // Pre-cache static assets (JS, CSS, WASM workers, etc.)
-// Note: data.parquet and data.parquet.json are NOT cached here because OPFS handles persistence and we check versions via localStorage
 const PRECACHE = new Set([...build, ...files, ...prerendered]);
 
 self.addEventListener('install', (event) => {
@@ -39,6 +39,12 @@ self.addEventListener('fetch', (event: FetchEvent) => {
 	if (request.method !== 'GET') return;
 
 	const url = new URL(request.url);
+
+	// Special handling for data.parquet.json - stale-while-revalidate for offline support
+	if (url.origin === self.location.origin && url.pathname === DATA_META_PATH) {
+		event.respondWith(staleWhileRevalidate(request));
+		return;
+	}
 
 	// Cache-first for precached assets (JS, CSS, WASM workers, etc.)
 	if (url.origin === self.location.origin && PRECACHE.has(url.pathname)) {
@@ -78,4 +84,38 @@ async function networkFirstWithCacheFallback(request: Request): Promise<Response
 		if (cached) return cached;
 		throw new Error('Network error and no cached response available');
 	}
+}
+
+/**
+ * Stale-while-revalidate strategy for data.parquet.json
+ * - Serves from cache immediately if available (instant offline support)
+ * - Updates cache in background from network
+ * - Falls back to network if no cache available
+ */
+async function staleWhileRevalidate(request: Request): Promise<Response> {
+	const cache = await caches.open(ASSET_CACHE);
+	const cached = await cache.match(request);
+
+	// Fetch from network in the background and update cache
+	const fetchPromise = fetch(request)
+		.then((resp) => {
+			if (resp.ok) {
+				cache.put(request, resp.clone());
+			}
+			return resp;
+		})
+		.catch(() => null);
+
+	// Return cached response immediately if available
+	if (cached) {
+		return cached;
+	}
+
+	// If no cache, wait for network
+	const networkResp = await fetchPromise;
+	if (networkResp) {
+		return networkResp;
+	}
+
+	throw new Error('Network error and no cached metadata available');
 }
