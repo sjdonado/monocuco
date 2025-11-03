@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { migrationProgress, type MigrationProgress } from '$lib/db/migration-progress';
+	import { splashScreenProgress, type SplashScreenProgress } from '$lib/db/splash-screen-progress';
 	import { AlertCircleIcon } from '@lucide/svelte';
 
-	let progress = $state<MigrationProgress>({
+	let progress = $state<SplashScreenProgress>({
 		isRunning: false,
 		stage: 'idle',
 		percentage: 0,
@@ -10,7 +10,7 @@
 	});
 
 	$effect(() => {
-		const unsubscribe = migrationProgress.subscribe((value) => {
+		const unsubscribe = splashScreenProgress.subscribe((value) => {
 			progress = value;
 		});
 		return () => unsubscribe();
@@ -48,13 +48,6 @@
 							{/if}
 						</div>
 					{/if}
-				</div>
-
-				<div class="alert bg-base-100 border border-base-200 text-sm text-base-content/80 mt-4">
-					<AlertCircleIcon class="size-5 shrink-0 text-primary" aria-hidden="true" />
-					<span class="text-xs">
-						Esta operación solo se ejecuta la primera vez o cuando hay nuevos datos.
-					</span>
 				</div>
 			</div>
 		</div>

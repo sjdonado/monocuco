@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 
-export interface MigrationProgress {
+export interface SplashScreenProgress {
 	isRunning: boolean;
 	stage: 'idle' | 'downloading' | 'creating-table' | 'building-fts' | 'building-indexes' | 'complete';
 	percentage: number;
@@ -11,11 +11,11 @@ export interface MigrationProgress {
 	};
 }
 
-const initialState: MigrationProgress = {
-	isRunning: false,
+const initialState: SplashScreenProgress = {
+	isRunning: true,
 	stage: 'idle',
 	percentage: 0,
-	message: ''
+	message: 'Cargando...'
 };
 
-export const migrationProgress = writable<MigrationProgress>(initialState);
+export const splashScreenProgress = writable<SplashScreenProgress>(initialState);
