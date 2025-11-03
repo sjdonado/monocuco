@@ -4,7 +4,7 @@
     "": {
       "name": "monocuco",
       "dependencies": {
-        "@duckdb/duckdb-wasm": "^1.30.0",
+        "@duckdb/duckdb-wasm": "^1.31.0",
         "@lucide/svelte": "^0.552.0",
         "@tanstack/svelte-form": "^1.23.8",
         "commander": "^14.0.2",
@@ -70,7 +70,7 @@
 
     "@cspotcode/source-map-support": ["@cspotcode/source-map-support@0.8.1", "", { "dependencies": { "@jridgewell/trace-mapping": "0.3.9" } }, "sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw=="],
 
-    "@duckdb/duckdb-wasm": ["@duckdb/duckdb-wasm@1.30.0", "", { "dependencies": { "apache-arrow": "^17.0.0" } }, "sha512-9aWrm+4ayl4sTlvGtl/b+LxrUyXaac3yyVqkoJ3F7Vkd62PoS8PcQIRJ/KjXBW36LP1CnPY5jjvFyIcTFLtcXA=="],
+    "@duckdb/duckdb-wasm": ["@duckdb/duckdb-wasm@1.31.0", "", { "dependencies": { "apache-arrow": "^17.0.0" } }, "sha512-HcR5XFmNpi7ua0IFohO2dFDNh0LkZgnkfkiD5BDlP8SAmhhcHe+zfOPD1izpmuBxLel25LHO608NY/3RolwztQ=="],
 
     "@emnapi/runtime": ["@emnapi/runtime@1.6.0", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-obtUmAHTMjll499P+D9A3axeJFlhdjOWdKUNs/U6QIGT7V5RjcUW1xToAzjvmgTSQhDbYn/NwfTRoJcQ2rNBxA=="],
 
