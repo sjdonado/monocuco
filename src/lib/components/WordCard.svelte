@@ -12,11 +12,12 @@
 	const definitionHtml = $derived(parseMarkdown(entry.definition));
 	const exampleHtml = $derived(parseMarkdown(entry.example));
 	const formattedDate = $derived(
-		new Date(entry.createdAt).toLocaleString('default', {
-			day: 'numeric',
-			month: 'long',
-			year: 'numeric'
-		})
+		(() => {
+			const date = new Date(entry.createdAt);
+			const month = date.toLocaleString('es-ES', { month: 'long' });
+			const capitalizedMonth = month.charAt(0).toUpperCase() + month.slice(1);
+			return `${capitalizedMonth} ${date.getDate()}, ${date.getFullYear()}`;
+		})()
 	);
 
 	let copied = $state(false);

@@ -220,16 +220,6 @@
 	{/if}
 </svelte:head>
 
-{#snippet resultsMetadata()}
-	{#if result}
-		<div class="text-xs text-base-content/70 mt-2">
-			<span>
-				{result.total} resultado{result.total > 1 ? 's' : ''} en {result.loadTimeSeconds}s.
-			</span>
-		</div>
-	{/if}
-{/snippet}
-
 <div class="flex flex-col gap-6">
 	<section class="flex flex-wrap items-center justify-between gap-3">
 		{#if isSearching}
@@ -238,7 +228,13 @@
 				<p class="text-base-content/70">
 					Resultados para <span class="font-semibold text-primary">"{searchValue}"</span>
 				</p>
-				{@render resultsMetadata()}
+				{#if result}
+					<div class="text-xs text-base-content/70 mt-2">
+						<span>
+							{result.total} resultado{result.total > 1 ? 's' : ''} en {result.loadTimeSeconds}s.
+						</span>
+					</div>
+				{/if}
 			</div>
 		{:else}
 			<div class="flex flex-col gap-2">
@@ -263,7 +259,6 @@
 						>.
 					</p>
 				</div>
-				{@render resultsMetadata()}
 			</div>
 		{/if}
 	</section>
