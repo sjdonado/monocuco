@@ -12,7 +12,7 @@ interface WordParquetRow {
 	definition: string;
 	example: string;
 	createdByName: string;
-	createdByWebsite: string | null;
+	createdByWebsite: string;
 	createdAt: string;
 }
 
@@ -23,7 +23,7 @@ export interface Word {
 	example: string;
 	createdBy: {
 		name: string;
-		website: string | null;
+		website: string;
 	};
 	createdAt: string;
 }
@@ -47,8 +47,8 @@ export const runMigration = async (connection: AsyncDuckDBConnection) => {
       word,
       definition,
       example,
-      createdBy.name AS createdByName,
-      createdBy.website AS createdByWebsite,
+      createdByName,
+      createdByWebsite,
       createdAt
     FROM read_parquet('${DATA_FILE_NAME}')`);
 

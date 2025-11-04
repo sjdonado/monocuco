@@ -25,7 +25,7 @@ bun run add-word -- \
 El comando actualizará `data.json` y el README automáticamente. Para actualizar el archivo Parquet, ejecuta:
 
 ```sh
-bun run generate-parquet
+bun run update-parquet
 ```
 
 Este comando genera el archivo Parquet y automáticamente crea un archivo de metadatos (`static/data.parquet.json`) con un hash SHA-256 del archivo. El hash se utiliza para detectar cambios y optimizar la carga en el navegador mediante OPFS (Origin Private File System), solo descarga datos nuevos cuando el hash cambia.

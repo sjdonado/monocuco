@@ -15,7 +15,7 @@
 		"test": "npm run test:unit -- --run",
 		"format": "prettier --write .",
 		"add-word": "node scripts/add_word.js",
-		"generate-parquet": "node scripts/json_to_parquet.js"
+		"update-parquet": "node scripts/json_to_parquet.js"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.4.0",

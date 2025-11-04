@@ -18,8 +18,8 @@ const DEFAULT_METADATA_PATH = resolve(__dirname, '../static/data.parquet.json');
 /**
  * CreatedBy structure
  * @typedef {Object} CreatedBy
- * @property {string | null} name - Author name
- * @property {string | null} website - Author website
+ * @property {string} name - Author name (required, non-nullable)
+ * @property {string} website - Author website (required, non-nullable)
  */
 
 /**
@@ -29,7 +29,7 @@ const DEFAULT_METADATA_PATH = resolve(__dirname, '../static/data.parquet.json');
  * @property {string} word - Word or expression
  * @property {string} definition - Definition
  * @property {string} example - Usage example
- * @property {CreatedBy} createdBy - Author information
+ * @property {CreatedBy} createdBy - Author information (single author)
  * @property {string} createdAt - ISO timestamp
  */
 
@@ -57,16 +57,6 @@ function toStr(value) {
 }
 
 /**
- * Convert value to optional string
- * @param {any} value - Value to convert
- * @returns {string | null} String or null
- */
-function toOptionalStr(value) {
-	const text = toStr(value);
-	return text || null;
-}
-
-/**
  * Coerce raw entry to normalized format
  * @param {any} raw - Raw entry data
  * @returns {NormalizedEntry} Normalized entry
@@ -88,14 +78,14 @@ function coerceEntry(raw) {
 			definition: toStr(raw.definition || ''),
 			example: toStr(raw.example || ''),
 			createdBy: {
-				name: toOptionalStr(createdBy.name),
-				website: toOptionalStr(createdBy.website)
+				name: toStr(createdBy.name || 'Anónimo'),
+				website: toStr(createdBy.website || '')
 			},
 			createdAt: toStr(raw.createdAt || '')
 		};
 	}
 
-	// Handle old format with synonyms and authors
+	// Handle old format with synonyms and single author
 	const synonyms = raw.synonyms || [];
 	const cleanedSynonyms = synonyms
 		.map((s) => toStr(s).trim())
@@ -108,14 +98,9 @@ function coerceEntry(raw) {
 	}
 
 	const authors = raw.authors || [];
-	const authorNames = authors
-		.map((a) => toStr(a.name).trim())
-		.filter((name) => name)
-		.join(', ');
-	const authorWebsites = authors
-		.map((a) => toStr(a.link).trim())
-		.filter((link) => link)
-		.join(', ');
+	const firstAuthor = authors[0] || {};
+	const authorName = toStr(firstAuthor.name || 'Anónimo').trim();
+	const authorWebsite = toStr(firstAuthor.link || '').trim();
 
 	return {
 		id: entryId,
@@ -123,8 +108,8 @@ function coerceEntry(raw) {
 		definition,
 		example: (raw.examples || []).map((ex) => toStr(ex).trim()).join('\n'),
 		createdBy: {
-			name: authorNames || null,
-			website: authorWebsites || null
+			name: authorName || 'Anónimo',
+			website: authorWebsite
 		},
 		createdAt: toStr(raw.createdAt || '2021-08-31T00:00:00.000Z')
 	};
@@ -155,7 +140,8 @@ async function writeParquet(entries, parquetPath) {
 		{ name: 'word', data: entries.map((e) => e.word), type: 'STRING' },
 		{ name: 'definition', data: entries.map((e) => e.definition), type: 'STRING' },
 		{ name: 'example', data: entries.map((e) => e.example), type: 'STRING' },
-		{ name: 'createdBy', data: entries.map((e) => e.createdBy) },
+		{ name: 'createdByName', data: entries.map((e) => e.createdBy.name), type: 'STRING' },
+		{ name: 'createdByWebsite', data: entries.map((e) => e.createdBy.website), type: 'STRING' },
 		{ name: 'createdAt', data: entries.map((e) => e.createdAt), type: 'STRING' }
 	];
 
