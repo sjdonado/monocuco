@@ -17,7 +17,7 @@
 
 {#if progress.isRunning}
 	<div class="flex flex-col items-center justify-start pt-32">
-		<div class="mb-2 flex items-center justify-between text-sm max-w-xl">
+		<div class="mb-2 flex items-center justify-between gap-2 text-sm max-w-xl">
 			<span class="text-base-content/70">{progress.message}</span>
 			<span class="font-semibold text-primary">{Math.round(progress.percentage)}%</span>
 		</div>

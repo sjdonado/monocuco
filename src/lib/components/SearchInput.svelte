@@ -128,7 +128,7 @@
 		}
 		query = suggestion.word;
 		isOpen = false;
-		navigateToSearch(suggestion.word);
+		goto(`/?word=${encodeURIComponent(suggestion.id)}&q=${encodeURIComponent(suggestion.word)}`);
 	};
 </script>
 
