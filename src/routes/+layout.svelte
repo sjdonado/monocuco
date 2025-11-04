@@ -80,8 +80,8 @@
 			</div>
 			<div class="drawer-side md:hidden">
 				<label for="nav-drawer" aria-label="Cerrar menú" class="drawer-overlay"></label>
-				<div class="bg-base-100 min-h-full w-full p-6 text-base-content flex flex-col gap-6">
-					<div class="flex justify-end">
+				<div class="bg-base-100 h-screen w-full p-6 text-base-content flex flex-col gap-6">
+					<div class="flex justify-end shrink-0">
 						<label
 							for="nav-drawer"
 							class="btn btn-sm btn-ghost btn-circle"
@@ -92,7 +92,7 @@
 					</div>
 					<a
 						href="/add"
-						class="btn btn-primary w-full"
+						class="btn btn-primary w-full shrink-0"
 						onclick={() => {
 							const drawer = document.getElementById('nav-drawer') as HTMLInputElement;
 							if (drawer) drawer.checked = false;
@@ -100,21 +100,23 @@
 					>
 						Agregar palabra
 					</a>
-					<div
-						role="button"
-						tabindex="0"
-						onclick={() => {
-							const drawer = document.getElementById('nav-drawer') as HTMLInputElement;
-							if (drawer) drawer.checked = false;
-						}}
-						onkeydown={(e) => {
-							if (e.key === 'Enter' || e.key === ' ') {
+					<div class="flex-1 min-h-0 overflow-y-auto">
+						<div
+							role="button"
+							tabindex="0"
+							onclick={() => {
 								const drawer = document.getElementById('nav-drawer') as HTMLInputElement;
 								if (drawer) drawer.checked = false;
-							}
-						}}
-					>
-						<LetterNav />
+							}}
+							onkeydown={(e) => {
+								if (e.key === 'Enter' || e.key === ' ') {
+									const drawer = document.getElementById('nav-drawer') as HTMLInputElement;
+									if (drawer) drawer.checked = false;
+								}
+							}}
+						>
+							<LetterNav />
+						</div>
 					</div>
 				</div>
 			</div>
