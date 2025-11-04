@@ -81,7 +81,16 @@
 				<label for="nav-drawer" aria-label="Cerrar menú" class="drawer-overlay"></label>
 				<ul class="menu bg-base-200 min-h-full w-64 p-4 text-base-content">
 					<li>
-						<a href="/add" class="btn btn-sm btn-primary w-full">Agregar palabra</a>
+						<a
+							href="/add"
+							class="btn btn-sm btn-primary w-full"
+							onclick={() => {
+								const drawer = document.getElementById('nav-drawer') as HTMLInputElement;
+								if (drawer) drawer.checked = false;
+							}}
+						>
+							Agregar palabra
+						</a>
 					</li>
 				</ul>
 			</div>
