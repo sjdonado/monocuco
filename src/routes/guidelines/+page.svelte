@@ -5,7 +5,7 @@
 <section class="mx-auto w-full max-w-3xl space-y-8 text-base-content">
 	<header class="space-y-3">
 		<h1 class="text-3xl font-bold">Pautas de contenido</h1>
-		<p class="text-base-content/70">
+		<p class="text-sm sm:text-md text-base-content/70">
 			Monocuco es un proyecto comunitario inspirado en el espíritu colaborativo de <a
 				class="link"
 				href="https://www.urbandictionary.com/"

@@ -239,7 +239,7 @@
 		{:else}
 			<div class="flex flex-col gap-2">
 				<h1 class="text-3xl font-bold text-base-content">Bienvenido</h1>
-				<div class="flex flex-wrap gap-1 text-sm sm:text-md text-base-content/70">
+				<div class="flex flex-wrap gap-1 text-sm text-base-content/70">
 					<p>
 						Diccionario abierto y gratuito de
 						<a

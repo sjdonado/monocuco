@@ -379,14 +379,14 @@ export const getLetterCounts = async (): Promise<LetterCount[]> => {
       SELECT COUNT(*) as total FROM ${WORDS_TABLE}
     ),
     combined AS (
-      SELECT 'Total' as letter, total as count FROM total_count
+      SELECT 'Todas' as letter, total as count FROM total_count
       UNION ALL
       SELECT letter, count FROM letter_counts
     )
     SELECT letter, count
     FROM combined
     ORDER BY
-      CASE WHEN letter = 'Total' THEN 0 ELSE 1 END,
+      CASE WHEN letter = 'Todas' THEN 0 ELSE 1 END,
       letter`;
 
 	const statement = await connection.prepare(sql);

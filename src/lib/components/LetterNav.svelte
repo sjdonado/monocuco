@@ -23,7 +23,7 @@
 	});
 
 	const getSearchUrl = (letter: string) => {
-		if (letter === 'Total') {
+		if (letter === 'Todas') {
 			return '/';
 		}
 		return `/?q=${encodeURIComponent(letter)}`;
@@ -36,8 +36,8 @@
 		<ul class="space-y-1 text-sm">
 			{#each letterCounts as { letter, count } (letter)}
 				<li>
-					<a href={getSearchUrl(letter)} class="flex justify-between">
-						<span class="link link-primary" class:font-bold={letter === 'Total'}>{letter}</span>
+					<a href={getSearchUrl(letter)} class="flex justify-between p-0">
+						<span class="link link-primary" class:font-bold={letter === 'Todas'}>{letter}</span>
 						<span class="text-base-content/60">{count}</span>
 					</a>
 				</li>

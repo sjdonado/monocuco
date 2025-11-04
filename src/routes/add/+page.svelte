@@ -106,22 +106,20 @@
 </svelte:head>
 
 <section class="mx-auto w-full max-w-3xl space-y-3">
-	<header class="space-y-3 text-center md:text-left">
+	<header class="space-y-3">
 		<h1 class="text-3xl font-bold text-base-content">Nueva palabra</h1>
-		<p class="text-base-content/70">
+		<p class="text-sm sm:text-md text-base-content/70">
 			Comparte palabras del español barranquillero y nosotros nos encargamos de revisarlas antes de
 			publicarlas.
 		</p>
 		<div class="alert bg-base-100 border border-base-200 text-sm text-base-content/80">
 			<AlertCircleIcon class="size-5 shrink-0 text-primary" aria-hidden="true" />
-			<div class="text-left">
-				<p class="font-medium">
-					Antes de enviar, revisa las
-					<a class="link link-primary" href="/guidelines"> pautas de contenido </a>. En resumen:
-					comparte definiciones que otras personas puedan entender y nunca publiques discurso de
-					odio ni información personal.
-				</p>
-			</div>
+			<p class="font-medium text-left text-sm">
+				Antes de enviar, revisa las
+				<a class="link link-primary" href="/guidelines"> pautas de contenido </a>. En resumen:
+				comparte definiciones que otras personas puedan entender y nunca publiques discurso de odio
+				ni información personal.
+			</p>
 		</div>
 	</header>
 
