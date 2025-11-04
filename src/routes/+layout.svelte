@@ -3,7 +3,7 @@
 	import { env } from '$env/dynamic/public';
 	import logo from '$lib/assets/logo.webp';
 	import { onMount } from 'svelte';
-	import { MenuIcon } from '@lucide/svelte';
+	import { MenuIcon, XIcon } from '@lucide/svelte';
 	import { dev } from '$app/environment';
 	import SearchInput from '$lib/components/SearchInput.svelte';
 	import DatabaseLoading from '$lib/components/DatabaseLoading.svelte';
@@ -49,7 +49,7 @@
 			<input id="nav-drawer" type="checkbox" class="drawer-toggle" />
 			<div class="drawer-content">
 				<div
-					class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 md:flex-row md:items-center md:justify-between md:gap-6"
+					class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6 md:flex-row md:items-center md:justify-between md:gap-6"
 				>
 					<div class="flex w-full flex-col gap-4 md:flex-row md:items-center md:gap-6">
 						<div class="flex w-full items-center gap-4 md:w-auto md:gap-6">
@@ -80,10 +80,19 @@
 			</div>
 			<div class="drawer-side md:hidden">
 				<label for="nav-drawer" aria-label="Cerrar menú" class="drawer-overlay"></label>
-				<div class="menu bg-base-200 min-h-full w-64 p-4 text-base-content flex flex-col gap-6">
+				<div class="bg-base-100 min-h-full w-full p-6 text-base-content flex flex-col gap-6">
+					<div class="flex justify-end">
+						<label
+							for="nav-drawer"
+							class="btn btn-sm btn-ghost btn-circle"
+							aria-label="Cerrar menú"
+						>
+							<XIcon class="size-5" aria-hidden="true" />
+						</label>
+					</div>
 					<a
 						href="/add"
-						class="btn btn-sm btn-primary w-full"
+						class="btn btn-primary w-full"
 						onclick={() => {
 							const drawer = document.getElementById('nav-drawer') as HTMLInputElement;
 							if (drawer) drawer.checked = false;
