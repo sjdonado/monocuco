@@ -6,7 +6,7 @@
 
 	const { entry, shareUrl = null } = $props<{
 		entry: Word;
-		shareUrl: string | null;
+		shareUrl: string;
 	}>();
 
 	const definitionHtml = $derived(parseMarkdown(entry.definition));
@@ -24,8 +24,6 @@
 	let copyTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	const handleShare = async () => {
-		if (!shareUrl) return;
-
 		try {
 			if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
 				await navigator.share({
@@ -66,27 +64,25 @@
 
 <article
 	id={entry.id}
-	class="card bg-base-100 shadow-lg border border-base-200 dark:border-gray-700"
+	class="card bg-base-100 shadow-lg border border-base-200 dark:border-gray-700 max-w-2xl"
 >
 	<div class="card-body gap-4">
 		<header class="flex gap-2 items-center justify-between">
 			<h2 class="card-title text-3xl leading-snug">{entry.word}</h2>
-			{#if shareUrl}
-				<div class="flex items-center gap-2" aria-live="polite">
-					{#if copied}
-						<span class="text-xs font-normal text-success">Enlace copiado</span>
-					{/if}
-					<button
-						type="button"
-						class="btn btn-ghost btn-sm gap-2"
-						onclick={handleShare}
-						aria-label={`Compartir ${entry.word}`}
-					>
-						<Share2Icon class="size-4" aria-hidden="true" />
-						<span class="hidden sm:inline">Compartir</span>
-					</button>
-				</div>
-			{/if}
+			<div class="flex items-center gap-2" aria-live="polite">
+				{#if copied}
+					<span class="text-xs font-normal text-success">Enlace copiado</span>
+				{/if}
+				<button
+					type="button"
+					class="btn btn-ghost btn-sm gap-2"
+					onclick={handleShare}
+					aria-label={`Compartir ${entry.word}`}
+				>
+					<Share2Icon class="size-4" aria-hidden="true" />
+					<span class="hidden sm:inline">Compartir</span>
+				</button>
+			</div>
 		</header>
 
 		<section class="space-y-4 flex-1">
@@ -103,7 +99,7 @@
 			{/if}
 		</section>
 
-		<footer class="flex flex-wrap items-center justify-between gap-2 text-sm font-semibold">
+		<footer class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold">
 			<div>
 				<span>por</span>
 				{#if entry.createdBy?.website}

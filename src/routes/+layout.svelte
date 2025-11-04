@@ -7,6 +7,7 @@
 	import { dev } from '$app/environment';
 	import SearchInput from '$lib/components/SearchInput.svelte';
 	import DatabaseLoading from '$lib/components/DatabaseLoading.svelte';
+	import LetterNav from '$lib/components/LetterNav.svelte';
 	import { APP_VERSION } from '$lib/config';
 
 	const { children } = $props();
@@ -42,8 +43,8 @@
 	{/if}
 </svelte:head>
 
-<div class="min-h-screen bg-base-200">
-	<nav class="border-b border-base-300 bg-base-100">
+<div class="min-h-screen">
+	<nav class="sticky top-0 z-50 border-b border-base-300 bg-base-100">
 		<div class="drawer drawer-end">
 			<input id="nav-drawer" type="checkbox" class="drawer-toggle" />
 			<div class="drawer-content">
@@ -79,25 +80,48 @@
 			</div>
 			<div class="drawer-side md:hidden">
 				<label for="nav-drawer" aria-label="Cerrar menú" class="drawer-overlay"></label>
-				<ul class="menu bg-base-200 min-h-full w-64 p-4 text-base-content">
-					<li>
-						<a
-							href="/add"
-							class="btn btn-sm btn-primary w-full"
-							onclick={() => {
+				<div class="menu bg-base-200 min-h-full w-64 p-4 text-base-content flex flex-col gap-6">
+					<a
+						href="/add"
+						class="btn btn-sm btn-primary w-full"
+						onclick={() => {
+							const drawer = document.getElementById('nav-drawer') as HTMLInputElement;
+							if (drawer) drawer.checked = false;
+						}}
+					>
+						Agregar palabra
+					</a>
+					<div
+						role="button"
+						tabindex="0"
+						onclick={() => {
+							const drawer = document.getElementById('nav-drawer') as HTMLInputElement;
+							if (drawer) drawer.checked = false;
+						}}
+						onkeydown={(e) => {
+							if (e.key === 'Enter' || e.key === ' ') {
 								const drawer = document.getElementById('nav-drawer') as HTMLInputElement;
 								if (drawer) drawer.checked = false;
-							}}
-						>
-							Agregar palabra
-						</a>
-					</li>
-				</ul>
+							}
+						}}
+					>
+						<LetterNav />
+					</div>
+				</div>
 			</div>
 		</div>
 	</nav>
-	<main class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 min-h-[89vh]">
-		{@render children()}
+	<main class="mx-auto max-w-6xl px-4 py-8 min-h-[89vh]">
+		<div class="grid grid-cols-1 md:grid-cols-[1fr_250px] gap-6">
+			<div class="flex flex-col gap-6">
+				{@render children()}
+			</div>
+			<aside class="hidden md:block">
+				<div class="sticky top-24">
+					<LetterNav />
+				</div>
+			</aside>
+		</div>
 		<DatabaseLoading />
 	</main>
 	<footer>

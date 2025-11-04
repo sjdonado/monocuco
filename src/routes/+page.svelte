@@ -274,7 +274,7 @@
 			<span>No encontramos palabras para esta búsqueda.</span>
 		</div>
 	{:else if !loading}
-		<div class="grid gap-6 sm:grid-cols-2">
+		<div class="flex flex-col gap-6">
 			{#each items as entry (entry.id)}
 				<WordCard {entry} shareUrl={buildShareUrl(entry.id, entry.word)} />
 			{/each}
@@ -282,7 +282,7 @@
 	{/if}
 
 	{#if (result?.total ?? 0) > PAGE_SIZE}
-		<div class="flex items-center justify-center gap-4 pt-4">
+		<div class="flex items-center justify-center gap-4 pt-4 max-w-2xl">
 			<button type="button" class="btn btn-sm" onclick={handlePrev} disabled={!hasPrev}>
 				Anterior
 			</button>

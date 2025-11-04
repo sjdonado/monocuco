@@ -93,10 +93,9 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
 	const rankedCte = isSearch
 		? `WITH base AS (
          SELECT
-           id, word, definition, example, createdByName, createdByWebsite, createdAt,
-           CASE WHEN fts_main_words.match_bm25(id, ?, fields := 'word') IS NOT NULL THEN 1 ELSE 0 END AS word_match
+           id, word, definition, example, createdByName, createdByWebsite, createdAt, 1 AS word_match
          FROM ${WORDS_TABLE}
-         WHERE fts_main_words.match_bm25(id, ?, fields := 'word,definition') IS NOT NULL
+         WHERE LOWER(word) LIKE LOWER(?)
        ),
        ranked AS (
          SELECT
@@ -142,7 +141,7 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const runQuery = async (statement: AsyncPreparedStatement<any>, ...args: unknown[]) => {
-		if (isSearch) return statement.query(term, term, ...args);
+		if (isSearch) return statement.query(`${term}%`, ...args);
 		return statement.query(...args);
 	};
 
@@ -356,6 +355,44 @@ export const findById = async (id: string): Promise<Word | null> => {
 		const table = await statement.query(id);
 		const rows = tableToRows<WordParquetRow>(table);
 		return rows.length > 0 ? toWordRecord(rows[0]) : null;
+	} finally {
+		await statement.close();
+	}
+};
+
+export interface LetterCount {
+	letter: string;
+	count: number;
+}
+
+export const getLetterCounts = async (): Promise<LetterCount[]> => {
+	const connection = await getConnection();
+	const sql = `
+    WITH letter_counts AS (
+      SELECT
+        UPPER(SUBSTRING(word, 1, 1)) as letter,
+        COUNT(*) as count
+      FROM ${WORDS_TABLE}
+      GROUP BY UPPER(SUBSTRING(word, 1, 1))
+    ),
+    total_count AS (
+      SELECT COUNT(*) as total FROM ${WORDS_TABLE}
+    ),
+    combined AS (
+      SELECT 'Total' as letter, total as count FROM total_count
+      UNION ALL
+      SELECT letter, count FROM letter_counts
+    )
+    SELECT letter, count
+    FROM combined
+    ORDER BY
+      CASE WHEN letter = 'Total' THEN 0 ELSE 1 END,
+      letter`;
+
+	const statement = await connection.prepare(sql);
+	try {
+		const table = await statement.query();
+		return tableToRows<LetterCount>(table);
 	} finally {
 		await statement.close();
 	}
