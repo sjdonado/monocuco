@@ -31,9 +31,9 @@
 		})()
 	);
 
-	const cursorParam = $derived(
+	const afterParam = $derived(
 		(() => {
-			const value = (pageData?.url.searchParams.get('cursor') ?? '').trim();
+			const value = (pageData?.url.searchParams.get('after') ?? '').trim();
 			return value.length > 0 ? value : null;
 		})()
 	);
@@ -49,7 +49,7 @@
 
 	let fetchToken = 0;
 
-	const syncUrlState = (state: { term?: string | null; cursor?: string | null }) => {
+	const syncUrlState = (state: { term?: string | null; after?: string | null }) => {
 		if (!browser) return;
 		const url = new URL(window.location.href);
 		let changed = false;
@@ -66,14 +66,14 @@
 			}
 		}
 
-		if (state.cursor !== undefined) {
-			const target = state.cursor?.trim() ?? '';
-			const current = url.searchParams.get('cursor');
+		if (state.after !== undefined) {
+			const target = state.after?.trim() ?? '';
+			const current = url.searchParams.get('after');
 			if (target && current !== target) {
-				url.searchParams.set('cursor', target);
+				url.searchParams.set('after', target);
 				changed = true;
 			} else if (!target && current) {
-				url.searchParams.delete('cursor');
+				url.searchParams.delete('after');
 				changed = true;
 			}
 		}
@@ -106,9 +106,9 @@
 				result = {
 					items: [word],
 					total: 1,
-					currentCursor: null,
-					nextCursor: null,
-					prevCursor: null,
+					currentAfter: null,
+					nextAfter: null,
+					prevAfter: null,
 					startIndex: 1,
 					endIndex: 1,
 					currentPage: 1,
@@ -134,7 +134,7 @@
 		}
 	}
 
-	async function loadWords(term: string | null, cursorToken: string | null) {
+	async function loadWords(term: string | null, afterToken: string | null) {
 		if (!browser) return;
 		const currentToken = ++fetchToken;
 		loading = true;
@@ -143,7 +143,7 @@
 		try {
 			const response = await findAll({
 				term: term ?? undefined,
-				cursor: cursorToken,
+				after: afterToken,
 				pageSize: PAGE_SIZE
 			});
 
@@ -158,7 +158,7 @@
 
 			syncUrlState({
 				term,
-				cursor: response.currentPage > 1 ? response.currentCursor : null
+				after: response.currentPage > 1 ? response.currentAfter : null
 			});
 		} catch (err) {
 			console.error(err);
@@ -168,7 +168,7 @@
 			result = null;
 			syncUrlState({
 				term,
-				cursor: null
+				after: null
 			});
 		} finally {
 			if (currentToken === fetchToken) {
@@ -183,8 +183,8 @@
 			void loadWord(wordId);
 		} else {
 			const term = searchValue || null;
-			const cursorToken = cursorParam;
-			void loadWords(term, cursorToken);
+			const afterToken = afterParam;
+			void loadWords(term, afterToken);
 		}
 	});
 
@@ -194,22 +194,22 @@
 		url.searchParams.set('word', wordId);
 		url.searchParams.set('q', word);
 
-		if (isSearching && currentPage && currentPage > 1 && result?.currentCursor) {
-			url.searchParams.set('cursor', result.currentCursor);
+		if (isSearching && currentPage && currentPage > 1 && result?.currentAfter) {
+			url.searchParams.set('after', result.currentAfter);
 		}
 
 		return url.toString();
 	};
 
-	const goToCursor = (target: string | null) => {
+	const goToAfter = (target: string | null) => {
 		syncUrlState({
 			term: searchValue,
-			cursor: target
+			after: target
 		});
 	};
 
-	const handlePrev = () => goToCursor(result?.prevCursor ?? null);
-	const handleNext = () => goToCursor(result?.nextCursor ?? null);
+	const handlePrev = () => goToAfter(result?.prevAfter ?? null);
+	const handleNext = () => goToAfter(result?.nextAfter ?? null);
 </script>
 
 <svelte:head>
@@ -291,7 +291,7 @@
 					type="button"
 					class="text-sm font-semibold link cursor-pointer"
 					class:text-primary={pageLink.number === currentPage}
-					onclick={() => goToCursor(pageLink.cursor)}
+					onclick={() => goToAfter(pageLink.after)}
 					aria-current={pageLink.number === currentPage ? 'page' : undefined}
 				>
 					{pageLink.number}

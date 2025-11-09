@@ -63,21 +63,21 @@ export const runMigration = async (connection: AsyncDuckDBConnection) => {
 
 export interface QueryAllOptions {
 	term?: string;
-	cursor?: string | null;
+	after?: string | null;
 	pageSize?: number;
 }
 
 export interface QueryAllResult {
 	items: Word[];
 	total: number;
-	currentCursor: string | null;
-	nextCursor: string | null;
-	prevCursor: string | null;
+	currentAfter: string | null;
+	nextAfter: string | null;
+	prevAfter: string | null;
 	startIndex: number;
 	endIndex: number;
 	currentPage: number;
 	totalPages: number;
-	pages: Array<{ number: number; cursor: string | null }>;
+	pages: Array<{ number: number; after: string | null }>;
 	loadTimeSeconds: number;
 }
 
@@ -86,7 +86,7 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
 	const startedAt = Date.now();
 	const term = options.term?.trim() ?? '';
 	const pageSize = Math.max(1, options.pageSize ?? DEFAULT_PAGE_SIZE);
-	const cursor = options.cursor?.trim() || null;
+	const after = options.after?.trim() || null;
 
 	const isSearch = term.length > 0;
 
@@ -157,10 +157,10 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
 
 	let startIndex = total > 0 ? 1 : 0;
 
-	if (cursor) {
+	if (after) {
 		const lookupStatement = await connection.prepare(lookupSql);
 		try {
-			const lookupTable = await runQuery(lookupStatement, cursor);
+			const lookupTable = await runQuery(lookupStatement, after);
 			const lookupRow = tableToRows<RowNumberRow>(lookupTable)[0];
 			const rowNumber = toNumber(lookupRow?.rn);
 			if (rowNumber > 0 && rowNumber <= total) startIndex = rowNumber;
@@ -174,9 +174,9 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
 		return {
 			items: [],
 			total: 0,
-			currentCursor: null,
-			nextCursor: null,
-			prevCursor: null,
+			currentAfter: null,
+			nextAfter: null,
+			prevAfter: null,
 			startIndex: 0,
 			endIndex: 0,
 			currentPage: 1,
@@ -199,12 +199,12 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
 		await pageStatement.close();
 	}
 
-	const currentCursor = items[0]?.id ?? null;
+	const currentAfter = items[0]?.id ?? null;
 
-	// Calculate links/cursors to fetch
-	let prevCursor: string | null = null;
-	let nextCursor: string | null = null;
-	const pages: Array<{ number: number; cursor: string | null }> = [];
+	// Calculate links/afters to fetch
+	let prevAfter: string | null = null;
+	let nextAfter: string | null = null;
+	const pages: Array<{ number: number; after: string | null }> = [];
 
 	const MAX_PAGE_LINKS = 4;
 	let startPageNum = Math.max(1, currentPage - Math.floor(MAX_PAGE_LINKS / 2));
@@ -229,19 +229,19 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
 		}
 	}
 
-	const cursorsMap = new Map<number, string>();
+	const aftersMap = new Map<number, string>();
 	if (rowNumbersToFetch.length > 0) {
-		const batchCursorSql = `${rankedCte}
+		const batchAfterSql = `${rankedCte}
       SELECT rn, id
       FROM ranked
       WHERE rn IN (${rowNumbersToFetch.join(',')})`;
 
-		const batchStatement = await connection.prepare(batchCursorSql);
+		const batchStatement = await connection.prepare(batchAfterSql);
 		try {
 			const batchTable = await runQuery(batchStatement);
 			const batchRows = tableToRows<{ rn: bigint | number; id: string }>(batchTable);
 			for (const row of batchRows) {
-				cursorsMap.set(toNumber(row.rn), row.id);
+				aftersMap.set(toNumber(row.rn), row.id);
 			}
 		} finally {
 			await batchStatement.close();
@@ -250,23 +250,23 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
 
 	if (currentPage > 1) {
 		if (currentPage === 2) {
-			prevCursor = null;
+			prevAfter = null;
 		} else {
 			const prevStartIndex = Math.max(1, startIndex - pageSize);
-			prevCursor = cursorsMap.get(prevStartIndex) ?? null;
+			prevAfter = aftersMap.get(prevStartIndex) ?? null;
 		}
 	}
-	nextCursor = endIndex < total ? (cursorsMap.get(endIndex + 1) ?? null) : null;
+	nextAfter = endIndex < total ? (aftersMap.get(endIndex + 1) ?? null) : null;
 
 	for (let pageNumber = startPageNum; pageNumber <= endPageNum; pageNumber += 1) {
 		if (pageNumber === 1) {
-			pages.push({ number: pageNumber, cursor: null });
+			pages.push({ number: pageNumber, after: null });
 		} else if (pageNumber === currentPage) {
-			pages.push({ number: pageNumber, cursor: currentPage === 1 ? null : currentCursor });
+			pages.push({ number: pageNumber, after: currentPage === 1 ? null : currentAfter });
 		} else {
 			const pageStartIndex = (pageNumber - 1) * pageSize + 1;
-			const cursor = cursorsMap.get(pageStartIndex) ?? null;
-			pages.push({ number: pageNumber, cursor });
+			const after = aftersMap.get(pageStartIndex) ?? null;
+			pages.push({ number: pageNumber, after });
 		}
 	}
 
@@ -275,9 +275,9 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
 	return {
 		items,
 		total,
-		currentCursor,
-		nextCursor,
-		prevCursor,
+		currentAfter,
+		nextAfter,
+		prevAfter,
 		startIndex,
 		endIndex,
 		currentPage,
