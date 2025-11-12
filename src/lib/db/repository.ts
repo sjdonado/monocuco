@@ -1,47 +1,47 @@
-import type { AsyncDuckDBConnection, AsyncPreparedStatement } from '@duckdb/duckdb-wasm';
-import type { Table } from 'apache-arrow';
-import { getConnection } from './duckdb';
+import type { AsyncDuckDBConnection, AsyncPreparedStatement } from "@duckdb/duckdb-wasm";
+import type { Table } from "apache-arrow";
+import { getConnection } from "./duckdb";
 
-const DATA_FILE_NAME = 'data.parquet';
-const WORDS_TABLE = 'words';
+const DATA_FILE_NAME = "data.parquet";
+const WORDS_TABLE = "words";
 const DEFAULT_PAGE_SIZE = 12;
 
 interface WordParquetRow {
-	id: string;
-	word: string;
-	definition: string;
-	example: string;
-	createdByName: string;
-	createdByWebsite: string;
-	createdAt: string;
+  id: string;
+  word: string;
+  definition: string;
+  example: string;
+  createdByName: string;
+  createdByWebsite: string;
+  createdAt: string;
 }
 
 export interface Word {
-	id: string;
-	word: string;
-	definition: string;
-	example: string;
-	createdBy: {
-		name: string;
-		website: string;
-	};
-	createdAt: string;
+  id: string;
+  word: string;
+  definition: string;
+  example: string;
+  createdBy: {
+    name: string;
+    website: string;
+  };
+  createdAt: string;
 }
 
-export type WordSuggestion = Pick<Word, 'id' | 'word' | 'definition'>;
+export type WordSuggestion = Pick<Word, "id" | "word" | "definition">;
 
 export async function downloadParquetFile(): Promise<{ name: string; buffer: Uint8Array }> {
-	const res = await fetch(`/${DATA_FILE_NAME}`, { cache: 'no-cache' });
-	if (!res.ok) {
-		throw new Error(`Could not download ${DATA_FILE_NAME}: ${res.status} ${res.statusText}`);
-	}
+  const res = await fetch(`/${DATA_FILE_NAME}`, { cache: "no-cache" });
+  if (!res.ok) {
+    throw new Error(`Could not download ${DATA_FILE_NAME}: ${res.status} ${res.statusText}`);
+  }
 
-	const buffer = new Uint8Array(await res.arrayBuffer());
-	return { name: DATA_FILE_NAME, buffer };
+  const buffer = new Uint8Array(await res.arrayBuffer());
+  return { name: DATA_FILE_NAME, buffer };
 }
 
 export const runMigration = async (connection: AsyncDuckDBConnection) => {
-	await connection.query(`CREATE OR REPLACE TABLE ${WORDS_TABLE} AS
+  await connection.query(`CREATE OR REPLACE TABLE ${WORDS_TABLE} AS
     SELECT
       id,
       word,
@@ -52,46 +52,46 @@ export const runMigration = async (connection: AsyncDuckDBConnection) => {
       createdAt
     FROM read_parquet('${DATA_FILE_NAME}')`);
 
-	await connection.query('LOAD fts');
-	await connection.query(
-		`PRAGMA create_fts_index('${WORDS_TABLE}', 'id', 'word', 'definition', 'example', overwrite=1)`
-	);
+  await connection.query("LOAD fts");
+  await connection.query(
+    `PRAGMA create_fts_index('${WORDS_TABLE}', 'id', 'word', 'definition', 'example', overwrite=1)`
+  );
 
-	await connection.query(`CREATE INDEX IF NOT EXISTS idx_words_id ON ${WORDS_TABLE}(id)`);
-	await connection.query(`CREATE INDEX IF NOT EXISTS idx_words_word ON ${WORDS_TABLE}(word, id)`);
+  await connection.query(`CREATE INDEX IF NOT EXISTS idx_words_id ON ${WORDS_TABLE}(id)`);
+  await connection.query(`CREATE INDEX IF NOT EXISTS idx_words_word ON ${WORDS_TABLE}(word, id)`);
 };
 
 export interface QueryAllOptions {
-	term?: string;
-	after?: string | null;
-	pageSize?: number;
+  term?: string;
+  after?: string | null;
+  pageSize?: number;
 }
 
 export interface QueryAllResult {
-	items: Word[];
-	total: number;
-	currentAfter: string | null;
-	nextAfter: string | null;
-	prevAfter: string | null;
-	startIndex: number;
-	endIndex: number;
-	currentPage: number;
-	totalPages: number;
-	pages: Array<{ number: number; after: string | null }>;
-	loadTimeSeconds: number;
+  items: Word[];
+  total: number;
+  currentAfter: string | null;
+  nextAfter: string | null;
+  prevAfter: string | null;
+  startIndex: number;
+  endIndex: number;
+  currentPage: number;
+  totalPages: number;
+  pages: Array<{ number: number; after: string | null }>;
+  loadTimeSeconds: number;
 }
 
 export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllResult> => {
-	const connection = await getConnection();
-	const startedAt = Date.now();
-	const term = options.term?.trim() ?? '';
-	const pageSize = Math.max(1, options.pageSize ?? DEFAULT_PAGE_SIZE);
-	const after = options.after?.trim() || null;
+  const connection = await getConnection();
+  const startedAt = Date.now();
+  const term = options.term?.trim() ?? "";
+  const pageSize = Math.max(1, options.pageSize ?? DEFAULT_PAGE_SIZE);
+  const after = options.after?.trim() || null;
 
-	const isSearch = term.length > 0;
+  const isSearch = term.length > 0;
 
-	const rankedCte = isSearch
-		? `WITH base AS (
+  const rankedCte = isSearch
+    ? `WITH base AS (
          SELECT
            id, word, definition, example, createdByName, createdByWebsite, createdAt, 1 AS word_match
          FROM ${WORDS_TABLE}
@@ -103,7 +103,7 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
            ROW_NUMBER() OVER (ORDER BY word_match DESC, LOWER(word), word, id) AS rn
          FROM base
        )`
-		: `WITH base AS (
+    : `WITH base AS (
          SELECT
            id, word, definition, example, createdByName, createdByWebsite, createdAt, 0 AS word_match
          FROM ${WORDS_TABLE}
@@ -115,192 +115,192 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
          FROM base
        )`;
 
-	const totalSql = `${rankedCte}
+  const totalSql = `${rankedCte}
     SELECT COUNT(*)::BIGINT AS total
     FROM ranked`;
 
-	const lookupSql = `${rankedCte}
+  const lookupSql = `${rankedCte}
     SELECT rn
     FROM ranked
     WHERE id = ?`;
 
-	const pageSql = `${rankedCte}
+  const pageSql = `${rankedCte}
     SELECT id, word, definition, example, createdByName, createdByWebsite, createdAt
     FROM ranked
     WHERE rn BETWEEN ? AND ?
     ORDER BY rn`;
 
-	type CountRow = { total: bigint | number };
-	type RowNumberRow = { rn: bigint | number | null };
+  type CountRow = { total: bigint | number };
+  type RowNumberRow = { rn: bigint | number | null };
 
-	const toNumber = (value: bigint | number | null | undefined): number => {
-		if (typeof value === 'bigint') return Number(value);
-		if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
-		return 0;
-	};
+  const toNumber = (value: bigint | number | null | undefined): number => {
+    if (typeof value === "bigint") return Number(value);
+    if (typeof value === "number") return Number.isFinite(value) ? value : 0;
+    return 0;
+  };
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const runQuery = async (statement: AsyncPreparedStatement<any>, ...args: unknown[]) => {
-		if (isSearch) return statement.query(`${term}%`, ...args);
-		return statement.query(...args);
-	};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const runQuery = async (statement: AsyncPreparedStatement<any>, ...args: unknown[]) => {
+    if (isSearch) return statement.query(`${term}%`, ...args);
+    return statement.query(...args);
+  };
 
-	const totalStatement = await connection.prepare(totalSql);
-	let total = 0;
-	try {
-		const totalTable = await runQuery(totalStatement);
-		const totalRow = tableToRows<CountRow>(totalTable)[0];
-		total = toNumber(totalRow?.total);
-	} finally {
-		await totalStatement.close();
-	}
+  const totalStatement = await connection.prepare(totalSql);
+  let total = 0;
+  try {
+    const totalTable = await runQuery(totalStatement);
+    const totalRow = tableToRows<CountRow>(totalTable)[0];
+    total = toNumber(totalRow?.total);
+  } finally {
+    await totalStatement.close();
+  }
 
-	let startIndex = total > 0 ? 1 : 0;
+  let startIndex = total > 0 ? 1 : 0;
 
-	if (after) {
-		const lookupStatement = await connection.prepare(lookupSql);
-		try {
-			const lookupTable = await runQuery(lookupStatement, after);
-			const lookupRow = tableToRows<RowNumberRow>(lookupTable)[0];
-			const rowNumber = toNumber(lookupRow?.rn);
-			if (rowNumber > 0 && rowNumber <= total) startIndex = rowNumber;
-		} finally {
-			await lookupStatement.close();
-		}
-	}
+  if (after) {
+    const lookupStatement = await connection.prepare(lookupSql);
+    try {
+      const lookupTable = await runQuery(lookupStatement, after);
+      const lookupRow = tableToRows<RowNumberRow>(lookupTable)[0];
+      const rowNumber = toNumber(lookupRow?.rn);
+      if (rowNumber > 0 && rowNumber <= total) startIndex = rowNumber;
+    } finally {
+      await lookupStatement.close();
+    }
+  }
 
-	if (total === 0) {
-		const loadTimeSeconds = (Date.now() - startedAt) / 1000;
-		return {
-			items: [],
-			total: 0,
-			currentAfter: null,
-			nextAfter: null,
-			prevAfter: null,
-			startIndex: 0,
-			endIndex: 0,
-			currentPage: 1,
-			totalPages: 1,
-			pages: [],
-			loadTimeSeconds
-		};
-	}
+  if (total === 0) {
+    const loadTimeSeconds = (Date.now() - startedAt) / 1000;
+    return {
+      items: [],
+      total: 0,
+      currentAfter: null,
+      nextAfter: null,
+      prevAfter: null,
+      startIndex: 0,
+      endIndex: 0,
+      currentPage: 1,
+      totalPages: 1,
+      pages: [],
+      loadTimeSeconds,
+    };
+  }
 
-	const endIndex = Math.min(total, startIndex + pageSize - 1);
-	const totalPages = Math.max(1, Math.ceil(total / pageSize));
-	const currentPage = Math.max(1, Math.floor((startIndex - 1) / pageSize) + 1);
+  const endIndex = Math.min(total, startIndex + pageSize - 1);
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const currentPage = Math.max(1, Math.floor((startIndex - 1) / pageSize) + 1);
 
-	const pageStatement = await connection.prepare(pageSql);
-	let items: Word[] = [];
-	try {
-		const pageTable = await runQuery(pageStatement, startIndex, endIndex);
-		items = tableToRows<WordParquetRow>(pageTable).map(toWordRecord);
-	} finally {
-		await pageStatement.close();
-	}
+  const pageStatement = await connection.prepare(pageSql);
+  let items: Word[] = [];
+  try {
+    const pageTable = await runQuery(pageStatement, startIndex, endIndex);
+    items = tableToRows<WordParquetRow>(pageTable).map(toWordRecord);
+  } finally {
+    await pageStatement.close();
+  }
 
-	const currentAfter = items[0]?.id ?? null;
+  const currentAfter = items[0]?.id ?? null;
 
-	// Calculate links/afters to fetch
-	let prevAfter: string | null = null;
-	let nextAfter: string | null = null;
-	const pages: Array<{ number: number; after: string | null }> = [];
+  // Calculate links/afters to fetch
+  let prevAfter: string | null = null;
+  let nextAfter: string | null = null;
+  const pages: Array<{ number: number; after: string | null }> = [];
 
-	const MAX_PAGE_LINKS = 4;
-	let startPageNum = Math.max(1, currentPage - Math.floor(MAX_PAGE_LINKS / 2));
-	const endPageNum = Math.min(totalPages, startPageNum + MAX_PAGE_LINKS - 1);
-	const visibleCount = endPageNum - startPageNum + 1;
-	if (visibleCount < MAX_PAGE_LINKS) {
-		startPageNum = Math.max(1, endPageNum - MAX_PAGE_LINKS + 1);
-	}
+  const MAX_PAGE_LINKS = 4;
+  let startPageNum = Math.max(1, currentPage - Math.floor(MAX_PAGE_LINKS / 2));
+  const endPageNum = Math.min(totalPages, startPageNum + MAX_PAGE_LINKS - 1);
+  const visibleCount = endPageNum - startPageNum + 1;
+  if (visibleCount < MAX_PAGE_LINKS) {
+    startPageNum = Math.max(1, endPageNum - MAX_PAGE_LINKS + 1);
+  }
 
-	const rowNumbersToFetch: number[] = [];
-	if (currentPage > 1 && currentPage !== 2) {
-		const prevStartIndex = Math.max(1, startIndex - pageSize);
-		rowNumbersToFetch.push(prevStartIndex);
-	}
-	if (endIndex < total) {
-		rowNumbersToFetch.push(endIndex + 1);
-	}
-	for (let pageNumber = startPageNum; pageNumber <= endPageNum; pageNumber += 1) {
-		if (pageNumber > 1 && pageNumber !== currentPage) {
-			const pageStartIndex = (pageNumber - 1) * pageSize + 1;
-			rowNumbersToFetch.push(pageStartIndex);
-		}
-	}
+  const rowNumbersToFetch: number[] = [];
+  if (currentPage > 1 && currentPage !== 2) {
+    const prevStartIndex = Math.max(1, startIndex - pageSize);
+    rowNumbersToFetch.push(prevStartIndex);
+  }
+  if (endIndex < total) {
+    rowNumbersToFetch.push(endIndex + 1);
+  }
+  for (let pageNumber = startPageNum; pageNumber <= endPageNum; pageNumber += 1) {
+    if (pageNumber > 1 && pageNumber !== currentPage) {
+      const pageStartIndex = (pageNumber - 1) * pageSize + 1;
+      rowNumbersToFetch.push(pageStartIndex);
+    }
+  }
 
-	const aftersMap = new Map<number, string>();
-	if (rowNumbersToFetch.length > 0) {
-		const batchAfterSql = `${rankedCte}
+  const aftersMap = new Map<number, string>();
+  if (rowNumbersToFetch.length > 0) {
+    const batchAfterSql = `${rankedCte}
       SELECT rn, id
       FROM ranked
-      WHERE rn IN (${rowNumbersToFetch.join(',')})`;
+      WHERE rn IN (${rowNumbersToFetch.join(",")})`;
 
-		const batchStatement = await connection.prepare(batchAfterSql);
-		try {
-			const batchTable = await runQuery(batchStatement);
-			const batchRows = tableToRows<{ rn: bigint | number; id: string }>(batchTable);
-			for (const row of batchRows) {
-				aftersMap.set(toNumber(row.rn), row.id);
-			}
-		} finally {
-			await batchStatement.close();
-		}
-	}
+    const batchStatement = await connection.prepare(batchAfterSql);
+    try {
+      const batchTable = await runQuery(batchStatement);
+      const batchRows = tableToRows<{ rn: bigint | number; id: string }>(batchTable);
+      for (const row of batchRows) {
+        aftersMap.set(toNumber(row.rn), row.id);
+      }
+    } finally {
+      await batchStatement.close();
+    }
+  }
 
-	if (currentPage > 1) {
-		if (currentPage === 2) {
-			prevAfter = null;
-		} else {
-			const prevStartIndex = Math.max(1, startIndex - pageSize);
-			prevAfter = aftersMap.get(prevStartIndex) ?? null;
-		}
-	}
-	nextAfter = endIndex < total ? (aftersMap.get(endIndex + 1) ?? null) : null;
+  if (currentPage > 1) {
+    if (currentPage === 2) {
+      prevAfter = null;
+    } else {
+      const prevStartIndex = Math.max(1, startIndex - pageSize);
+      prevAfter = aftersMap.get(prevStartIndex) ?? null;
+    }
+  }
+  nextAfter = endIndex < total ? (aftersMap.get(endIndex + 1) ?? null) : null;
 
-	for (let pageNumber = startPageNum; pageNumber <= endPageNum; pageNumber += 1) {
-		if (pageNumber === 1) {
-			pages.push({ number: pageNumber, after: null });
-		} else if (pageNumber === currentPage) {
-			pages.push({ number: pageNumber, after: currentPage === 1 ? null : currentAfter });
-		} else {
-			const pageStartIndex = (pageNumber - 1) * pageSize + 1;
-			const after = aftersMap.get(pageStartIndex) ?? null;
-			pages.push({ number: pageNumber, after });
-		}
-	}
+  for (let pageNumber = startPageNum; pageNumber <= endPageNum; pageNumber += 1) {
+    if (pageNumber === 1) {
+      pages.push({ number: pageNumber, after: null });
+    } else if (pageNumber === currentPage) {
+      pages.push({ number: pageNumber, after: currentPage === 1 ? null : currentAfter });
+    } else {
+      const pageStartIndex = (pageNumber - 1) * pageSize + 1;
+      const after = aftersMap.get(pageStartIndex) ?? null;
+      pages.push({ number: pageNumber, after });
+    }
+  }
 
-	const loadTimeSeconds = (Date.now() - startedAt) / 1000;
+  const loadTimeSeconds = (Date.now() - startedAt) / 1000;
 
-	return {
-		items,
-		total,
-		currentAfter,
-		nextAfter,
-		prevAfter,
-		startIndex,
-		endIndex,
-		currentPage,
-		totalPages,
-		pages,
-		loadTimeSeconds
-	};
+  return {
+    items,
+    total,
+    currentAfter,
+    nextAfter,
+    prevAfter,
+    startIndex,
+    endIndex,
+    currentPage,
+    totalPages,
+    pages,
+    loadTimeSeconds,
+  };
 };
 
 export interface QuerySuggestionsOptions {
-	term: string;
-	limit?: number;
+  term: string;
+  limit?: number;
 }
 
 export const findSuggestions = async (
-	options: QuerySuggestionsOptions
+  options: QuerySuggestionsOptions
 ): Promise<WordSuggestion[]> => {
-	const term = options.term.trim();
-	if (!term) return [];
+  const term = options.term.trim();
+  if (!term) return [];
 
-	const limit = Math.max(1, options.limit ?? 5);
-	const connection = await getConnection();
-	const suggestionSql = `
+  const limit = Math.max(1, options.limit ?? 5);
+  const connection = await getConnection();
+  const suggestionSql = `
     WITH fts_base AS (
       SELECT
         id,
@@ -332,42 +332,42 @@ export const findSuggestions = async (
     ORDER BY priority, word_match DESC, score DESC NULLS LAST, LOWER(word), word, id
     LIMIT ?`;
 
-	const suggestionStatement = await connection.prepare(suggestionSql);
-	try {
-		const prefixTerm = `${term}%`;
-		const table = await suggestionStatement.query(term, term, prefixTerm, limit);
-		return tableToRows<WordSuggestion>(table);
-	} finally {
-		await suggestionStatement.close();
-	}
+  const suggestionStatement = await connection.prepare(suggestionSql);
+  try {
+    const prefixTerm = `${term}%`;
+    const table = await suggestionStatement.query(term, term, prefixTerm, limit);
+    return tableToRows<WordSuggestion>(table);
+  } finally {
+    await suggestionStatement.close();
+  }
 };
 
 export const findById = async (id: string): Promise<Word | null> => {
-	const connection = await getConnection();
-	const sql = `
+  const connection = await getConnection();
+  const sql = `
     SELECT id, word, definition, example, createdByName, createdByWebsite, createdAt
     FROM ${WORDS_TABLE}
     WHERE id = ?
     LIMIT 1`;
 
-	const statement = await connection.prepare(sql);
-	try {
-		const table = await statement.query(id);
-		const rows = tableToRows<WordParquetRow>(table);
-		return rows.length > 0 ? toWordRecord(rows[0]) : null;
-	} finally {
-		await statement.close();
-	}
+  const statement = await connection.prepare(sql);
+  try {
+    const table = await statement.query(id);
+    const rows = tableToRows<WordParquetRow>(table);
+    return rows.length > 0 ? toWordRecord(rows[0]) : null;
+  } finally {
+    await statement.close();
+  }
 };
 
 export interface LetterCount {
-	letter: string;
-	count: number;
+  letter: string;
+  count: number;
 }
 
 export const getLetterCounts = async (): Promise<LetterCount[]> => {
-	const connection = await getConnection();
-	const sql = `
+  const connection = await getConnection();
+  const sql = `
     WITH letter_counts AS (
       SELECT
         UPPER(SUBSTRING(word, 1, 1)) as letter,
@@ -389,22 +389,22 @@ export const getLetterCounts = async (): Promise<LetterCount[]> => {
       CASE WHEN letter = 'Todas' THEN 0 ELSE 1 END,
       letter`;
 
-	const statement = await connection.prepare(sql);
-	try {
-		const table = await statement.query();
-		return tableToRows<LetterCount>(table);
-	} finally {
-		await statement.close();
-	}
+  const statement = await connection.prepare(sql);
+  try {
+    const table = await statement.query();
+    return tableToRows<LetterCount>(table);
+  } finally {
+    await statement.close();
+  }
 };
 
 const tableToRows = <T>(table: Table): T[] => table.toArray() as T[];
 
 const toWordRecord = (row: WordParquetRow): Word => ({
-	id: row.id,
-	word: row.word,
-	definition: row.definition,
-	example: row.example,
-	createdBy: { name: row.createdByName, website: row.createdByWebsite },
-	createdAt: row.createdAt
+  id: row.id,
+  word: row.word,
+  definition: row.definition,
+  example: row.example,
+  createdBy: { name: row.createdByName, website: row.createdByWebsite },
+  createdAt: row.createdAt,
 });

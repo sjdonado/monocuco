@@ -1,145 +1,145 @@
 <script lang="ts">
-	import '../app.css';
-	import { env } from '$env/dynamic/public';
-	import logo from '$lib/assets/logo.webp';
-	import { onMount } from 'svelte';
-	import { MenuIcon, XIcon } from '@lucide/svelte';
-	import { dev } from '$app/environment';
-	import SearchInput from '$lib/components/SearchInput.svelte';
-	import DatabaseLoading from '$lib/components/DatabaseLoading.svelte';
-	import LetterNav from '$lib/components/LetterNav.svelte';
-	import { APP_VERSION } from '$lib/config';
+  import "../app.css";
+  import { env } from "$env/dynamic/public";
+  import logo from "$lib/assets/logo.webp";
+  import { onMount } from "svelte";
+  import { MenuIcon, XIcon } from "@lucide/svelte";
+  import { dev } from "$app/environment";
+  import SearchInput from "$lib/components/SearchInput.svelte";
+  import DatabaseLoading from "$lib/components/DatabaseLoading.svelte";
+  import LetterNav from "$lib/components/LetterNav.svelte";
+  import { APP_VERSION } from "$lib/config";
 
-	const { children } = $props();
+  const { children } = $props();
 
-	onMount(() => {
-		if (dev || !('serviceWorker' in navigator)) {
-			return;
-		}
+  onMount(() => {
+    if (dev || !("serviceWorker" in navigator)) {
+      return;
+    }
 
-		const register = async () => {
-			try {
-				const registration = await navigator.serviceWorker.register('/service-worker.js', {
-					type: 'module'
-				});
-				// Immediately check for updates.
-				void registration.update();
-			} catch (error) {
-				console.error('Service worker registration failed', error);
-			}
-		};
+    const register = async () => {
+      try {
+        const registration = await navigator.serviceWorker.register("/service-worker.js", {
+          type: "module",
+        });
+        // Immediately check for updates.
+        void registration.update();
+      } catch (error) {
+        console.error("Service worker registration failed", error);
+      }
+    };
 
-		void register();
-	});
+    void register();
+  });
 </script>
 
 <svelte:head>
-	{#if env.PUBLIC_MODE === 'production'}
-		<script
-			defer
-			src="https://umami.donado.co/script.js"
-			data-website-id="1c0c2c7a-ae4f-4f41-9e8c-7de069c9e06c"
-		></script>
-	{/if}
+  {#if env.PUBLIC_MODE === "production"}
+    <script
+      defer
+      src="https://umami.donado.co/script.js"
+      data-website-id="1c0c2c7a-ae4f-4f41-9e8c-7de069c9e06c"
+    ></script>
+  {/if}
 </svelte:head>
 
 <div class="min-h-screen">
-	<nav class="sticky top-0 z-50 border-b border-base-300 bg-base-100">
-		<div class="drawer drawer-end">
-			<input id="nav-drawer" type="checkbox" class="drawer-toggle" />
-			<div class="drawer-content">
-				<div
-					class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6 md:flex-row md:items-center md:justify-between md:gap-6"
-				>
-					<div class="flex w-full flex-col gap-4 md:flex-row md:items-center md:gap-6">
-						<div class="flex w-full items-center gap-4 md:w-auto md:gap-6">
-							<a href="/" class="flex gap-2">
-								<img
-									class="mx-auto max-h-8"
-									src={logo}
-									alt="Bailarina - Carnaval de Barranquilla, Colombia | Ilustración Andrés Urquina Sánchez"
-								/>
-								<h1 class="text-2xl font-bold normal-case">Monocuco</h1>
-							</a>
-							<label
-								for="nav-drawer"
-								class="btn btn-sm btn-ghost drawer-button ml-auto md:hidden"
-								aria-label="Abrir menú"
-							>
-								<MenuIcon class="size-5" aria-hidden="true" />
-							</label>
-						</div>
-						<div class="w-full md:flex-1">
-							<SearchInput />
-						</div>
-					</div>
-					<div class="hidden md:block">
-						<a href="/add" class="btn btn-sm btn-primary w-32">Agregar palabra</a>
-					</div>
-				</div>
-			</div>
-			<div class="drawer-side md:hidden">
-				<label for="nav-drawer" aria-label="Cerrar menú" class="drawer-overlay"></label>
-				<div class="bg-base-100 h-screen w-full p-6 text-base-content flex flex-col gap-6">
-					<div class="flex justify-end shrink-0">
-						<label
-							for="nav-drawer"
-							class="btn btn-sm btn-ghost btn-circle"
-							aria-label="Cerrar menú"
-						>
-							<XIcon class="size-5" aria-hidden="true" />
-						</label>
-					</div>
-					<a
-						href="/add"
-						class="btn btn-primary w-full shrink-0"
-						onclick={() => {
-							const drawer = document.getElementById('nav-drawer') as HTMLInputElement;
-							if (drawer) drawer.checked = false;
-						}}
-					>
-						Agregar palabra
-					</a>
-					<div class="flex-1 min-h-0 overflow-y-auto">
-						<div
-							role="button"
-							tabindex="0"
-							onclick={() => {
-								const drawer = document.getElementById('nav-drawer') as HTMLInputElement;
-								if (drawer) drawer.checked = false;
-							}}
-							onkeydown={(e) => {
-								if (e.key === 'Enter' || e.key === ' ') {
-									const drawer = document.getElementById('nav-drawer') as HTMLInputElement;
-									if (drawer) drawer.checked = false;
-								}
-							}}
-						>
-							<LetterNav />
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</nav>
-	<main class="mx-auto max-w-6xl px-4 py-8 min-h-[89vh]">
-		<div class="grid grid-cols-1 md:grid-cols-[1fr_250px] gap-6">
-			<div class="flex flex-col gap-6">
-				{@render children()}
-			</div>
-			<aside class="hidden md:block">
-				<div class="sticky top-24">
-					<LetterNav />
-				</div>
-			</aside>
-		</div>
-		<DatabaseLoading />
-	</main>
-	<footer>
-		<p class="flex items-center justify-center gap-1 text-xs text-base-content/70 mb-2">
-			v{APP_VERSION}
-			• Desarollado por
-			<a href="https://sjdonado.com" target="_blank" rel="noreferrer" class="link"> @sjdonado </a>
-		</p>
-	</footer>
+  <nav class="border-base-300 bg-base-100 sticky top-0 z-50 border-b">
+    <div class="drawer drawer-end">
+      <input id="nav-drawer" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-content">
+        <div
+          class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6 md:flex-row md:items-center md:justify-between md:gap-6"
+        >
+          <div class="flex w-full flex-col gap-4 md:flex-row md:items-center md:gap-6">
+            <div class="flex w-full items-center gap-4 md:w-auto md:gap-6">
+              <a href="/" class="flex gap-2">
+                <img
+                  class="mx-auto max-h-8"
+                  src={logo}
+                  alt="Bailarina - Carnaval de Barranquilla, Colombia | Ilustración Andrés Urquina Sánchez"
+                />
+                <h1 class="text-2xl font-bold normal-case">Monocuco</h1>
+              </a>
+              <label
+                for="nav-drawer"
+                class="btn btn-sm btn-ghost drawer-button ml-auto md:hidden"
+                aria-label="Abrir menú"
+              >
+                <MenuIcon class="size-5" aria-hidden="true" />
+              </label>
+            </div>
+            <div class="w-full md:flex-1">
+              <SearchInput />
+            </div>
+          </div>
+          <div class="hidden md:block">
+            <a href="/add" class="btn btn-sm btn-primary w-32">Agregar palabra</a>
+          </div>
+        </div>
+      </div>
+      <div class="drawer-side md:hidden">
+        <label for="nav-drawer" aria-label="Cerrar menú" class="drawer-overlay"></label>
+        <div class="bg-base-100 text-base-content flex h-screen w-full flex-col gap-6 p-6">
+          <div class="flex shrink-0 justify-end">
+            <label
+              for="nav-drawer"
+              class="btn btn-sm btn-ghost btn-circle"
+              aria-label="Cerrar menú"
+            >
+              <XIcon class="size-5" aria-hidden="true" />
+            </label>
+          </div>
+          <a
+            href="/add"
+            class="btn btn-primary w-full shrink-0"
+            onclick={() => {
+              const drawer = document.getElementById("nav-drawer") as HTMLInputElement;
+              if (drawer) drawer.checked = false;
+            }}
+          >
+            Agregar palabra
+          </a>
+          <div class="min-h-0 flex-1 overflow-y-auto">
+            <div
+              role="button"
+              tabindex="0"
+              onclick={() => {
+                const drawer = document.getElementById("nav-drawer") as HTMLInputElement;
+                if (drawer) drawer.checked = false;
+              }}
+              onkeydown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  const drawer = document.getElementById("nav-drawer") as HTMLInputElement;
+                  if (drawer) drawer.checked = false;
+                }
+              }}
+            >
+              <LetterNav />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <main class="mx-auto min-h-[89vh] max-w-6xl px-4 py-8">
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-[1fr_250px]">
+      <div class="flex flex-col gap-6">
+        {@render children()}
+      </div>
+      <aside class="hidden md:block">
+        <div class="sticky top-24">
+          <LetterNav />
+        </div>
+      </aside>
+    </div>
+    <DatabaseLoading />
+  </main>
+  <footer>
+    <p class="text-base-content/70 mb-2 flex items-center justify-center gap-1 text-xs">
+      v{APP_VERSION}
+      • Desarollado por
+      <a href="https://sjdonado.com" target="_blank" rel="noreferrer" class="link"> @sjdonado </a>
+    </p>
+  </footer>
 </div>
