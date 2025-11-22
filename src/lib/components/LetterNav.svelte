@@ -1,30 +1,37 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { getLetterCounts, type LetterCount } from "$lib/db/repository";
+  import { dbReady } from "$lib/stores/db-ready";
 
   let letterCounts = $state<LetterCount[]>([]);
   let loading = $state(true);
 
+  // Track DB readiness
+  let isDbReady = $state(false);
+
   $effect(() => {
-    if (!browser) return;
+    const unsubReady = dbReady.subscribe((v) => (isDbReady = v));
+    return () => {
+      unsubReady();
+    };
+  });
 
-    // Defer loading letter counts by 100ms to prioritize main content
-    const timeoutId = setTimeout(() => {
-      const loadCounts = async () => {
-        try {
-          const counts = await getLetterCounts();
-          letterCounts = counts;
-        } catch (error) {
-          console.error("Failed to load letter counts", error);
-        } finally {
-          loading = false;
-        }
-      };
+  // Only load when DB is ready
+  $effect(() => {
+    if (!browser || !isDbReady) return;
 
-      void loadCounts();
-    }, 100);
+    const loadCounts = async () => {
+      try {
+        const counts = await getLetterCounts();
+        letterCounts = counts;
+      } catch (error) {
+        console.error("Failed to load letter counts", error);
+      } finally {
+        loading = false;
+      }
+    };
 
-    return () => clearTimeout(timeoutId);
+    void loadCounts();
   });
 
   const getSearchUrl = (letter: string) => {
@@ -33,11 +40,24 @@
     }
     return `/?q=${encodeURIComponent(letter)}`;
   };
+
+  // Skeleton items for loading state
+  const SKELETON_ITEMS = Array.from({ length: 12 }, (_, i) => i);
 </script>
 
 <nav aria-label="Navegación por letras">
-  {#if !loading}
-    <h2 class="text-base-content/70 mb-3 text-sm font-semibold">Palabras por letra</h2>
+  <h2 class="text-base-content/70 mb-3 text-sm font-semibold">Palabras por letra</h2>
+  {#if loading || !isDbReady}
+    <!-- Skeleton loading state -->
+    <ul class="space-y-1 text-sm">
+      {#each SKELETON_ITEMS as i (i)}
+        <li class="flex justify-between p-0">
+          <span class="skeleton h-4 w-16"></span>
+          <span class="skeleton h-4 w-8"></span>
+        </li>
+      {/each}
+    </ul>
+  {:else}
     <ul class="space-y-1 text-sm">
       {#each letterCounts as { letter, count } (letter)}
         <li>

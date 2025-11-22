@@ -3,6 +3,7 @@
   import { findSuggestions, type WordSuggestion } from "$lib/db/repository";
   import { parseMarkdown } from "$lib/markdown";
   import { SearchIcon } from "@lucide/svelte";
+  import { dbReady, dbInitializing } from "$lib/stores/db-ready";
 
   const SUGGESTION_LIMIT = 4;
 
@@ -11,6 +12,22 @@
   let loading = $state(false);
   let isOpen = $state(false);
   let hasFocus = $state(false);
+
+  // Track DB readiness
+  let isDbReady = $state(false);
+  let isDbInitializing = $state(false);
+
+  $effect(() => {
+    const unsubReady = dbReady.subscribe((v) => (isDbReady = v));
+    const unsubInit = dbInitializing.subscribe((v) => (isDbInitializing = v));
+    return () => {
+      unsubReady();
+      unsubInit();
+    };
+  });
+
+  // Disable search while DB is not ready
+  const isDisabled = $derived(!isDbReady && isDbInitializing);
 
   let debounceId: ReturnType<typeof setTimeout> | null = null;
   let lastUrlQuery = "";
@@ -133,20 +150,26 @@
 </script>
 
 <form class="w-full md:flex-1" role="search" aria-label="Buscar palabras" onsubmit={handleSubmit}>
-  <div class="dropdown w-full" class:dropdown-open={isOpen}>
-    <label class="input input-bordered flex w-full items-center gap-2">
+  <div class="dropdown w-full" class:dropdown-open={isOpen && !isDisabled}>
+    <label
+      class="input input-bordered flex w-full items-center gap-2"
+      class:input-disabled={isDisabled}
+    >
       <SearchIcon class="text-base-content/60 size-5" aria-hidden="true" />
       <input
         type="search"
         class="grow bg-transparent outline-none"
-        placeholder="Buscar palabras..."
+        placeholder={isDisabled ? "Cargando búsqueda..." : "Buscar palabras..."}
         autocomplete="off"
+        disabled={isDisabled}
         bind:value={query}
         oninput={handleInput}
         onfocus={handleFocus}
         onblur={handleBlur}
       />
-      {#if loading}
+      {#if isDisabled}
+        <span class="loading loading-spinner loading-xs text-neutral" aria-hidden="true"></span>
+      {:else if loading}
         <span class="loading loading-spinner loading-xs text-primary" aria-hidden="true"></span>
       {/if}
     </label>

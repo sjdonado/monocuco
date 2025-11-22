@@ -1,0 +1,140 @@
+{
+  "words": [
+    {
+      "id": "58d29431-3457-4c1b-8ae1-28db6085819e",
+      "word": "A cuello corto",
+      "definition": "*Expresión* coger a **a cuello corto**: enfrentar resueltamente, encarar a una persona.",
+      "example": "",
+      "createdBy": {
+        "name": "José David Villalobos",
+        "website": "https://sites.google.com/site/jdvillalobos/barranquillerismos"
+      },
+      "createdAt": "2025-11-01T17:43:54.601971Z"
+    },
+    {
+      "id": "2203bbee-003a-4e3b-a17b-4dddc73c6d81",
+      "word": "A dos manos",
+      "definition": "*Expresión* en gran cantidad.",
+      "example": "\"Clara repartió regalos **a dos manos**.\"",
+      "createdBy": {
+        "name": "José David Villalobos",
+        "website": "https://sites.google.com/site/jdvillalobos/barranquillerismos"
+      },
+      "createdAt": "2025-11-01T17:43:54.716455Z"
+    },
+    {
+      "id": "b6315fe5-3709-4388-8c08-29a43d5393fc",
+      "word": "A la bulla de los cocos",
+      "definition": "desordenadamente, sin rigor ni formalidad",
+      "example": "",
+      "createdBy": {
+        "name": "Rafael Vega",
+        "website": "https://github.com/rafaelvega/"
+      },
+      "createdAt": "2025-11-22T09:14:10.875Z"
+    },
+    {
+      "id": "9fc92fd4-164d-4ded-8ac7-01c4689617ae",
+      "word": "A la tiña",
+      "definition": "escoger o tomar algo al azar, dejando la decisión en manos de la suerte",
+      "example": "",
+      "createdBy": {
+        "name": "Rafael Vega",
+        "website": "https://github.com/rafaelvega/"
+      },
+      "createdAt": "2025-11-22T09:14:26.613Z"
+    },
+    {
+      "id": "f8b0c611-c056-4f66-a358-b101b971aa38",
+      "word": "A la tiña",
+      "definition": "Tirar al aire algún o algunos objeto(s) para que las personas lo(s) recojan y se hagan propietarios de este/estos.",
+      "example": "\"Voy a tirar estos dulces a la tiña, el que los coja se los queda\"\n\"Tiraron este celular a la tiña, me cayó en las manos y me lo quedé\"",
+      "createdBy": {
+        "name": "Jorge Bolivar",
+        "website": "https://github.com/jbolivard"
+      },
+      "createdAt": "2020-12-31T00:00:00.000Z"
+    },
+    {
+      "id": "bb57ee77-d907-46a7-ba3c-d724254100b8",
+      "word": "A la topa tolondra",
+      "definition": "*Expresión* a topa tolondro.",
+      "example": "",
+      "createdBy": {
+        "name": "José David Villalobos",
+        "website": "https://sites.google.com/site/jdvillalobos/barranquillerismos"
+      },
+      "createdAt": "2025-11-01T17:43:54.718046Z"
+    },
+    {
+      "id": "daee2bdd-b1f8-4a6b-87b2-fbc71715b413",
+      "word": "A la topa tolondra",
+      "definition": "sin dirección definida, con torpeza o de manera torpe",
+      "example": "",
+      "createdBy": {
+        "name": "Rafael Vega",
+        "website": "https://github.com/rafaelvega/"
+      },
+      "createdAt": "2025-11-22T09:14:28.084Z"
+    },
+    {
+      "id": "3480fc75-34af-4aa4-b255-4c85fc3ff0cd",
+      "word": "A las mil quinientas",
+      "definition": "dilación indeterminada de tiempo, demasiado demorado",
+      "example": "",
+      "createdBy": {
+        "name": "Rafael Vega",
+        "website": "https://github.com/rafaelvega/"
+      },
+      "createdAt": "2025-11-22T09:14:12.920Z"
+    },
+    {
+      "id": "1a787102-3e16-4833-b0ca-06e9bbe6df7f",
+      "word": "A las mil y quinientas",
+      "definition": "*Expresión* después de mucho tiempo, impuntualmente.",
+      "example": "\"Marcos hizo el trabajo **a las mil y quinientas**.\"",
+      "createdBy": {
+        "name": "José David Villalobos",
+        "website": "https://sites.google.com/site/jdvillalobos/barranquillerismos"
+      },
+      "createdAt": "2025-11-01T17:43:54.719688Z"
+    },
+    {
+      "id": "0bdc228c-68e7-401b-b0c3-faf1cae9740d",
+      "word": "A otro perro con ese hueso",
+      "definition": "forma de manifestar el rechazo a un intento de engaño que se ha hecho evidente",
+      "example": "",
+      "createdBy": {
+        "name": "Rafael Vega",
+        "website": "https://github.com/rafaelvega/"
+      },
+      "createdAt": "2025-11-22T09:14:14.434Z"
+    },
+    {
+      "id": "ef091c64-bf04-4259-abf0-e62059a5bab6",
+      "word": "A paso lento",
+      "definition": "despacio, poco a poco",
+      "example": "",
+      "createdBy": {
+        "name": "Rafael Vega",
+        "website": "https://github.com/rafaelvega/"
+      },
+      "createdAt": "2025-11-22T09:14:09.462Z"
+    },
+    {
+      "id": "478c99e5-70b3-4ee1-b337-18166fedf5ba",
+      "word": "A pedir de boca",
+      "definition": "fácil, sencillo",
+      "example": "",
+      "createdBy": {
+        "name": "Rafael Vega",
+        "website": "https://github.com/rafaelvega/"
+      },
+      "createdAt": "2025-11-22T09:14:13.260Z"
+    }
+  ],
+  "total": 2767,
+  "totalPages": 231,
+  "pageSize": 12,
+  "generatedAt": "2025-11-22T09:40:01.842Z"
+}

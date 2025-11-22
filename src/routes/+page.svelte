@@ -7,13 +7,32 @@
   import { findAll, findById, type QueryAllResult, type Word } from "$lib/db/repository";
   import { AlertCircleIcon } from "@lucide/svelte";
   import type { Page } from "@sveltejs/kit";
+  import type { PageData } from "./$types";
+  import { dbReady, dbInitializing } from "$lib/stores/db-ready";
+
+  // Get prerendered data from load function
+  const { data } = $props<{ data: PageData }>();
 
   const PAGE_SIZE = 12;
   const SKELETON_ITEMS = Array.from({ length: PAGE_SIZE }, (_, i) => i);
 
-  let items = $state<Word[]>([]);
-  let loading = $state(true);
+  // State for displaying words
+  let items = $state<Word[]>(data.initialWords || []); // Start with prerendered data!
+  let loading = $state(false); // Not loading initially - we have prerendered data
   let error = $state<string | null>(null);
+
+  // Track DB readiness from shared store
+  let dbIsReady = $state(false);
+  let dbIsInitializing = $state(false);
+
+  $effect(() => {
+    const unsubReady = dbReady.subscribe((v) => (dbIsReady = v));
+    const unsubInit = dbInitializing.subscribe((v) => (dbIsInitializing = v));
+    return () => {
+      unsubReady();
+      unsubInit();
+    };
+  });
 
   let pageData = $state<Page | null>(null);
 
@@ -43,11 +62,24 @@
   let result = $state<QueryAllResult | null>(null);
 
   const isSearching = $derived(Boolean(searchValue));
+  const isPaginating = $derived(Boolean(afterParam));
+  const isWordDetail = $derived(Boolean(wordIdParam));
+
+  // User needs DB if they're searching, paginating, or viewing a specific word
+  const needsDB = $derived(isSearching || isPaginating || isWordDetail);
+
+  // Use prerendered pagination data initially, then switch to DB data when available
+  const totalFromResult = $derived(result?.total ?? null);
+  const displayTotal = $derived(totalFromResult ?? data.totalWords);
+  const displayTotalPages = $derived(result?.totalPages ?? data.totalPages);
 
   const currentPage = $derived(result?.currentPage ?? 1);
-  const totalPages = $derived(result?.totalPages ?? 1);
+  const totalPages = $derived(displayTotalPages);
   const hasPrev = $derived(currentPage > 1);
   const hasNext = $derived(currentPage < totalPages);
+
+  // Disable pagination when showing prerendered data (DB not ready yet)
+  const isPaginationDisabled = $derived(!needsDB && !dbIsReady);
 
   let fetchToken = 0;
 
@@ -136,10 +168,18 @@
     }
   }
 
-  async function loadWords(term: string | null, afterToken: string | null) {
+  async function loadWords(
+    term: string | null,
+    afterToken: string | null,
+    options: { silent?: boolean } = {}
+  ) {
     if (!browser) return;
     const currentToken = ++fetchToken;
-    loading = true;
+
+    // Only show loading state if not a silent background refresh
+    if (!options.silent) {
+      loading = true;
+    }
     error = null;
 
     try {
@@ -179,22 +219,65 @@
     }
   }
 
+  // Initialize DB in background (even if not immediately needed)
+  $effect(() => {
+    if (!browser || dbIsReady || dbIsInitializing) return;
+
+    dbInitializing.set(true);
+
+    // Warm up the DB connection in the background
+    // This will start loading DuckDB WASM, parquet file, etc.
+    import("$lib/db/duckdb")
+      .then((module) => module.getConnection())
+      .then(() => {
+        dbReady.set(true);
+        console.log("[Page] Database ready");
+
+        // If user is still on default view (no query params), silently refresh from DB
+        // Use silent mode to avoid showing skeletons (data is identical to prerendered)
+        if (!needsDB) {
+          void loadWords(null, null, { silent: true });
+        }
+      })
+      .catch((err) => {
+        console.error("[Page] Database initialization failed:", err);
+        dbReady.set(false);
+        dbInitializing.set(false);
+      });
+  });
+
+  // Load data when URL params change
   $effect(() => {
     if (!browser) return;
 
-    // Defer data loading to next tick to allow initial render to complete first
-    const timeoutId = setTimeout(() => {
-      const wordId = wordIdParam;
+    // CRITICAL: Read reactive values synchronously BEFORE any async operations
+    // so Svelte tracks them as dependencies and re-runs effect on changes
+    const wordId = wordIdParam;
+    const term = searchValue || null;
+    const afterToken = afterParam;
+    const needsDatabase = needsDB;
+    const ready = dbIsReady;
+
+    // If we need DB but it's not ready yet, show loading state
+    if (needsDatabase && !ready) {
+      loading = true;
+      return;
+    }
+
+    // If showing prerendered content and DB is ready, silently load fresh data
+    if (!needsDatabase && ready) {
+      void loadWords(null, null, { silent: true });
+      return;
+    }
+
+    // Load data from DB
+    if (needsDatabase && ready) {
       if (wordId) {
         void loadWord(wordId);
       } else {
-        const term = searchValue || null;
-        const afterToken = afterParam;
         void loadWords(term, afterToken);
       }
-    }, 0);
-
-    return () => clearTimeout(timeoutId);
+    }
   });
 
   const buildShareUrl = (wordId: string, word: string): string => {
@@ -296,23 +379,50 @@
     </div>
   {/if}
 
-  {#if (result?.total ?? 0) > PAGE_SIZE}
+  {#if displayTotal > PAGE_SIZE}
     <div class="flex max-w-2xl items-center justify-center gap-4 pt-4">
-      <button type="button" class="btn btn-sm" onclick={handlePrev} disabled={!hasPrev}>
+      <button
+        type="button"
+        class="btn btn-sm"
+        onclick={handlePrev}
+        disabled={!hasPrev || isPaginationDisabled}
+        title={isPaginationDisabled ? "Cargando base de datos..." : undefined}
+      >
         Anterior
       </button>
-      {#each result?.pages ?? [] as pageLink (pageLink.number)}
-        <button
-          type="button"
-          class="link cursor-pointer text-sm font-semibold"
-          class:text-primary={pageLink.number === currentPage}
-          onclick={() => goToAfter(pageLink.after)}
-          aria-current={pageLink.number === currentPage ? "page" : undefined}
-        >
-          {pageLink.number}
-        </button>
-      {/each}
-      <button type="button" class="btn btn-sm" onclick={handleNext} disabled={!hasNext}>
+
+      {#if isPaginationDisabled}
+        <!-- Show simplified pagination when DB is not ready -->
+        <span class="text-base-content/50 text-sm">
+          Página {currentPage} de {totalPages}
+        </span>
+      {:else if result?.pages}
+        <!-- Show full pagination when DB is ready -->
+        {#each result.pages as pageLink (pageLink.number)}
+          <button
+            type="button"
+            class="link cursor-pointer text-sm font-semibold"
+            class:text-primary={pageLink.number === currentPage}
+            onclick={() => goToAfter(pageLink.after)}
+            aria-current={pageLink.number === currentPage ? "page" : undefined}
+          >
+            {pageLink.number}
+          </button>
+        {/each}
+      {:else}
+        <!-- Fallback when no pages data available -->
+        <span class="text-base-content/50 text-sm">
+          Página {currentPage} de {totalPages}
+        </span>
+      {/if}
+
+      <button
+        type="button"
+        class="btn btn-sm"
+        onclick={handleNext}
+        disabled={!hasNext || isPaginationDisabled}
+        title={isPaginationDisabled ? "Cargando base de datos..." : undefined}
+      >
         Siguiente
       </button>
     </div>
