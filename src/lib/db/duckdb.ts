@@ -1,8 +1,7 @@
 import { browser } from "$app/environment";
 import type { AsyncDuckDB, AsyncDuckDBConnection } from "@duckdb/duckdb-wasm";
 import * as duckdb from "@duckdb/duckdb-wasm";
-import { downloadParquetFile, runMigration } from "./repository";
-import { databaseLoading } from "./database-loading";
+import { downloadParquetFile, runMigration, runFTSIndexing, resetFTSState } from "./repository";
 
 const CDN_BASE = "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.31.0/dist";
 const OPFS_DB_PATH = "opfs://monocuco.db";
@@ -89,55 +88,23 @@ async function needsMigration(): Promise<{ needed: boolean; currentVersion: stri
 }
 
 async function openDatabase(): Promise<{ db: AsyncDuckDB; usingOpfs: boolean }> {
-  databaseLoading.set({
-    isRunning: true,
-    percentage: 5,
-    message: "Inicializando base de datos...",
-  });
-
   performanceLog("[DuckDB] Loading bundle");
 
   const logger = new duckdb.ConsoleLogger();
   const bundle = await duckdb.selectBundle(MANUAL_BUNDLES);
   const worker = new Worker(bundle.mainWorker!);
 
-  databaseLoading.set({
-    isRunning: true,
-    percentage: 10,
-    message: "Configurando extensiones base de datos...",
-  });
-
   performanceLog("[DuckDB] Instantiate worker");
 
   const db = new duckdb.AsyncDuckDB(logger, worker);
 
-  let total = 0;
-  await db.instantiate(bundle.mainModule, bundle.pthreadWorker ?? null, () => {
-    const percentage = 10 + Math.min(60, ((total += 1) / 600) * 60);
-    databaseLoading.set({
-      isRunning: true,
-      percentage,
-      message: "Cargando archivos necesarios...",
-    });
-  });
-
-  databaseLoading.set({
-    isRunning: true,
-    percentage: 65,
-    message: "Verificando compatibilidad...",
-  });
+  await db.instantiate(bundle.mainModule, bundle.pthreadWorker ?? null);
 
   performanceLog("[DuckDB] Check OPFS supported");
 
   // Try to use OPFS for persistence, fallback to in-memory
   const opfsSupported = isOpfsSupported();
   let usingOpfs = false;
-
-  databaseLoading.set({
-    isRunning: true,
-    percentage: 70,
-    message: "Abriendo base de datos en el navegador...",
-  });
 
   try {
     if (opfsSupported) {
@@ -152,6 +119,26 @@ async function openDatabase(): Promise<{ db: AsyncDuckDB; usingOpfs: boolean }> 
     } else {
       performanceLog("[DuckDB] OPFS not supported, using in-memory database");
       await db.open({ allowUnsignedExtensions: true });
+    }
+
+    // Since we only read data (no writes), we can use aggressive optimizations
+    const conn = await db.connect();
+    try {
+      // Increase memory limit for better query performance (default is often too low)
+      await conn.query("SET memory_limit='512MB'");
+      // Increase threads for parallel query execution
+      await conn.query("SET threads=4");
+      // Enable query result caching for repeated queries
+      await conn.query("SET enable_object_cache=true");
+      // Disable write-related overhead (we're read-only after migration)
+      await conn.query("SET wal_autocheckpoint='1GB'"); // Reduce checkpoint frequency
+      // Optimize for analytical queries
+      await conn.query("SET preserve_insertion_order=false");
+      performanceLog("[DuckDB] Applied read-optimized configuration");
+    } catch (configError) {
+      console.warn("[DuckDB] Could not apply all optimizations:", configError);
+    } finally {
+      await conn.close();
     }
   } catch (error) {
     console.warn("[DuckDB] Failed to open OPFS database, falling back to in-memory:", error);
@@ -204,33 +191,15 @@ async function initialiseConnection(): Promise<AsyncDuckDBConnection> {
     // Step 2: Open database
     const { db, usingOpfs } = await openDatabase();
 
-    databaseLoading.set({
-      isRunning: true,
-      percentage: 80,
-      message: "Conectando a instancia base de datos...",
-    });
-
     const connection = await db.connect();
 
     // Step 3: Run migrations if needed
     if (shouldRunMigrations) {
-      databaseLoading.set({
-        isRunning: true,
-        percentage: 90,
-        message: "Descargando diccionario...",
-      });
-
       // Download parquet file and register it
       const parquetFile = await downloadParquetFile();
       await db.registerFileBuffer(parquetFile.name, parquetFile.buffer);
 
-      databaseLoading.set({
-        isRunning: true,
-        percentage: 95,
-        message: "Cargando migraciones...",
-      });
-
-      // Run migrations (create tables, indexes, FTS)
+      // Run migrations (create tables, basic indexes - fast)
       await runMigration(connection);
 
       if (usingOpfs) {
@@ -245,24 +214,37 @@ async function initialiseConnection(): Promise<AsyncDuckDBConnection> {
       } else {
         performanceLog("[DuckDB] In-memory database ready (no persistence)");
       }
+
+      // Start FTS indexing in background (non-blocking)
+      runFTSIndexing(connection)
+        .then(() => {
+          performanceLog("[DuckDB] FTS indexing completed in background");
+          if (usingOpfs) {
+            // Checkpoint FTS index to OPFS for persistence
+            connection
+              .query("CHECKPOINT")
+              .then(() => {
+                performanceLog("[DuckDB] FTS index checkpointed to OPFS");
+              })
+              .catch((err) => {
+                console.error("[DuckDB] Failed to checkpoint FTS index:", err);
+              });
+          }
+        })
+        .catch((err) => {
+          console.error("[DuckDB] FTS indexing failed:", err);
+        });
     } else {
       performanceLog("[DuckDB] Loaded from OPFS, skipping migrations");
+      // FTS should already be indexed if loaded from OPFS, verify and mark ready
+      runFTSIndexing(connection, true).catch((err) => {
+        console.error("[DuckDB] FTS verification failed:", err);
+      });
     }
-
-    databaseLoading.set({
-      isRunning: false,
-      percentage: 100,
-      message: "Configuración base de datos completada.",
-    });
 
     return connection;
   } catch (error) {
-    databaseLoading.update((state) => ({
-      ...state,
-      isRunning: false,
-      percentage: 0,
-      message: "Error al inicializar la base de datos",
-    }));
+    console.error("[DuckDB] Failed to initialize database:", error);
     throw error;
   }
 }
@@ -276,4 +258,5 @@ export async function getConnection(): Promise<AsyncDuckDBConnection> {
 
 export function resetConnection(): void {
   connectionPromise = null;
+  resetFTSState();
 }
