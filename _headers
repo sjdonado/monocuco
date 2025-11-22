@@ -1,13 +1,4 @@
-/*
-  Cross-Origin-Opener-Policy: same-origin
-  Cross-Origin-Embedder-Policy: require-corp
-
-/duckdb-eh.wasm
-  Content-Type: application/wasm
-  Content-Encoding: gzip
-  Cache-Control: public, max-age=31536000, immutable
-
-/duckdb-mvp.wasm
+/duckdb-*.wasm
   Content-Type: application/wasm
   Content-Encoding: gzip
   Cache-Control: public, max-age=31536000, immutable
