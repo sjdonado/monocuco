@@ -40,7 +40,12 @@ export async function downloadParquetFile(): Promise<{ name: string; buffer: Uin
   return { name: DATA_FILE_NAME, buffer };
 }
 
+// Track FTS readiness
+let ftsReady = false;
+let ftsIndexingPromise: Promise<void> | null = null;
+
 export const runMigration = async (connection: AsyncDuckDBConnection) => {
+  // Fast initial load: table + basic indexes for navigation and sorting
   await connection.query(`CREATE OR REPLACE TABLE ${WORDS_TABLE} AS
     SELECT
       id,
@@ -52,13 +57,53 @@ export const runMigration = async (connection: AsyncDuckDBConnection) => {
       createdAt
     FROM read_parquet('${DATA_FILE_NAME}')`);
 
-  await connection.query("LOAD fts");
-  await connection.query(
-    `PRAGMA create_fts_index('${WORDS_TABLE}', 'id', 'word', 'definition', 'example', overwrite=1)`
-  );
-
-  await connection.query(`CREATE INDEX IF NOT EXISTS idx_words_id ON ${WORDS_TABLE}(id)`);
+  // Create basic indexes for letter navigation and sorting
   await connection.query(`CREATE INDEX IF NOT EXISTS idx_words_word ON ${WORDS_TABLE}(word, id)`);
+  await connection.query(`CREATE INDEX IF NOT EXISTS idx_words_id ON ${WORDS_TABLE}(id)`);
+};
+
+export const runFTSIndexing = async (connection: AsyncDuckDBConnection, skipIfExists = false) => {
+  // Background FTS indexing - slower but needed for search
+  if (!ftsIndexingPromise) {
+    ftsIndexingPromise = (async () => {
+      try {
+        await connection.query("LOAD fts");
+
+        if (skipIfExists) {
+          // Check if FTS index already exists (when loading from OPFS)
+          try {
+            const testQuery = await connection.query(
+              `SELECT COUNT(*) FROM fts_main_${WORDS_TABLE} LIMIT 1`
+            );
+            if (testQuery) {
+              ftsReady = true;
+              console.log("[Repository] FTS index already exists (loaded from OPFS)");
+              return;
+            }
+          } catch {
+            // Index doesn't exist, continue to create it
+          }
+        }
+
+        await connection.query(
+          `PRAGMA create_fts_index('${WORDS_TABLE}', 'id', 'word', 'definition', 'example', overwrite=1)`
+        );
+        ftsReady = true;
+        console.log("[Repository] FTS index created");
+      } catch (error) {
+        console.error("[Repository] FTS indexing failed:", error);
+        ftsReady = false;
+      }
+    })();
+  }
+  return ftsIndexingPromise;
+};
+
+export const isFTSReady = (): boolean => ftsReady;
+
+export const resetFTSState = (): void => {
+  ftsReady = false;
+  ftsIndexingPromise = null;
 };
 
 export interface QueryAllOptions {
@@ -300,45 +345,66 @@ export const findSuggestions = async (
 
   const limit = Math.max(1, options.limit ?? 5);
   const connection = await getConnection();
-  const suggestionSql = `
-    WITH fts_base AS (
-      SELECT
-        id,
-        word,
-        definition,
-        fts_main_words.match_bm25(id, ?, fields := 'word,definition') AS score,
-        fts_main_words.match_bm25(id, ?, fields := 'word') AS word_score
-      FROM ${WORDS_TABLE}
-    ),
-    fts_results AS (
-      SELECT id, word, definition, score,
-             CASE WHEN word_score IS NOT NULL THEN 1 ELSE 0 END AS word_match
-      FROM fts_base
-      WHERE score IS NOT NULL
-    ),
-    prefix_results AS (
-      SELECT id, word, definition, CAST(NULL AS DOUBLE) AS score, 1 AS word_match
+
+  // Use FTS if ready, otherwise fall back to prefix-only matching
+  if (ftsReady) {
+    const suggestionSql = `
+      WITH fts_base AS (
+        SELECT
+          id,
+          word,
+          definition,
+          fts_main_words.match_bm25(id, ?, fields := 'word,definition') AS score,
+          fts_main_words.match_bm25(id, ?, fields := 'word') AS word_score
+        FROM ${WORDS_TABLE}
+      ),
+      fts_results AS (
+        SELECT id, word, definition, score,
+               CASE WHEN word_score IS NOT NULL THEN 1 ELSE 0 END AS word_match
+        FROM fts_base
+        WHERE score IS NOT NULL
+      ),
+      prefix_results AS (
+        SELECT id, word, definition, CAST(NULL AS DOUBLE) AS score, 1 AS word_match
+        FROM ${WORDS_TABLE}
+        WHERE lower(word) LIKE lower(?)
+          AND id NOT IN (SELECT id FROM fts_results)
+      ),
+      combined AS (
+        SELECT id, word, definition, score, word_match, 1 AS priority FROM fts_results
+        UNION ALL
+        SELECT id, word, definition, score, word_match, 2 AS priority FROM prefix_results
+      )
+      SELECT id, word, definition
+      FROM combined
+      ORDER BY priority, word_match DESC, score DESC NULLS LAST, LOWER(word), word, id
+      LIMIT ?`;
+
+    const suggestionStatement = await connection.prepare(suggestionSql);
+    try {
+      const prefixTerm = `${term}%`;
+      const table = await suggestionStatement.query(term, term, prefixTerm, limit);
+      return tableToRows<WordSuggestion>(table);
+    } finally {
+      await suggestionStatement.close();
+    }
+  } else {
+    // Fallback: prefix-only matching when FTS is not ready
+    const prefixSql = `
+      SELECT id, word, definition
       FROM ${WORDS_TABLE}
       WHERE lower(word) LIKE lower(?)
-        AND id NOT IN (SELECT id FROM fts_results)
-    ),
-    combined AS (
-      SELECT id, word, definition, score, word_match, 1 AS priority FROM fts_results
-      UNION ALL
-      SELECT id, word, definition, score, word_match, 2 AS priority FROM prefix_results
-    )
-    SELECT id, word, definition
-    FROM combined
-    ORDER BY priority, word_match DESC, score DESC NULLS LAST, LOWER(word), word, id
-    LIMIT ?`;
+      ORDER BY LOWER(word), word, id
+      LIMIT ?`;
 
-  const suggestionStatement = await connection.prepare(suggestionSql);
-  try {
-    const prefixTerm = `${term}%`;
-    const table = await suggestionStatement.query(term, term, prefixTerm, limit);
-    return tableToRows<WordSuggestion>(table);
-  } finally {
-    await suggestionStatement.close();
+    const prefixStatement = await connection.prepare(prefixSql);
+    try {
+      const prefixTerm = `${term}%`;
+      const table = await prefixStatement.query(prefixTerm, limit);
+      return tableToRows<WordSuggestion>(table);
+    } finally {
+      await prefixStatement.close();
+    }
   }
 };
 
