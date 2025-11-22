@@ -1,19 +1,21 @@
-import { browser } from "$app/environment";
+import { browser, dev } from "$app/environment";
 import type { AsyncDuckDB, AsyncDuckDBConnection } from "@duckdb/duckdb-wasm";
 import * as duckdb from "@duckdb/duckdb-wasm";
 import { downloadParquetFile, runMigration, runFTSIndexing, resetFTSState } from "./repository";
 
-const CDN_BASE = "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.31.0/dist";
+// Serve DuckDB artifacts from same-origin to work with COEP/COOP (Safari OPFS)
+const LOCAL_DUCKDB_BASE = "";
+const WASM_SUFFIX = dev ? "" : ".gz";
 const OPFS_DB_PATH = "opfs://monocuco.db";
 const DB_VERSION_KEY = "monocuco_db_version";
 
 const MANUAL_BUNDLES: duckdb.DuckDBBundles = {
   mvp: {
-    mainModule: `${CDN_BASE}/duckdb-mvp.wasm`,
+    mainModule: `${LOCAL_DUCKDB_BASE}/duckdb-mvp.wasm${WASM_SUFFIX}`,
     mainWorker: "/duckdb-browser-mvp.worker.min.js",
   },
   eh: {
-    mainModule: `${CDN_BASE}/duckdb-eh.wasm`,
+    mainModule: `${LOCAL_DUCKDB_BASE}/duckdb-eh.wasm${WASM_SUFFIX}`,
     mainWorker: "/duckdb-browser-eh.worker.min.js",
   },
 };
