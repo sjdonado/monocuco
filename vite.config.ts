@@ -15,7 +15,17 @@ export default defineConfig({
   build: {
     rollupOptions: {
       external: [/.*\.wasm$/],
+      output: {
+        manualChunks: {
+          // Separate vendor chunks for better caching
+          lucide: ["@lucide/svelte"],
+        },
+      },
     },
+    // Optimize chunk size for faster initial load
+    chunkSizeWarningLimit: 600,
+    // Enable minification
+    minify: "terser",
   },
   test: {
     expect: { requireAssertions: true },
