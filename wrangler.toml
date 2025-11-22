@@ -1,0 +1,12 @@
+name = "monocuco"
+compatibility_date = "2025-10-04"
+pages_build_output_dir = "./svelte-kit/cloudfare"
+
+compatibility_flags = [
+	"nodejs_compat",
+	"global_fetch_strictly_public"
+]
+
+# Build configuration
+send_metrics = false
+
