@@ -273,9 +273,11 @@ async function initialiseConnection(): Promise<AsyncDuckDBConnection> {
     } else {
       performanceLog("[DuckDB] Loaded from OPFS, skipping migrations");
       // FTS should already be indexed if loaded from OPFS, verify and mark ready
-      runFTSIndexing(connection, true).catch((err) => {
-        console.error("[DuckDB] FTS verification failed:", err);
-      });
+      runFTSIndexing(connection, { skipIfExists: true, checkpointAfterCreate: usingOpfs }).catch(
+        (err) => {
+          console.error("[DuckDB] FTS verification failed:", err);
+        }
+      );
     }
 
     return connection;

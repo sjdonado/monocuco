@@ -62,39 +62,54 @@ export const runMigration = async (connection: AsyncDuckDBConnection) => {
   await connection.query(`CREATE INDEX IF NOT EXISTS idx_words_id ON ${WORDS_TABLE}(id)`);
 };
 
-export const runFTSIndexing = async (connection: AsyncDuckDBConnection, skipIfExists = false) => {
+type FTSOptions = {
+  skipIfExists?: boolean;
+  checkpointAfterCreate?: boolean;
+};
+
+export const runFTSIndexing = async (
+  connection: AsyncDuckDBConnection,
+  options: FTSOptions = {}
+) => {
+  const { skipIfExists = false, checkpointAfterCreate = false } = options;
   // Background FTS indexing - slower but needed for search
   if (!ftsIndexingPromise) {
     ftsIndexingPromise = (async () => {
       try {
         await connection.query("LOAD fts");
 
-        if (skipIfExists) {
-          // Check if FTS index already exists (when loading from OPFS)
-          try {
-            const testQuery = await connection.query(
-              `SELECT COUNT(*) FROM fts_main_${WORDS_TABLE} LIMIT 1`
-            );
-            if (testQuery) {
-              ftsReady = true;
-              console.log("[Repository] FTS index already exists (loaded from OPFS)");
-              return;
-            }
-          } catch {
-            // Index doesn't exist, continue to create it
-          }
+        let indexExists = false;
+        try {
+          const testQuery = await connection.query(
+            `SELECT COUNT(*) FROM fts_main_${WORDS_TABLE} LIMIT 1`
+          );
+          indexExists = !!testQuery;
+        } catch {
+          indexExists = false;
         }
 
-        // If we're only verifying, avoid recreating the index
-        if (skipIfExists) {
-          console.warn("[Repository] FTS index missing in OPFS; skipping creation (no migrations)");
-          ftsReady = false;
+        if (indexExists) {
+          ftsReady = true;
+          if (skipIfExists) {
+            console.log("[Repository] FTS index already exists (loaded from OPFS)");
+          } else {
+            console.log("[Repository] FTS index already exists");
+          }
           return;
         }
 
         await connection.query(
           `PRAGMA create_fts_index('${WORDS_TABLE}', 'id', 'word', 'definition', 'example', overwrite=1)`
         );
+
+        if (checkpointAfterCreate) {
+          try {
+            await connection.query("CHECKPOINT");
+          } catch (err) {
+            console.warn("[Repository] Failed to checkpoint FTS index:", err);
+          }
+        }
+
         ftsReady = true;
         console.log("[Repository] FTS index created");
       } catch (error) {
