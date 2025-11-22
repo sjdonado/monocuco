@@ -6,6 +6,7 @@ node_modules
 .netlify
 .wrangler
 /.svelte-kit
+/svelte-kit
 /build
 
 # OS
@@ -25,6 +26,3 @@ vite.config.ts.timestamp-*
 __pycache__
 
 *.log
-
-static/duckdb-eh.wasm
-static/duckdb-mvp.wasm

@@ -85,6 +85,13 @@ export const runFTSIndexing = async (connection: AsyncDuckDBConnection, skipIfEx
           }
         }
 
+        // If we're only verifying, avoid recreating the index
+        if (skipIfExists) {
+          console.warn("[Repository] FTS index missing in OPFS; skipping creation (no migrations)");
+          ftsReady = false;
+          return;
+        }
+
         await connection.query(
           `PRAGMA create_fts_index('${WORDS_TABLE}', 'id', 'word', 'definition', 'example', overwrite=1)`
         );

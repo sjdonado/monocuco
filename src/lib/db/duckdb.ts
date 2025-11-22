@@ -1,24 +1,49 @@
-import { browser, dev } from "$app/environment";
+import { browser } from "$app/environment";
 import type { AsyncDuckDB, AsyncDuckDBConnection } from "@duckdb/duckdb-wasm";
 import * as duckdb from "@duckdb/duckdb-wasm";
 import { downloadParquetFile, runMigration, runFTSIndexing, resetFTSState } from "./repository";
 
 // Serve DuckDB artifacts from same-origin to work with COEP/COOP (Safari OPFS)
 const LOCAL_DUCKDB_BASE = "";
-const WASM_SUFFIX = dev ? "" : ".gz";
 const OPFS_DB_PATH = "opfs://monocuco.db";
 const DB_VERSION_KEY = "monocuco_db_version";
 
 const MANUAL_BUNDLES: duckdb.DuckDBBundles = {
   mvp: {
-    mainModule: `${LOCAL_DUCKDB_BASE}/duckdb-mvp.wasm${WASM_SUFFIX}`,
+    mainModule: `${LOCAL_DUCKDB_BASE}/duckdb-mvp.wasm`,
     mainWorker: "/duckdb-browser-mvp.worker.min.js",
   },
   eh: {
-    mainModule: `${LOCAL_DUCKDB_BASE}/duckdb-eh.wasm${WASM_SUFFIX}`,
+    mainModule: `${LOCAL_DUCKDB_BASE}/duckdb-eh.wasm`,
     mainWorker: "/duckdb-browser-eh.worker.min.js",
   },
 };
+
+const wasmObjectUrlCache = new Map<string, string>();
+
+async function getWasmObjectUrl(url: string): Promise<string> {
+  const cached = wasmObjectUrlCache.get(url);
+  if (cached) return cached;
+
+  const resp = await fetch(url);
+  if (!resp.ok) {
+    throw new Error(`Failed to fetch WASM: ${resp.status} ${resp.statusText} (${url})`);
+  }
+  let buffer = await resp.arrayBuffer();
+
+  // If the fetched bytes are gzip (1f 8b), decompress to get the raw WASM
+  const bytes = new Uint8Array(buffer);
+  const isGzip = bytes.length > 2 && bytes[0] === 0x1f && bytes[1] === 0x8b;
+  if (isGzip && typeof DecompressionStream !== "undefined") {
+    const ds = new DecompressionStream("gzip");
+    const decompressed = await new Response(new Blob([buffer]).stream().pipeThrough(ds)).arrayBuffer();
+    buffer = decompressed;
+  }
+
+  const objectUrl = URL.createObjectURL(new Blob([buffer], { type: "application/wasm" }));
+  wasmObjectUrlCache.set(url, objectUrl);
+  return objectUrl;
+}
 
 const DUCKDB_T0 = performance.now();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -95,12 +120,23 @@ async function openDatabase(): Promise<{ db: AsyncDuckDB; usingOpfs: boolean }> 
   const logger = new duckdb.ConsoleLogger();
   const bundle = await duckdb.selectBundle(MANUAL_BUNDLES);
   const worker = new Worker(bundle.mainWorker!);
+  worker.addEventListener("error", (event) => {
+    console.error(
+      "[DuckDB] Worker error:",
+      event.message,
+      event.filename,
+      event.lineno,
+      event.colno,
+      event.error
+    );
+  });
 
   performanceLog("[DuckDB] Instantiate worker");
 
   const db = new duckdb.AsyncDuckDB(logger, worker);
 
-  await db.instantiate(bundle.mainModule, bundle.pthreadWorker ?? null);
+  const wasmUrl = await getWasmObjectUrl(bundle.mainModule!);
+  await db.instantiate(wasmUrl, bundle.pthreadWorker ?? null);
 
   performanceLog("[DuckDB] Check OPFS supported");
 
@@ -128,8 +164,6 @@ async function openDatabase(): Promise<{ db: AsyncDuckDB; usingOpfs: boolean }> 
     try {
       // Increase memory limit for better query performance (default is often too low)
       await conn.query("SET memory_limit='512MB'");
-      // Increase threads for parallel query execution
-      await conn.query("SET threads=4");
       // Enable query result caching for repeated queries
       await conn.query("SET enable_object_cache=true");
       // Disable write-related overhead (we're read-only after migration)
