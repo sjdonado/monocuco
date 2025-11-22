@@ -3,11 +3,13 @@
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import WordCard from "$lib/components/WordCard.svelte";
+  import WordCardSkeleton from "$lib/components/WordCardSkeleton.svelte";
   import { findAll, findById, type QueryAllResult, type Word } from "$lib/db/repository";
   import { AlertCircleIcon } from "@lucide/svelte";
   import type { Page } from "@sveltejs/kit";
 
   const PAGE_SIZE = 12;
+  const SKELETON_ITEMS = Array.from({ length: PAGE_SIZE }, (_, i) => i);
 
   let items = $state<Word[]>([]);
   let loading = $state(true);
@@ -178,14 +180,21 @@
   }
 
   $effect(() => {
-    const wordId = wordIdParam;
-    if (wordId) {
-      void loadWord(wordId);
-    } else {
-      const term = searchValue || null;
-      const afterToken = afterParam;
-      void loadWords(term, afterToken);
-    }
+    if (!browser) return;
+
+    // Defer data loading to next tick to allow initial render to complete first
+    const timeoutId = setTimeout(() => {
+      const wordId = wordIdParam;
+      if (wordId) {
+        void loadWord(wordId);
+      } else {
+        const term = searchValue || null;
+        const afterToken = afterParam;
+        void loadWords(term, afterToken);
+      }
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   });
 
   const buildShareUrl = (wordId: string, word: string): string => {
@@ -268,12 +277,18 @@
       <AlertCircleIcon class="text-error-content size-5 shrink-0" aria-hidden="true" />
       <span>{error}</span>
     </div>
-  {:else if !loading && items.length === 0}
+  {:else if loading}
+    <div class="flex flex-col gap-6">
+      {#each SKELETON_ITEMS as i (i)}
+        <WordCardSkeleton />
+      {/each}
+    </div>
+  {:else if items.length === 0}
     <div class="alert alert-warning">
       <AlertCircleIcon class="text-warning-content size-5 shrink-0" aria-hidden="true" />
       <span>No encontramos palabras para esta búsqueda.</span>
     </div>
-  {:else if !loading}
+  {:else}
     <div class="flex flex-col gap-6">
       {#each items as entry (entry.id)}
         <WordCard {entry} shareUrl={buildShareUrl(entry.id, entry.word)} />

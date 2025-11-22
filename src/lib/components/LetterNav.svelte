@@ -8,18 +8,23 @@
   $effect(() => {
     if (!browser) return;
 
-    const loadCounts = async () => {
-      try {
-        const counts = await getLetterCounts();
-        letterCounts = counts;
-      } catch (error) {
-        console.error("Failed to load letter counts", error);
-      } finally {
-        loading = false;
-      }
-    };
+    // Defer loading letter counts by 100ms to prioritize main content
+    const timeoutId = setTimeout(() => {
+      const loadCounts = async () => {
+        try {
+          const counts = await getLetterCounts();
+          letterCounts = counts;
+        } catch (error) {
+          console.error("Failed to load letter counts", error);
+        } finally {
+          loading = false;
+        }
+      };
 
-    void loadCounts();
+      void loadCounts();
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
   });
 
   const getSearchUrl = (letter: string) => {

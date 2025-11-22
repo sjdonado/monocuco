@@ -6,7 +6,6 @@
   import { MenuIcon, XIcon } from "@lucide/svelte";
   import { dev } from "$app/environment";
   import SearchInput from "$lib/components/SearchInput.svelte";
-  import DatabaseLoading from "$lib/components/DatabaseLoading.svelte";
   import LetterNav from "$lib/components/LetterNav.svelte";
   import { APP_VERSION } from "$lib/config";
 
@@ -58,6 +57,8 @@
                   class="mx-auto max-h-8"
                   src={logo}
                   alt="Bailarina - Carnaval de Barranquilla, Colombia | Ilustración Andrés Urquina Sánchez"
+                  fetchpriority="high"
+                  decoding="async"
                 />
                 <h1 class="text-2xl font-bold normal-case">Monocuco</h1>
               </a>
@@ -133,7 +134,6 @@
         </div>
       </aside>
     </div>
-    <DatabaseLoading />
   </main>
   <footer>
     <p class="text-base-content/70 mb-2 flex items-center justify-center gap-1 text-xs">
