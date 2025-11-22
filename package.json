@@ -14,8 +14,8 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run",
 		"format": "prettier --write .",
-		"add-word": "node scripts/add_word.js",
-		"update-parquet": "node scripts/json_to_parquet.js"
+		"add-word": "./scripts/add-word.js",
+		"update-parquet": "./scripts/json-to-parquet.js"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.4.0",

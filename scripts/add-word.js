@@ -294,7 +294,7 @@ function addEntry({
 const program = new Command();
 
 program
-  .name("add_word")
+  .name("add-word")
   .description("CLI to append a new word entry to the project JSON dataset")
   .requiredOption("-w, --word <word>", "Word or expression to add")
   .requiredOption("-d, --definition <definition>", "Definition in markdown")
