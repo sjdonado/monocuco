@@ -1,20 +1,8 @@
-import type { AsyncDuckDBConnection, AsyncPreparedStatement } from "@duckdb/duckdb-wasm";
-import type { Table } from "apache-arrow";
-import { getConnection } from "./duckdb";
+import MiniSearch from "minisearch";
 
-const DATA_FILE_NAME = "data.parquet";
-const WORDS_TABLE = "words";
+const DATA_URL = "/data.json";
+const INDEX_URL = "/search-index.json";
 const DEFAULT_PAGE_SIZE = 12;
-
-interface WordParquetRow {
-  id: string;
-  word: string;
-  definition: string;
-  example: string;
-  createdByName: string;
-  createdByWebsite: string;
-  createdAt: string;
-}
 
 export interface Word {
   id: string;
@@ -30,102 +18,71 @@ export interface Word {
 
 export type WordSuggestion = Pick<Word, "id" | "word" | "definition">;
 
-export async function downloadParquetFile(): Promise<{ name: string; buffer: Uint8Array }> {
-  const res = await fetch(`/${DATA_FILE_NAME}`, { cache: "no-cache" });
-  if (!res.ok) {
-    throw new Error(`Could not download ${DATA_FILE_NAME}: ${res.status} ${res.statusText}`);
-  }
+// In-memory store
+let items: Word[] = [];
+let itemMap: Map<string, Word> = new Map();
+let itemIndexMap: Map<string, number> = new Map(); // ID -> Index in 'items' array
+let miniSearch: MiniSearch | null = null;
+let initPromise: Promise<void> | null = null;
+let initError: Error | null = null;
 
-  const buffer = new Uint8Array(await res.arrayBuffer());
-  return { name: DATA_FILE_NAME, buffer };
-}
+const normalizeInitError = (error: unknown): Error =>
+  error instanceof Error ? error : new Error("Failed to initialize database");
 
-// Track FTS readiness
-let ftsReady = false;
-let ftsIndexingPromise: Promise<void> | null = null;
+export const initDB = async () => {
+  if (initError) return Promise.reject(initError);
+  if (initPromise) return initPromise;
 
-export const runMigration = async (connection: AsyncDuckDBConnection) => {
-  // Fast initial load: table + basic indexes for navigation and sorting
-  await connection.query(`CREATE OR REPLACE TABLE ${WORDS_TABLE} AS
-    SELECT
-      id,
-      word,
-      definition,
-      example,
-      createdByName,
-      createdByWebsite,
-      createdAt
-    FROM read_parquet('${DATA_FILE_NAME}')`);
+  initPromise = (async () => {
+    try {
+      const [dataRes, indexRes] = await Promise.all([fetch(DATA_URL), fetch(INDEX_URL)]);
 
-  // Create basic indexes for letter navigation and sorting
-  await connection.query(`CREATE INDEX IF NOT EXISTS idx_words_word ON ${WORDS_TABLE}(word, id)`);
-  await connection.query(`CREATE INDEX IF NOT EXISTS idx_words_id ON ${WORDS_TABLE}(id)`);
+      if (!dataRes.ok) throw new Error(`Failed to load data.json: ${dataRes.statusText}`);
+      if (!indexRes.ok) throw new Error(`Failed to load search-index.json: ${indexRes.statusText}`);
+
+      items = await dataRes.json();
+      const indexJson = await indexRes.text();
+
+      itemMap = new Map();
+      itemIndexMap = new Map();
+      items.forEach((item, idx) => {
+        itemMap.set(item.id, item);
+        itemIndexMap.set(item.id, idx);
+      });
+
+      console.log("indexJSON", indexJson);
+
+      miniSearch = MiniSearch.loadJSON(indexJson, {
+        fields: ["word", "definition", "example"],
+        storeFields: ["word", "definition"],
+        idField: "id",
+        searchOptions: {
+          boost: { word: 2 },
+          fuzzy: 0.2,
+          prefix: true,
+        },
+      });
+
+      console.log(`[Repository] DB initialized. ${items.length} words loaded.`);
+    } catch (e) {
+      const normalizedError = normalizeInitError(e);
+      initError = normalizedError;
+      miniSearch = null;
+      items = [];
+      itemMap = new Map();
+      itemIndexMap = new Map();
+      console.error("[Repository] Failed to init DB", normalizedError);
+      // initPromise = null; // Allow retry
+      throw normalizedError;
+    }
+  })();
+
+  return initPromise;
 };
 
-type FTSOptions = {
-  skipIfExists?: boolean;
-  checkpointAfterCreate?: boolean;
-};
-
-export const runFTSIndexing = async (
-  connection: AsyncDuckDBConnection,
-  options: FTSOptions = {}
-) => {
-  const { skipIfExists = false, checkpointAfterCreate = false } = options;
-  // Background FTS indexing - slower but needed for search
-  if (!ftsIndexingPromise) {
-    ftsIndexingPromise = (async () => {
-      try {
-        await connection.query("LOAD fts");
-
-        let indexExists = false;
-        try {
-          const testQuery = await connection.query(
-            `SELECT COUNT(*) FROM fts_main_${WORDS_TABLE} LIMIT 1`
-          );
-          indexExists = !!testQuery;
-        } catch {
-          indexExists = false;
-        }
-
-        if (indexExists) {
-          ftsReady = true;
-          if (skipIfExists) {
-            console.log("[Repository] FTS index already exists (loaded from OPFS)");
-          } else {
-            console.log("[Repository] FTS index already exists");
-          }
-          return;
-        }
-
-        await connection.query(
-          `PRAGMA create_fts_index('${WORDS_TABLE}', 'id', 'word', 'definition', 'example', overwrite=1)`
-        );
-
-        if (checkpointAfterCreate) {
-          try {
-            await connection.query("CHECKPOINT");
-          } catch (err) {
-            console.warn("[Repository] Failed to checkpoint FTS index:", err);
-          }
-        }
-
-        ftsReady = true;
-        console.log("[Repository] FTS index created");
-      } catch (error) {
-        console.error("[Repository] FTS indexing failed:", error);
-        ftsReady = false;
-      }
-    })();
-  }
-  return ftsIndexingPromise;
-};
-
-export const isFTSReady = (): boolean => ftsReady;
-
-export const resetFTSState = (): void => {
-  ftsReady = false;
-  ftsIndexingPromise = null;
+const ensureDB = async () => {
+  if (initError) throw initError;
+  if (!miniSearch) await initDB();
 };
 
 export interface QueryAllOptions {
@@ -149,210 +106,125 @@ export interface QueryAllResult {
 }
 
 export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllResult> => {
-  const connection = await getConnection();
-  const startedAt = Date.now();
+  const startedAt = performance.now();
+  await ensureDB();
+
   const term = options.term?.trim() ?? "";
   const pageSize = Math.max(1, options.pageSize ?? DEFAULT_PAGE_SIZE);
   const after = options.after?.trim() || null;
 
-  const isSearch = term.length > 0;
+  let resultIds: string[] = [];
 
-  const rankedCte = isSearch
-    ? `WITH base AS (
-         SELECT
-           id, word, definition, example, createdByName, createdByWebsite, createdAt, 1 AS word_match
-         FROM ${WORDS_TABLE}
-         WHERE LOWER(word) LIKE LOWER(?)
-       ),
-       ranked AS (
-         SELECT
-           id, word, definition, example, createdByName, createdByWebsite, createdAt,
-           ROW_NUMBER() OVER (ORDER BY word_match DESC, LOWER(word), word, id) AS rn
-         FROM base
-       )`
-    : `WITH base AS (
-         SELECT
-           id, word, definition, example, createdByName, createdByWebsite, createdAt, 0 AS word_match
-         FROM ${WORDS_TABLE}
-       ),
-       ranked AS (
-         SELECT
-           id, word, definition, example, createdByName, createdByWebsite, createdAt,
-           ROW_NUMBER() OVER (ORDER BY word_match DESC, LOWER(word), word, id) AS rn
-         FROM base
-       )`;
-
-  const totalSql = `${rankedCte}
-    SELECT COUNT(*)::BIGINT AS total
-    FROM ranked`;
-
-  const lookupSql = `${rankedCte}
-    SELECT rn
-    FROM ranked
-    WHERE id = ?`;
-
-  const pageSql = `${rankedCte}
-    SELECT id, word, definition, example, createdByName, createdByWebsite, createdAt
-    FROM ranked
-    WHERE rn BETWEEN ? AND ?
-    ORDER BY rn`;
-
-  type CountRow = { total: bigint | number };
-  type RowNumberRow = { rn: bigint | number | null };
-
-  const toNumber = (value: bigint | number | null | undefined): number => {
-    if (typeof value === "bigint") return Number(value);
-    if (typeof value === "number") return Number.isFinite(value) ? value : 0;
-    return 0;
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const runQuery = async (statement: AsyncPreparedStatement<any>, ...args: unknown[]) => {
-    if (isSearch) return statement.query(`${term}%`, ...args);
-    return statement.query(...args);
-  };
-
-  const totalStatement = await connection.prepare(totalSql);
-  let total = 0;
-  try {
-    const totalTable = await runQuery(totalStatement);
-    const totalRow = tableToRows<CountRow>(totalTable)[0];
-    total = toNumber(totalRow?.total);
-  } finally {
-    await totalStatement.close();
+  if (term.length > 0) {
+    // Search mode
+    // We don't support 'after' cursor for search results easily without caching the search result key
+    // For simplicity in this static context, we just re-run search. it's fast.
+    // However, pagination with 'after' in search results implies we know the order of search results.
+    // MiniSearch returns sorted by relevance.
+    const searchResults = miniSearch!.search(term);
+    resultIds = searchResults.map((r) => r.id);
+  } else {
+    // Browse mode - use full sorted list
+    resultIds = items.map((i) => i.id);
   }
 
-  let startIndex = total > 0 ? 1 : 0;
+  const total = resultIds.length;
 
+  if (total === 0) {
+    return emptyResult(startedAt);
+  }
+
+  let startIndex = 0;
+
+  // Resolve 'after' to a startIndex
   if (after) {
-    const lookupStatement = await connection.prepare(lookupSql);
-    try {
-      const lookupTable = await runQuery(lookupStatement, after);
-      const lookupRow = tableToRows<RowNumberRow>(lookupTable)[0];
-      const rowNumber = toNumber(lookupRow?.rn);
-      if (rowNumber > 0 && rowNumber <= total) startIndex = rowNumber;
-    } finally {
-      await lookupStatement.close();
+    const foundIndex = resultIds.indexOf(after);
+    if (foundIndex !== -1) {
+      // 'after' points to the *last item* of the *previous page*, usually.
+      // But the previous implementation treated 'after' as a start cursor?
+      // Let's check previous implementation:
+      // WHERE rn BETWEEN ? AND ?
+      // It used 'startIndex' derived from 'rn'.
+      // If 'after' provided, 'rn' of that ID became 'startIndex'.
+      // So 'after' == "start at this ID".
+      startIndex = foundIndex;
     }
   }
 
-  if (total === 0) {
-    const loadTimeSeconds = (Date.now() - startedAt) / 1000;
-    return {
-      items: [],
-      total: 0,
-      currentAfter: null,
-      nextAfter: null,
-      prevAfter: null,
-      startIndex: 0,
-      endIndex: 0,
-      currentPage: 1,
-      totalPages: 1,
-      pages: [],
-      loadTimeSeconds,
-    };
-  }
+  // Adjust startIndex to be page-aligned if possible?
+  // Previous implementation: "if (rowNumber > 0 && rowNumber <= total) startIndex = rowNumber;"
+  // It seems 'after' was the ID of the *first item* on the page.
 
-  const endIndex = Math.min(total, startIndex + pageSize - 1);
-  const totalPages = Math.max(1, Math.ceil(total / pageSize));
-  const currentPage = Math.max(1, Math.floor((startIndex - 1) / pageSize) + 1);
+  const endIndex = Math.min(total, startIndex + pageSize); // Slice is exclusive at end
+  const pageIds = resultIds.slice(startIndex, endIndex);
 
-  const pageStatement = await connection.prepare(pageSql);
-  let items: Word[] = [];
-  try {
-    const pageTable = await runQuery(pageStatement, startIndex, endIndex);
-    items = tableToRows<WordParquetRow>(pageTable).map(toWordRecord);
-  } finally {
-    await pageStatement.close();
-  }
+  const pageItems = pageIds.map((id) => itemMap.get(id)!).filter(Boolean);
 
-  const currentAfter = items[0]?.id ?? null;
+  const currentPage = Math.floor(startIndex / pageSize) + 1;
+  const totalPages = Math.ceil(total / pageSize);
 
-  // Calculate links/afters to fetch
-  let prevAfter: string | null = null;
-  let nextAfter: string | null = null;
+  // Pagination links generation
   const pages: Array<{ number: number; after: string | null }> = [];
-
   const MAX_PAGE_LINKS = 4;
   let startPageNum = Math.max(1, currentPage - Math.floor(MAX_PAGE_LINKS / 2));
   const endPageNum = Math.min(totalPages, startPageNum + MAX_PAGE_LINKS - 1);
-  const visibleCount = endPageNum - startPageNum + 1;
-  if (visibleCount < MAX_PAGE_LINKS) {
+
+  if (endPageNum - startPageNum + 1 < MAX_PAGE_LINKS) {
     startPageNum = Math.max(1, endPageNum - MAX_PAGE_LINKS + 1);
   }
 
-  const rowNumbersToFetch: number[] = [];
-  if (currentPage > 1 && currentPage !== 2) {
-    const prevStartIndex = Math.max(1, startIndex - pageSize);
-    rowNumbersToFetch.push(prevStartIndex);
-  }
-  if (endIndex < total) {
-    rowNumbersToFetch.push(endIndex + 1);
-  }
-  for (let pageNumber = startPageNum; pageNumber <= endPageNum; pageNumber += 1) {
-    if (pageNumber > 1 && pageNumber !== currentPage) {
-      const pageStartIndex = (pageNumber - 1) * pageSize + 1;
-      rowNumbersToFetch.push(pageStartIndex);
-    }
+  for (let i = startPageNum; i <= endPageNum; i++) {
+    const pageStartIdx = (i - 1) * pageSize;
+    // 'after' is the ID of the first item on that page
+    const afterId = i === 1 ? null : (resultIds[pageStartIdx] ?? null);
+    pages.push({ number: i, after: afterId });
   }
 
-  const aftersMap = new Map<number, string>();
-  if (rowNumbersToFetch.length > 0) {
-    const batchAfterSql = `${rankedCte}
-      SELECT rn, id
-      FROM ranked
-      WHERE rn IN (${rowNumbersToFetch.join(",")})`;
+  const currentAfter = pageItems.length > 0 ? pageItems[0].id : null;
 
-    const batchStatement = await connection.prepare(batchAfterSql);
-    try {
-      const batchTable = await runQuery(batchStatement);
-      const batchRows = tableToRows<{ rn: bigint | number; id: string }>(batchTable);
-      for (const row of batchRows) {
-        aftersMap.set(toNumber(row.rn), row.id);
-      }
-    } finally {
-      await batchStatement.close();
-    }
-  }
+  // Previous/Next logic
+  const prevStartIdx = Math.max(0, startIndex - pageSize);
+  const nextStartIdx = startIndex + pageSize;
 
-  if (currentPage > 1) {
-    if (currentPage === 2) {
-      prevAfter = null;
-    } else {
-      const prevStartIndex = Math.max(1, startIndex - pageSize);
-      prevAfter = aftersMap.get(prevStartIndex) ?? null;
-    }
-  }
-  nextAfter = endIndex < total ? (aftersMap.get(endIndex + 1) ?? null) : null;
+  const prevAfter = currentPage > 1 ? (resultIds[prevStartIdx] ?? null) : null;
+  const nextAfter = nextStartIdx < total ? (resultIds[nextStartIdx] ?? null) : null;
 
-  for (let pageNumber = startPageNum; pageNumber <= endPageNum; pageNumber += 1) {
-    if (pageNumber === 1) {
-      pages.push({ number: pageNumber, after: null });
-    } else if (pageNumber === currentPage) {
-      pages.push({ number: pageNumber, after: currentPage === 1 ? null : currentAfter });
-    } else {
-      const pageStartIndex = (pageNumber - 1) * pageSize + 1;
-      const after = aftersMap.get(pageStartIndex) ?? null;
-      pages.push({ number: pageNumber, after });
-    }
-  }
-
-  const loadTimeSeconds = (Date.now() - startedAt) / 1000;
+  // Previous implementation returned 1-based indices for start/end
+  // Slice is 0-based.
+  // Display is 1-based.
+  const displayStartIndex = total > 0 ? startIndex + 1 : 0;
+  const displayEndIndex = Math.min(startIndex + pageSize, total);
 
   return {
-    items,
+    items: pageItems,
     total,
     currentAfter,
     nextAfter,
-    prevAfter,
-    startIndex,
-    endIndex,
+    prevAfter: currentPage === 2 ? null : prevAfter, // Logic from old repo: "if (currentPage === 2) prevAfter = null" (wait, page 1 has no after)
+    startIndex: displayStartIndex,
+    endIndex: displayEndIndex,
     currentPage,
     totalPages,
     pages,
-    loadTimeSeconds,
+    loadTimeSeconds: (performance.now() - startedAt) / 1000,
   };
 };
+
+function emptyResult(startedAt: number): QueryAllResult {
+  return {
+    items: [],
+    total: 0,
+    currentAfter: null,
+    nextAfter: null,
+    prevAfter: null,
+    startIndex: 0,
+    endIndex: 0,
+    currentPage: 1,
+    totalPages: 1,
+    pages: [],
+    loadTimeSeconds: (performance.now() - startedAt) / 1000,
+  };
+}
 
 export interface QuerySuggestionsOptions {
   term: string;
@@ -362,90 +234,31 @@ export interface QuerySuggestionsOptions {
 export const findSuggestions = async (
   options: QuerySuggestionsOptions
 ): Promise<WordSuggestion[]> => {
+  await ensureDB();
   const term = options.term.trim();
   if (!term) return [];
 
   const limit = Math.max(1, options.limit ?? 5);
-  const connection = await getConnection();
 
-  // Use FTS if ready, otherwise fall back to prefix-only matching
-  if (ftsReady) {
-    const suggestionSql = `
-      WITH fts_base AS (
-        SELECT
-          id,
-          word,
-          definition,
-          fts_main_words.match_bm25(id, ?, fields := 'word,definition') AS score,
-          fts_main_words.match_bm25(id, ?, fields := 'word') AS word_score
-        FROM ${WORDS_TABLE}
-      ),
-      fts_results AS (
-        SELECT id, word, definition, score,
-               CASE WHEN word_score IS NOT NULL THEN 1 ELSE 0 END AS word_match
-        FROM fts_base
-        WHERE score IS NOT NULL
-      ),
-      prefix_results AS (
-        SELECT id, word, definition, CAST(NULL AS DOUBLE) AS score, 1 AS word_match
-        FROM ${WORDS_TABLE}
-        WHERE lower(word) LIKE lower(?)
-          AND id NOT IN (SELECT id FROM fts_results)
-      ),
-      combined AS (
-        SELECT id, word, definition, score, word_match, 1 AS priority FROM fts_results
-        UNION ALL
-        SELECT id, word, definition, score, word_match, 2 AS priority FROM prefix_results
-      )
-      SELECT id, word, definition
-      FROM combined
-      ORDER BY priority, word_match DESC, score DESC NULLS LAST, LOWER(word), word, id
-      LIMIT ?`;
+  // MiniSearch is optimized for this
+  const results = miniSearch!.search(term, {
+    prefix: true,
+    fuzzy: 0.2, // Slightly fuzzy for typos
+    boost: { word: 2 },
+    fields: ["word"], // Suggest based on word mainly
+    combineWith: "AND",
+  });
 
-    const suggestionStatement = await connection.prepare(suggestionSql);
-    try {
-      const prefixTerm = `${term}%`;
-      const table = await suggestionStatement.query(term, term, prefixTerm, limit);
-      return tableToRows<WordSuggestion>(table);
-    } finally {
-      await suggestionStatement.close();
-    }
-  } else {
-    // Fallback: prefix-only matching when FTS is not ready
-    const prefixSql = `
-      SELECT id, word, definition
-      FROM ${WORDS_TABLE}
-      WHERE lower(word) LIKE lower(?)
-      ORDER BY LOWER(word), word, id
-      LIMIT ?`;
-
-    const prefixStatement = await connection.prepare(prefixSql);
-    try {
-      const prefixTerm = `${term}%`;
-      const table = await prefixStatement.query(prefixTerm, limit);
-      return tableToRows<WordSuggestion>(table);
-    } finally {
-      await prefixStatement.close();
-    }
-  }
+  return results.slice(0, limit).map((r) => ({
+    id: r.id,
+    word: itemMap.get(r.id)?.word ?? "",
+    definition: itemMap.get(r.id)?.definition ?? "",
+  }));
 };
 
 export const findById = async (id: string): Promise<Word | null> => {
-  const connection = await getConnection();
-  const sql = `
-    SELECT id, word, definition, example, createdByName, createdByWebsite, createdAt
-    FROM ${WORDS_TABLE}
-    WHERE id = ?
-    LIMIT 1`;
-
-  const statement = await connection.prepare(sql);
-  try {
-    const table = await statement.query(id);
-    const rows = tableToRows<WordParquetRow>(table);
-    return rows.length > 0 ? toWordRecord(rows[0]) : null;
-  } finally {
-    await statement.close();
-  }
+  await ensureDB();
+  return itemMap.get(id) ?? null;
 };
 
 export interface LetterCount {
@@ -454,45 +267,23 @@ export interface LetterCount {
 }
 
 export const getLetterCounts = async (): Promise<LetterCount[]> => {
-  const connection = await getConnection();
-  const sql = `
-    WITH letter_counts AS (
-      SELECT
-        UPPER(SUBSTRING(word, 1, 1)) as letter,
-        COUNT(*) as count
-      FROM ${WORDS_TABLE}
-      GROUP BY UPPER(SUBSTRING(word, 1, 1))
-    ),
-    total_count AS (
-      SELECT COUNT(*) as total FROM ${WORDS_TABLE}
-    ),
-    combined AS (
-      SELECT 'Todas' as letter, total as count FROM total_count
-      UNION ALL
-      SELECT letter, count FROM letter_counts
-    )
-    SELECT letter, count
-    FROM combined
-    ORDER BY
-      CASE WHEN letter = 'Todas' THEN 0 ELSE 1 END,
-      letter`;
+  await ensureDB();
 
-  const statement = await connection.prepare(sql);
-  try {
-    const table = await statement.query();
-    return tableToRows<LetterCount>(table);
-  } finally {
-    await statement.close();
+  const counts = new Map<string, number>();
+  let total = 0;
+
+  for (const item of items) {
+    const letter = item.word.charAt(0).toUpperCase();
+    counts.set(letter, (counts.get(letter) ?? 0) + 1);
+    total++;
   }
+
+  const result: LetterCount[] = [{ letter: "Todas", count: total }];
+
+  const sortedLetters = Array.from(counts.keys()).sort();
+  for (const letter of sortedLetters) {
+    result.push({ letter, count: counts.get(letter)! });
+  }
+
+  return result;
 };
-
-const tableToRows = <T>(table: Table): T[] => table.toArray() as T[];
-
-const toWordRecord = (row: WordParquetRow): Word => ({
-  id: row.id,
-  word: row.word,
-  definition: row.definition,
-  example: row.example,
-  createdBy: { name: row.createdByName, website: row.createdByWebsite },
-  createdAt: row.createdAt,
-});

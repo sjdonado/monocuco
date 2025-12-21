@@ -3,7 +3,7 @@
   import { findSuggestions, type WordSuggestion } from "$lib/db/repository";
   import { parseMarkdown } from "$lib/markdown";
   import { SearchIcon } from "@lucide/svelte";
-  import { dbReady, dbInitializing } from "$lib/stores/db-ready";
+  import { dbReady, dbInitializing, dbFailed } from "$lib/stores/db-ready";
 
   const SUGGESTION_LIMIT = 4;
 
@@ -16,18 +16,32 @@
   // Track DB readiness
   let isDbReady = $state(false);
   let isDbInitializing = $state(false);
+  let isDbFailed = $state(false);
 
   $effect(() => {
     const unsubReady = dbReady.subscribe((v) => (isDbReady = v));
     const unsubInit = dbInitializing.subscribe((v) => (isDbInitializing = v));
+    const unsubFailed = dbFailed.subscribe((v) => (isDbFailed = v));
     return () => {
       unsubReady();
       unsubInit();
+      unsubFailed();
     };
   });
 
   // Disable search while DB is not ready
-  const isDisabled = $derived(!isDbReady && isDbInitializing);
+  const isDisabled = $derived(isDbFailed || (!isDbReady && isDbInitializing));
+
+  $effect(() => {
+    if (!isDbFailed) return;
+    suggestions = [];
+    loading = false;
+    isOpen = false;
+    if (debounceId) {
+      clearTimeout(debounceId);
+      debounceId = null;
+    }
+  });
 
   let debounceId: ReturnType<typeof setTimeout> | null = null;
   let lastUrlQuery = "";
@@ -159,7 +173,11 @@
       <input
         type="search"
         class="grow bg-transparent outline-none"
-        placeholder={isDisabled ? "Cargando búsqueda..." : "Buscar palabras..."}
+        placeholder={isDbFailed
+          ? "Búsqueda no disponible"
+          : isDisabled
+            ? "Cargando búsqueda..."
+            : "Buscar palabras..."}
         autocomplete="off"
         disabled={isDisabled}
         bind:value={query}

@@ -7,3 +7,5 @@ import { writable } from "svelte/store";
  */
 export const dbReady = writable(false);
 export const dbInitializing = writable(false);
+export const dbFailed = writable(false);
+export const dbError = writable<string | null>(null);

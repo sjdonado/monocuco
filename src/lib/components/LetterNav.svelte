@@ -1,24 +1,27 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { getLetterCounts, type LetterCount } from "$lib/db/repository";
-  import { dbReady } from "$lib/stores/db-ready";
+  import { dbReady, dbFailed } from "$lib/stores/db-ready";
 
   let letterCounts = $state<LetterCount[]>([]);
   let loading = $state(true);
 
   // Track DB readiness
   let isDbReady = $state(false);
+  let isDbFailed = $state(false);
 
   $effect(() => {
     const unsubReady = dbReady.subscribe((v) => (isDbReady = v));
+    const unsubFailed = dbFailed.subscribe((v) => (isDbFailed = v));
     return () => {
       unsubReady();
+      unsubFailed();
     };
   });
 
   // Only load when DB is ready
   $effect(() => {
-    if (!browser || !isDbReady) return;
+    if (!browser || !isDbReady || isDbFailed) return;
 
     const loadCounts = async () => {
       try {
@@ -34,6 +37,12 @@
     void loadCounts();
   });
 
+  $effect(() => {
+    if (!isDbFailed) return;
+    loading = false;
+    letterCounts = [];
+  });
+
   const getSearchUrl = (letter: string) => {
     if (letter === "Todas") {
       return "/";
@@ -47,7 +56,9 @@
 
 <nav aria-label="Navegación por letras">
   <h2 class="text-base-content/70 mb-3 text-sm font-semibold">Palabras por letra</h2>
-  {#if loading || !isDbReady}
+  {#if isDbFailed}
+    <p class="text-base-content/70 text-sm">Búsqueda no disponible por ahora.</p>
+  {:else if loading || !isDbReady}
     <!-- Skeleton loading state -->
     <ul class="space-y-1 text-sm">
       {#each SKELETON_ITEMS as i (i)}

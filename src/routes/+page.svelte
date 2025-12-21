@@ -4,11 +4,11 @@
   import { page } from "$app/stores";
   import WordCard from "$lib/components/WordCard.svelte";
   import WordCardSkeleton from "$lib/components/WordCardSkeleton.svelte";
-  import { findAll, findById, type QueryAllResult, type Word } from "$lib/db/repository";
+  import { findAll, findById, initDB, type QueryAllResult, type Word } from "$lib/db/repository";
   import { AlertCircleIcon } from "@lucide/svelte";
   import type { Page } from "@sveltejs/kit";
   import type { PageData } from "./$types";
-  import { dbReady, dbInitializing } from "$lib/stores/db-ready";
+  import { dbReady, dbInitializing, dbFailed, dbError } from "$lib/stores/db-ready";
 
   // Get prerendered data from load function
   const { data } = $props<{ data: PageData }>();
@@ -24,13 +24,19 @@
   // Track DB readiness from shared store
   let dbIsReady = $state(false);
   let dbIsInitializing = $state(false);
+  let dbHasFailed = $state(false);
+  let dbErrorMessage = $state<string | null>(null);
 
   $effect(() => {
     const unsubReady = dbReady.subscribe((v) => (dbIsReady = v));
     const unsubInit = dbInitializing.subscribe((v) => (dbIsInitializing = v));
+    const unsubFailed = dbFailed.subscribe((v) => (dbHasFailed = v));
+    const unsubError = dbError.subscribe((v) => (dbErrorMessage = v));
     return () => {
       unsubReady();
       unsubInit();
+      unsubFailed();
+      unsubError();
     };
   });
 
@@ -221,16 +227,19 @@
 
   // Initialize DB in background (even if not immediately needed)
   $effect(() => {
-    if (!browser || dbIsReady || dbIsInitializing) return;
+    if (!browser || dbIsReady || dbIsInitializing || dbHasFailed) return;
 
     dbInitializing.set(true);
+    dbError.set(null);
+    dbFailed.set(false);
 
     // Warm up the DB connection in the background
-    // This will start loading DuckDB WASM, parquet file, etc.
-    import("$lib/db/duckdb")
-      .then((module) => module.getConnection())
+    initDB()
       .then(() => {
         dbReady.set(true);
+        dbInitializing.set(false);
+        dbError.set(null);
+        dbFailed.set(false);
         console.log("[Page] Database ready");
 
         // If user is still on default view (no query params), silently refresh from DB
@@ -243,6 +252,8 @@
         console.error("[Page] Database initialization failed:", err);
         dbReady.set(false);
         dbInitializing.set(false);
+        dbFailed.set(true);
+        dbError.set("No pudimos cargar la base de datos local. Intenta de nuevo más tarde.");
       });
   });
 
@@ -257,6 +268,15 @@
     const afterToken = afterParam;
     const needsDatabase = needsDB;
     const ready = dbIsReady;
+    const failed = dbHasFailed;
+
+    if (failed) {
+      loading = false;
+      items = [];
+      error = null;
+      result = null;
+      return;
+    }
 
     // If we need DB but it's not ready yet, show loading state
     if (needsDatabase && !ready) {
@@ -305,7 +325,9 @@
 </script>
 
 <svelte:head>
-  {#if isSearching}
+  {#if dbHasFailed}
+    <title>Monocuco | Error</title>
+  {:else if isSearching}
     <title>Monocuco | Buscar "{searchValue}"</title>
   {:else}
     <title>Monocuco</title>
@@ -313,118 +335,135 @@
 </svelte:head>
 
 <div class="flex flex-col gap-6">
-  <section class="flex flex-wrap items-center justify-between gap-3">
-    {#if isSearching}
-      <div class="flex flex-col gap-2">
-        <h1 class="text-base-content text-3xl font-bold">Resultados de búsqueda</h1>
-        <p class="text-base-content/70">
-          Resultados para <span class="text-primary font-semibold">"{searchValue}"</span>
-        </p>
-        {#if result}
-          <div class="text-base-content/70 mt-2 text-xs">
-            <span>
-              {result.total} resultado{result.total > 1 ? "s" : ""} en {result.loadTimeSeconds}s.
-            </span>
-          </div>
-        {/if}
-      </div>
-    {:else}
-      <div class="flex flex-col gap-2">
-        <h1 class="text-base-content text-3xl font-bold">Bienvenido</h1>
-        <div class="text-base-content/70 flex flex-wrap gap-1 text-sm">
-          <p>
-            Diccionario abierto y gratuito de
-            <a
-              class="link"
-              href="https://es.wikipedia.org/wiki/Español_barranquillero"
-              target="_blank"
-              rel="noreferrer">Español barranquillero</a
-            >.
-          </p>
-          <p>
-            Código fuente disponible en
-            <a
-              class="link"
-              href="https://github.com/sjdonado/monocuco"
-              target="_blank"
-              rel="noreferrer">Github</a
-            >.
+  {#if dbHasFailed}
+    <section
+      class="bg-base-100 border-base-200 rounded-box flex flex-col gap-4 border p-6 shadow-sm"
+    >
+      <div class="flex items-start gap-3">
+        <AlertCircleIcon class="text-error size-6 shrink-0" aria-hidden="true" />
+        <div class="space-y-2">
+          <h1 class="text-base-content text-2xl font-bold">No pudimos cargar la base de datos</h1>
+          <p class="text-base-content/70 text-sm">
+            {dbErrorMessage ??
+              "El buscador no está disponible en este momento. Intenta de nuevo más tarde."}
           </p>
         </div>
       </div>
-    {/if}
-  </section>
-
-  {#if error}
-    <div class="alert alert-error">
-      <AlertCircleIcon class="text-error-content size-5 shrink-0" aria-hidden="true" />
-      <span>{error}</span>
-    </div>
-  {:else if loading}
-    <div class="flex flex-col gap-6">
-      {#each SKELETON_ITEMS as i (i)}
-        <WordCardSkeleton />
-      {/each}
-    </div>
-  {:else if items.length === 0}
-    <div class="alert alert-warning">
-      <AlertCircleIcon class="text-warning-content size-5 shrink-0" aria-hidden="true" />
-      <span>No encontramos palabras para esta búsqueda.</span>
-    </div>
+    </section>
   {:else}
-    <div class="flex flex-col gap-6">
-      {#each items as entry (entry.id)}
-        <WordCard {entry} shareUrl={buildShareUrl(entry.id, entry.word)} />
-      {/each}
-    </div>
-  {/if}
-
-  {#if displayTotal > PAGE_SIZE}
-    <div class="flex max-w-2xl items-center justify-center gap-4 pt-4">
-      <button
-        type="button"
-        class="btn btn-sm"
-        onclick={handlePrev}
-        disabled={!hasPrev || isPaginationDisabled}
-        title={isPaginationDisabled ? "Cargando base de datos..." : undefined}
-      >
-        Anterior
-      </button>
-
-      {#if isPaginationDisabled}
-        <!-- Show simplified pagination when DB is not ready -->
-        <span class="text-base-content/50 text-sm">
-          Página {currentPage} de {totalPages}
-        </span>
-      {:else if result?.pages}
-        <!-- Show full pagination when DB is ready -->
-        {#each result.pages as pageLink (pageLink.number)}
-          <button
-            type="button"
-            class="link cursor-pointer text-sm font-semibold"
-            class:text-primary={pageLink.number === currentPage}
-            onclick={() => goToAfter(pageLink.after)}
-            aria-current={pageLink.number === currentPage ? "page" : undefined}
-          >
-            {pageLink.number}
-          </button>
-        {/each}
+    <section class="flex flex-wrap items-center justify-between gap-3">
+      {#if isSearching}
+        <div class="flex flex-col gap-2">
+          <h1 class="text-base-content text-3xl font-bold">Resultados de búsqueda</h1>
+          <p class="text-base-content/70">
+            Resultados para <span class="text-primary font-semibold">"{searchValue}"</span>
+          </p>
+          {#if result}
+            <div class="text-base-content/70 mt-2 text-xs">
+              <span>
+                {result.total} resultado{result.total > 1 ? "s" : ""} en {result.loadTimeSeconds}s.
+              </span>
+            </div>
+          {/if}
+        </div>
       {:else}
-        <!-- Fallback when no pages data available -->
-        <span class="text-base-content/50 text-sm">
-          Página {currentPage} de {totalPages}
-        </span>
+        <div class="flex flex-col gap-2">
+          <h1 class="text-base-content text-3xl font-bold">Bienvenido</h1>
+          <div class="text-base-content/70 flex flex-wrap gap-1 text-sm">
+            <p>
+              Diccionario abierto y gratuito de
+              <a
+                class="link"
+                href="https://es.wikipedia.org/wiki/Español_barranquillero"
+                target="_blank"
+                rel="noreferrer">Español barranquillero</a
+              >.
+            </p>
+            <p>
+              Código fuente disponible en
+              <a
+                class="link"
+                href="https://github.com/sjdonado/monocuco"
+                target="_blank"
+                rel="noreferrer">Github</a
+              >.
+            </p>
+          </div>
+        </div>
       {/if}
+    </section>
 
-      <button
-        type="button"
-        class="btn btn-sm"
-        onclick={handleNext}
-        disabled={!hasNext || isPaginationDisabled}
-        title={isPaginationDisabled ? "Cargando base de datos..." : undefined}
-      >
-        Siguiente
-      </button>
-    </div>
+    {#if error}
+      <div class="alert alert-error">
+        <AlertCircleIcon class="text-error-content size-5 shrink-0" aria-hidden="true" />
+        <span>{error}</span>
+      </div>
+    {:else if loading}
+      <div class="flex flex-col gap-6">
+        {#each SKELETON_ITEMS as i (i)}
+          <WordCardSkeleton />
+        {/each}
+      </div>
+    {:else if items.length === 0}
+      <div class="alert alert-warning">
+        <AlertCircleIcon class="text-warning-content size-5 shrink-0" aria-hidden="true" />
+        <span>No encontramos palabras para esta búsqueda.</span>
+      </div>
+    {:else}
+      <div class="flex flex-col gap-6">
+        {#each items as entry (entry.id)}
+          <WordCard {entry} shareUrl={buildShareUrl(entry.id, entry.word)} />
+        {/each}
+      </div>
+    {/if}
+
+    {#if displayTotal > PAGE_SIZE}
+      <div class="flex max-w-2xl items-center justify-center gap-4 pt-4">
+        <button
+          type="button"
+          class="btn btn-sm"
+          onclick={handlePrev}
+          disabled={!hasPrev || isPaginationDisabled}
+          title={isPaginationDisabled ? "Cargando base de datos..." : undefined}
+        >
+          Anterior
+        </button>
+
+        {#if isPaginationDisabled}
+          <!-- Show simplified pagination when DB is not ready -->
+          <span class="text-base-content/50 text-sm">
+            Página {currentPage} de {totalPages}
+          </span>
+        {:else if result?.pages}
+          <!-- Show full pagination when DB is ready -->
+          {#each result.pages as pageLink (pageLink.number)}
+            <button
+              type="button"
+              class="link cursor-pointer text-sm font-semibold"
+              class:text-primary={pageLink.number === currentPage}
+              onclick={() => goToAfter(pageLink.after)}
+              aria-current={pageLink.number === currentPage ? "page" : undefined}
+            >
+              {pageLink.number}
+            </button>
+          {/each}
+        {:else}
+          <!-- Fallback when no pages data available -->
+          <span class="text-base-content/50 text-sm">
+            Página {currentPage} de {totalPages}
+          </span>
+        {/if}
+
+        <button
+          type="button"
+          class="btn btn-sm"
+          onclick={handleNext}
+          disabled={!hasNext || isPaginationDisabled}
+          title={isPaginationDisabled ? "Cargando base de datos..." : undefined}
+        >
+          Siguiente
+        </button>
+      </div>
+    {/if}
   {/if}
 </div>
