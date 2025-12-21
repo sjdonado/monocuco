@@ -161,6 +161,32 @@
     isOpen = false;
     goto(`/?word=${encodeURIComponent(suggestion.id)}&q=${encodeURIComponent(suggestion.word)}`);
   };
+
+  let storedBodyOverflow: string | null = null;
+  const setScrollLock = (locked: boolean) => {
+    if (typeof document === "undefined") return;
+    const { body } = document;
+    if (!body) return;
+
+    if (locked) {
+      if (storedBodyOverflow === null) {
+        storedBodyOverflow = body.style.overflow;
+      }
+      body.style.overflow = "hidden";
+      return;
+    }
+
+    if (storedBodyOverflow !== null) {
+      body.style.overflow = storedBodyOverflow;
+      storedBodyOverflow = null;
+    }
+  };
+
+  $effect(() => {
+    const shouldLock = isOpen && !isDisabled;
+    setScrollLock(shouldLock);
+    return () => setScrollLock(false);
+  });
 </script>
 
 <form class="w-full md:flex-1" role="search" aria-label="Buscar palabras" onsubmit={handleSubmit}>
