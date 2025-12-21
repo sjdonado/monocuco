@@ -3,38 +3,32 @@
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import WordCard from "$lib/components/WordCard.svelte";
-  import WordCardSkeleton from "$lib/components/WordCardSkeleton.svelte";
   import { findAll, findById, initDB, type QueryAllResult, type Word } from "$lib/db/repository";
   import { AlertCircleIcon } from "@lucide/svelte";
   import type { Page } from "@sveltejs/kit";
   import type { PageData } from "./$types";
-  import { dbReady, dbInitializing, dbFailed, dbError } from "$lib/stores/db-ready";
+  import { searchFailed, searchError } from "$lib/stores/search-status";
 
   // Get prerendered data from load function
   const { data } = $props<{ data: PageData }>();
 
   const PAGE_SIZE = 12;
-  const SKELETON_ITEMS = Array.from({ length: PAGE_SIZE }, (_, i) => i);
 
   // State for displaying words
   let items = $state<Word[]>(data.initialWords || []); // Start with prerendered data!
-  let loading = $state(false); // Not loading initially - we have prerendered data
   let error = $state<string | null>(null);
 
-  // Track DB readiness from shared store
-  let dbIsReady = $state(false);
-  let dbIsInitializing = $state(false);
-  let dbHasFailed = $state(false);
-  let dbErrorMessage = $state<string | null>(null);
+  let initStarted = $state(false);
+  let initDone = $state(false);
+
+  // Track search data errors from shared store
+  let searchHasFailed = $state(false);
+  let searchErrorMessage = $state<string | null>(null);
 
   $effect(() => {
-    const unsubReady = dbReady.subscribe((v) => (dbIsReady = v));
-    const unsubInit = dbInitializing.subscribe((v) => (dbIsInitializing = v));
-    const unsubFailed = dbFailed.subscribe((v) => (dbHasFailed = v));
-    const unsubError = dbError.subscribe((v) => (dbErrorMessage = v));
+    const unsubFailed = searchFailed.subscribe((v) => (searchHasFailed = v));
+    const unsubError = searchError.subscribe((v) => (searchErrorMessage = v));
     return () => {
-      unsubReady();
-      unsubInit();
       unsubFailed();
       unsubError();
     };
@@ -71,10 +65,10 @@
   const isPaginating = $derived(Boolean(afterParam));
   const isWordDetail = $derived(Boolean(wordIdParam));
 
-  // User needs DB if they're searching, paginating, or viewing a specific word
+  // User needs the search data if they're searching, paginating, or viewing a specific word
   const needsDB = $derived(isSearching || isPaginating || isWordDetail);
 
-  // Use prerendered pagination data initially, then switch to DB data when available
+  // Use prerendered pagination data initially, then switch to search data when available
   const totalFromResult = $derived(result?.total ?? null);
   const displayTotal = $derived(totalFromResult ?? data.totalWords);
   const displayTotalPages = $derived(result?.totalPages ?? data.totalPages);
@@ -84,10 +78,31 @@
   const hasPrev = $derived(currentPage > 1);
   const hasNext = $derived(currentPage < totalPages);
 
-  // Disable pagination when showing prerendered data (DB not ready yet)
-  const isPaginationDisabled = $derived(!needsDB && !dbIsReady);
+  // Disable pagination until search results are available
+  const isPaginationDisabled = $derived(!result);
 
   let fetchToken = 0;
+  let showLoadingBar = $state(false);
+  let loadingBarTimer: ReturnType<typeof setTimeout> | null = null;
+  const LOADING_BAR_DELAY_MS = 200;
+
+  const startInitialLoadingBar = () => {
+    if (initDone || loadingBarTimer) return;
+    loadingBarTimer = setTimeout(() => {
+      if (!initDone) {
+        showLoadingBar = true;
+      }
+    }, LOADING_BAR_DELAY_MS);
+  };
+
+  const stopInitialLoadingBar = () => {
+    if (loadingBarTimer) {
+      clearTimeout(loadingBarTimer);
+      loadingBarTimer = null;
+    }
+    showLoadingBar = false;
+    initDone = true;
+  };
 
   const syncUrlState = (state: { term?: string | null; after?: string | null }) => {
     if (!browser) return;
@@ -133,7 +148,6 @@
   async function loadWord(wordId: string) {
     if (!browser) return;
     const currentToken = ++fetchToken;
-    loading = true;
     error = null;
 
     try {
@@ -167,25 +181,12 @@
       items = [];
       error = "No pudimos cargar la palabra. Intenta nuevamente.";
       result = null;
-    } finally {
-      if (currentToken === fetchToken) {
-        loading = false;
-      }
     }
   }
 
-  async function loadWords(
-    term: string | null,
-    afterToken: string | null,
-    options: { silent?: boolean } = {}
-  ) {
+  async function loadWords(term: string | null, afterToken: string | null) {
     if (!browser) return;
     const currentToken = ++fetchToken;
-
-    // Only show loading state if not a silent background refresh
-    if (!options.silent) {
-      loading = true;
-    }
     error = null;
 
     try {
@@ -218,42 +219,31 @@
         term,
         after: null,
       });
-    } finally {
-      if (currentToken === fetchToken) {
-        loading = false;
-      }
     }
   }
 
-  // Initialize DB in background (even if not immediately needed)
+  // Initialize search data in background (even if not immediately needed)
   $effect(() => {
-    if (!browser || dbIsReady || dbIsInitializing || dbHasFailed) return;
+    if (!browser || initStarted || searchHasFailed) return;
 
-    dbInitializing.set(true);
-    dbError.set(null);
-    dbFailed.set(false);
+    initStarted = true;
+    startInitialLoadingBar();
+    searchError.set(null);
+    searchFailed.set(false);
 
-    // Warm up the DB connection in the background
+    // Warm up the search index and data in the background
     initDB()
       .then(() => {
-        dbReady.set(true);
-        dbInitializing.set(false);
-        dbError.set(null);
-        dbFailed.set(false);
-        console.log("[Page] Database ready");
-
-        // If user is still on default view (no query params), silently refresh from DB
-        // Use silent mode to avoid showing skeletons (data is identical to prerendered)
-        if (!needsDB) {
-          void loadWords(null, null, { silent: true });
-        }
+        stopInitialLoadingBar();
+        console.log("[Page] Search data ready");
       })
       .catch((err) => {
-        console.error("[Page] Database initialization failed:", err);
-        dbReady.set(false);
-        dbInitializing.set(false);
-        dbFailed.set(true);
-        dbError.set("No pudimos cargar la base de datos local. Intenta de nuevo más tarde.");
+        console.error("[Page] Search data initialization failed:", err);
+        searchFailed.set(true);
+        searchError.set(
+          "No pudimos cargar los datos de búsqueda locales. Intenta de nuevo más tarde."
+        );
+        stopInitialLoadingBar();
       });
   });
 
@@ -267,30 +257,28 @@
     const term = searchValue || null;
     const afterToken = afterParam;
     const needsDatabase = needsDB;
-    const ready = dbIsReady;
-    const failed = dbHasFailed;
+    const ready = initDone;
+    const failed = searchHasFailed;
 
     if (failed) {
-      loading = false;
       items = [];
       error = null;
       result = null;
       return;
     }
 
-    // If we need DB but it's not ready yet, show loading state
+    // If we need search data but it's not ready yet, wait for initialization
     if (needsDatabase && !ready) {
-      loading = true;
       return;
     }
 
-    // If showing prerendered content and DB is ready, silently load fresh data
+    // If showing prerendered content and search data is ready, load fresh data
     if (!needsDatabase && ready) {
-      void loadWords(null, null, { silent: true });
+      void loadWords(null, null);
       return;
     }
 
-    // Load data from DB
+    // Load data from search data cache
     if (needsDatabase && ready) {
       if (wordId) {
         void loadWord(wordId);
@@ -325,7 +313,7 @@
 </script>
 
 <svelte:head>
-  {#if dbHasFailed}
+  {#if searchHasFailed}
     <title>Monocuco | Error</title>
   {:else if isSearching}
     <title>Monocuco | Buscar "{searchValue}"</title>
@@ -335,16 +323,24 @@
 </svelte:head>
 
 <div class="flex flex-col gap-6">
-  {#if dbHasFailed}
+  {#if showLoadingBar}
+    <progress
+      class="progress progress-primary pointer-events-none fixed top-0 left-0 z-50 h-1 w-full"
+      aria-label="Carga inicial"
+    ></progress>
+  {/if}
+  {#if searchHasFailed}
     <section
       class="bg-base-100 border-base-200 rounded-box flex flex-col gap-4 border p-6 shadow-sm"
     >
       <div class="flex items-start gap-3">
         <AlertCircleIcon class="text-error size-6 shrink-0" aria-hidden="true" />
         <div class="space-y-2">
-          <h1 class="text-base-content text-2xl font-bold">No pudimos cargar la base de datos</h1>
+          <h1 class="text-base-content text-2xl font-bold">
+            No pudimos cargar los datos de búsqueda
+          </h1>
           <p class="text-base-content/70 text-sm">
-            {dbErrorMessage ??
+            {searchErrorMessage ??
               "El buscador no está disponible en este momento. Intenta de nuevo más tarde."}
           </p>
         </div>
@@ -398,12 +394,6 @@
         <AlertCircleIcon class="text-error-content size-5 shrink-0" aria-hidden="true" />
         <span>{error}</span>
       </div>
-    {:else if loading}
-      <div class="flex flex-col gap-6">
-        {#each SKELETON_ITEMS as i (i)}
-          <WordCardSkeleton />
-        {/each}
-      </div>
     {:else if items.length === 0}
       <div class="alert alert-warning">
         <AlertCircleIcon class="text-warning-content size-5 shrink-0" aria-hidden="true" />
@@ -424,18 +414,17 @@
           class="btn btn-sm"
           onclick={handlePrev}
           disabled={!hasPrev || isPaginationDisabled}
-          title={isPaginationDisabled ? "Cargando base de datos..." : undefined}
         >
           Anterior
         </button>
 
         {#if isPaginationDisabled}
-          <!-- Show simplified pagination when DB is not ready -->
+          <!-- Show simplified pagination when search data is not ready -->
           <span class="text-base-content/50 text-sm">
             Página {currentPage} de {totalPages}
           </span>
         {:else if result?.pages}
-          <!-- Show full pagination when DB is ready -->
+          <!-- Show full pagination when search data is ready -->
           {#each result.pages as pageLink (pageLink.number)}
             <button
               type="button"
@@ -459,7 +448,6 @@
           class="btn btn-sm"
           onclick={handleNext}
           disabled={!hasNext || isPaginationDisabled}
-          title={isPaginationDisabled ? "Cargando base de datos..." : undefined}
         >
           Siguiente
         </button>

@@ -3,7 +3,7 @@
   import { findSuggestions, type WordSuggestion } from "$lib/db/repository";
   import { parseMarkdown } from "$lib/markdown";
   import { SearchIcon } from "@lucide/svelte";
-  import { dbReady, dbInitializing, dbFailed } from "$lib/stores/db-ready";
+  import { searchFailed } from "$lib/stores/search-status";
 
   const SUGGESTION_LIMIT = 4;
 
@@ -13,27 +13,21 @@
   let isOpen = $state(false);
   let hasFocus = $state(false);
 
-  // Track DB readiness
-  let isDbReady = $state(false);
-  let isDbInitializing = $state(false);
-  let isDbFailed = $state(false);
+  // Track search data readiness
+  let isSearchFailed = $state(false);
 
   $effect(() => {
-    const unsubReady = dbReady.subscribe((v) => (isDbReady = v));
-    const unsubInit = dbInitializing.subscribe((v) => (isDbInitializing = v));
-    const unsubFailed = dbFailed.subscribe((v) => (isDbFailed = v));
+    const unsubFailed = searchFailed.subscribe((v) => (isSearchFailed = v));
     return () => {
-      unsubReady();
-      unsubInit();
       unsubFailed();
     };
   });
 
-  // Disable search while DB is not ready
-  const isDisabled = $derived(isDbFailed || (!isDbReady && isDbInitializing));
+  // Disable search if search data failed to load
+  const isDisabled = $derived(isSearchFailed);
 
   $effect(() => {
-    if (!isDbFailed) return;
+    if (!isSearchFailed) return;
     suggestions = [];
     loading = false;
     isOpen = false;
@@ -199,11 +193,7 @@
       <input
         type="search"
         class="grow bg-transparent outline-none"
-        placeholder={isDbFailed
-          ? "Búsqueda no disponible"
-          : isDisabled
-            ? "Cargando búsqueda..."
-            : "Buscar palabras..."}
+        placeholder="Buscar palabras..."
         autocomplete="off"
         disabled={isDisabled}
         bind:value={query}
@@ -211,11 +201,6 @@
         onfocus={handleFocus}
         onblur={handleBlur}
       />
-      {#if isDisabled}
-        <span class="loading loading-spinner loading-xs text-neutral" aria-hidden="true"></span>
-      {:else if loading}
-        <span class="loading loading-spinner loading-xs text-primary" aria-hidden="true"></span>
-      {/if}
     </label>
 
     {#if isOpen}
@@ -223,14 +208,12 @@
         class="dropdown-content rounded-box bg-base-100 border-base-200 z-20 mt-2 flex max-h-72 w-full flex-col overflow-y-auto border shadow-lg"
         role="listbox"
       >
-        {#if loading}
-          <li class="text-base-content/70 px-4 py-3 text-sm">
-            <span>Buscando...</span>
-          </li>
-        {:else if suggestions.length === 0}
-          <li class="text-base-content/70 px-4 py-3 text-sm">
-            <span>Sin resultados</span>
-          </li>
+        {#if suggestions.length === 0}
+          {#if !loading}
+            <li class="text-base-content/70 px-4 py-3 text-sm">
+              <span>Sin resultados</span>
+            </li>
+          {/if}
         {:else}
           {#each suggestions as suggestion (suggestion.id)}
             <li>

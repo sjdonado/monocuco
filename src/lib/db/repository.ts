@@ -27,7 +27,7 @@ let initPromise: Promise<void> | null = null;
 let initError: Error | null = null;
 
 const normalizeInitError = (error: unknown): Error =>
-  error instanceof Error ? error : new Error("Failed to initialize database");
+  error instanceof Error ? error : new Error("Failed to initialize search data");
 
 const SEARCH_BASE_OPTIONS: SearchOptions = {
   fields: ["word", "definition"],
@@ -84,7 +84,7 @@ export const initDB = async () => {
         },
       });
 
-      console.log(`[Repository] DB initialized. ${items.length} words loaded.`);
+      console.log(`[Repository] Search data initialized. ${items.length} words loaded.`);
     } catch (e) {
       const normalizedError = normalizeInitError(e);
       initError = normalizedError;
@@ -92,7 +92,7 @@ export const initDB = async () => {
       items = [];
       itemMap = new Map();
       itemIndexMap = new Map();
-      console.error("[Repository] Failed to init DB", normalizedError);
+      console.error("[Repository] Failed to init search data", normalizedError);
       // initPromise = null; // Allow retry
       throw normalizedError;
     }

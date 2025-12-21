@@ -38,7 +38,7 @@ self.addEventListener("fetch", (event: FetchEvent) => {
 
   const url = new URL(request.url);
 
-  // Cache-first for precached assets (JS, CSS, WASM workers, etc.)
+  // Cache-first for precached assets (JS, CSS, etc.)
   if (url.origin === self.location.origin && PRECACHE.has(url.pathname)) {
     event.respondWith(cacheFirst(request));
     return;

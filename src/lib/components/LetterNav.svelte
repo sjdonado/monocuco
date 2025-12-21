@@ -1,36 +1,32 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { getLetterCounts, type LetterCount } from "$lib/db/repository";
-  import { dbReady, dbFailed } from "$lib/stores/db-ready";
+  import { searchFailed } from "$lib/stores/search-status";
 
   let letterCounts = $state<LetterCount[]>([]);
-  let loading = $state(true);
 
-  // Track DB readiness
-  let isDbReady = $state(false);
-  let isDbFailed = $state(false);
+  let isSearchFailed = $state(false);
+  let hasLoadedCounts = $state(false);
 
   $effect(() => {
-    const unsubReady = dbReady.subscribe((v) => (isDbReady = v));
-    const unsubFailed = dbFailed.subscribe((v) => (isDbFailed = v));
+    const unsubFailed = searchFailed.subscribe((v) => (isSearchFailed = v));
     return () => {
-      unsubReady();
       unsubFailed();
     };
   });
 
-  // Only load when DB is ready
+  // Load counts once in the browser
   $effect(() => {
-    if (!browser || !isDbReady || isDbFailed) return;
+    if (!browser || isSearchFailed || hasLoadedCounts) return;
 
     const loadCounts = async () => {
       try {
         const counts = await getLetterCounts();
         letterCounts = counts;
+        hasLoadedCounts = true;
       } catch (error) {
         console.error("Failed to load letter counts", error);
-      } finally {
-        loading = false;
+        hasLoadedCounts = true;
       }
     };
 
@@ -38,8 +34,7 @@
   });
 
   $effect(() => {
-    if (!isDbFailed) return;
-    loading = false;
+    if (!isSearchFailed) return;
     letterCounts = [];
   });
 
@@ -49,26 +44,13 @@
     }
     return `/?q=${encodeURIComponent(letter)}`;
   };
-
-  // Skeleton items for loading state
-  const SKELETON_ITEMS = Array.from({ length: 12 }, (_, i) => i);
 </script>
 
 <nav aria-label="Navegación por letras">
   <h2 class="text-base-content/70 mb-3 text-sm font-semibold">Palabras por letra</h2>
-  {#if isDbFailed}
+  {#if isSearchFailed}
     <p class="text-base-content/70 text-sm">Búsqueda no disponible por ahora.</p>
-  {:else if loading || !isDbReady}
-    <!-- Skeleton loading state -->
-    <ul class="space-y-1 text-sm">
-      {#each SKELETON_ITEMS as i (i)}
-        <li class="flex justify-between p-0">
-          <span class="skeleton h-4 w-16"></span>
-          <span class="skeleton h-4 w-8"></span>
-        </li>
-      {/each}
-    </ul>
-  {:else}
+  {:else if letterCounts.length > 0}
     <ul class="space-y-1 text-sm">
       {#each letterCounts as { letter, count } (letter)}
         <li>

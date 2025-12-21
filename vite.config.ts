@@ -9,12 +9,8 @@ export default defineConfig({
       allow: [".."],
     },
   },
-  optimizeDeps: {
-    exclude: ["@duckdb/duckdb-wasm"],
-  },
   build: {
     rollupOptions: {
-      external: [/.*\.wasm$/],
       output: {
         manualChunks: {
           // Separate vendor chunks for better caching
