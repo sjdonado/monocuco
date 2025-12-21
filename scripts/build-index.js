@@ -4,6 +4,10 @@ import { fileURLToPath } from "url";
 import { randomUUID } from "crypto";
 import MiniSearch from "minisearch";
 
+/**
+ * Build the client search index and normalized dataset.
+ */
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -11,11 +15,28 @@ const INPUT_PATH = resolve(__dirname, "../data.json");
 const OUTPUT_DATA_PATH = resolve(__dirname, "../static/data.json");
 const OUTPUT_INDEX_PATH = resolve(__dirname, "../static/search-index.json");
 
+/**
+ * Coerce any value to a string
+ * @param {unknown} value - Value to coerce
+ * @returns {string} String value
+ */
 function toStr(value) {
   if (typeof value === "string") return value;
   return value != null ? String(value) : "";
 }
 
+/**
+ * Normalize legacy/modern entries into the canonical format
+ * @param {Record<string, unknown>} raw - Raw entry data
+ * @returns {{
+ *   id: string,
+ *   word: string,
+ *   definition: string,
+ *   example: string,
+ *   createdBy: { name: string, website: string },
+ *   createdAt: string
+ * }} Normalized entry
+ */
 function normalizeEntry(raw) {
   const rawId = raw.id;
   const entryId = typeof rawId === "string" && rawId.trim() ? rawId.trim() : randomUUID();
@@ -63,6 +84,10 @@ function normalizeEntry(raw) {
   };
 }
 
+/**
+ * Build and write the search index + normalized data
+ * @returns {Promise<void>} Resolves when files are written
+ */
 async function build() {
   console.log("🏗️  Building search index...");
 
@@ -78,15 +103,14 @@ async function build() {
   });
 
   // 1. Configure MiniSearch
-  // We index 'word' (primary), 'definition', and 'example'.
+  // We index 'word' (primary) and 'definition'.
   // 'id' is the unique identifier.
   const miniSearch = new MiniSearch({
-    fields: ["word", "definition", "example"],
+    fields: ["word", "definition"],
     storeFields: ["word", "definition"], // Store minimal fields for suggestions
     idField: "id",
     searchOptions: {
-      boost: { word: 2 }, // Prefer matches in the word itself
-      fuzzy: 0.2,
+      boost: { word: 2, definition: 1.2 }, // Prefer matches in the word itself
       prefix: true,
     },
   });

@@ -1,4 +1,4 @@
-import MiniSearch from "minisearch";
+import MiniSearch, { type SearchOptions } from "minisearch";
 
 const DATA_URL = "/data.json";
 const INDEX_URL = "/search-index.json";
@@ -29,6 +29,30 @@ let initError: Error | null = null;
 const normalizeInitError = (error: unknown): Error =>
   error instanceof Error ? error : new Error("Failed to initialize database");
 
+const SEARCH_BASE_OPTIONS: SearchOptions = {
+  fields: ["word", "definition"],
+  boost: { word: 2, definition: 1.2 },
+  prefix: true,
+};
+
+const searchWithFallback = (term: string, overrides: SearchOptions = {}) => {
+  const strictResults = miniSearch!.search(term, {
+    ...SEARCH_BASE_OPTIONS,
+    ...overrides,
+    fuzzy: 0,
+  });
+
+  if (strictResults.length > 0) {
+    return strictResults;
+  }
+
+  return miniSearch!.search(term, {
+    ...SEARCH_BASE_OPTIONS,
+    ...overrides,
+    fuzzy: 0.2,
+  });
+};
+
 export const initDB = async () => {
   if (initError) return Promise.reject(initError);
   if (initPromise) return initPromise;
@@ -50,15 +74,12 @@ export const initDB = async () => {
         itemIndexMap.set(item.id, idx);
       });
 
-      console.log("indexJSON", indexJson);
-
       miniSearch = MiniSearch.loadJSON(indexJson, {
-        fields: ["word", "definition", "example"],
+        fields: ["word", "definition"],
         storeFields: ["word", "definition"],
         idField: "id",
         searchOptions: {
-          boost: { word: 2 },
-          fuzzy: 0.2,
+          boost: { word: 2, definition: 1.2 },
           prefix: true,
         },
       });
@@ -121,7 +142,7 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
     // For simplicity in this static context, we just re-run search. it's fast.
     // However, pagination with 'after' in search results implies we know the order of search results.
     // MiniSearch returns sorted by relevance.
-    const searchResults = miniSearch!.search(term);
+    const searchResults = searchWithFallback(term);
     resultIds = searchResults.map((r) => r.id);
   } else {
     // Browse mode - use full sorted list
@@ -241,13 +262,7 @@ export const findSuggestions = async (
   const limit = Math.max(1, options.limit ?? 5);
 
   // MiniSearch is optimized for this
-  const results = miniSearch!.search(term, {
-    prefix: true,
-    fuzzy: 0.2, // Slightly fuzzy for typos
-    boost: { word: 2 },
-    fields: ["word"], // Suggest based on word mainly
-    combineWith: "AND",
-  });
+  const results = searchWithFallback(term, { combineWith: "AND" });
 
   return results.slice(0, limit).map((r) => ({
     id: r.id,

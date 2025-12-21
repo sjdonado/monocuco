@@ -6,8 +6,7 @@ import { build, files, prerendered, version } from "$service-worker";
 declare const self: ServiceWorkerGlobalScope;
 
 const ASSET_CACHE = `asset-cache-${version}`;
-
-// Pre-cache static assets (JS, CSS, WASM workers, etc.)
+// Pre-cache static assets (JS, CSS, etc.)
 const PRECACHE = new Set([...build, ...files, ...prerendered]);
 
 self.addEventListener("install", (event) => {

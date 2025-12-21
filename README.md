@@ -22,13 +22,13 @@ bun run add-word -- \
   --website "https://github.com/krthr"
 ```
 
-El comando actualizará `data.json` y el README automáticamente. Para actualizar el archivo Parquet, ejecuta:
+El comando actualizará `data.json` y el README automáticamente. Para actualizar el índice de búsqueda y los datos estáticos, ejecuta:
 
 ```sh
-bun run update-parquet
+bun run build-data
 ```
 
-Este comando genera el archivo Parquet y automáticamente crea un archivo de metadatos (`static/data.parquet.json`) con un hash SHA-256 del archivo. El hash se utiliza para detectar cambios y optimizar la carga en el navegador mediante OPFS (Origin Private File System), solo descarga datos nuevos cuando el hash cambia.
+Este comando genera `static/data.json` y `static/search-index.json` para el buscador.
 
 Después de ejecutarlo:
 
@@ -61,4 +61,3 @@ Si no tienes cuenta en GitHub o prefieres una opción más rápida, visita [http
 - José David Villalobos: Autor de [El español hablado en Barranquilla](https://sites.google.com/site/jdvillalobos/barranquillerismos)
 - Rafael Vega: Autor de [Significado de palabras costeñas](https://rafaelvega.com/significado-de-palabras-costenas/)
 - Andres Urquina: Autor del icono [Ilustración Bailarina - Carnaval de Barranquilla, Colombia.](https://www.flickr.com/photos/andresurquina/16246891029)
-
