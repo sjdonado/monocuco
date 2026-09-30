@@ -34,17 +34,6 @@
       "createdAt": "2025-11-22T09:14:10.875Z"
     },
     {
-      "id": "9fc92fd4-164d-4ded-8ac7-01c4689617ae",
-      "word": "A la tiña",
-      "definition": "escoger o tomar algo al azar, dejando la decisión en manos de la suerte",
-      "example": "",
-      "createdBy": {
-        "name": "Rafael Vega",
-        "website": "https://github.com/rafaelvega/"
-      },
-      "createdAt": "2025-11-22T09:14:26.613Z"
-    },
-    {
       "id": "f8b0c611-c056-4f66-a358-b101b971aa38",
       "word": "A la tiña",
       "definition": "Tirar al aire algún o algunos objeto(s) para que las personas lo(s) recojan y se hagan propietarios de este/estos.",
@@ -54,6 +43,17 @@
         "website": "https://github.com/jbolivard"
       },
       "createdAt": "2020-12-31T00:00:00.000Z"
+    },
+    {
+      "id": "9fc92fd4-164d-4ded-8ac7-01c4689617ae",
+      "word": "A la tiña",
+      "definition": "escoger o tomar algo al azar, dejando la decisión en manos de la suerte",
+      "example": "",
+      "createdBy": {
+        "name": "Rafael Vega",
+        "website": "https://github.com/rafaelvega/"
+      },
+      "createdAt": "2025-11-22T09:14:26.613Z"
     },
     {
       "id": "bb57ee77-d907-46a7-ba3c-d724254100b8",
@@ -136,5 +136,5 @@
   "total": 2767,
   "totalPages": 231,
   "pageSize": 12,
-  "generatedAt": "2025-12-21T15:12:39.980Z"
+  "generatedAt": "2026-09-30T10:37:51.974Z"
 }
