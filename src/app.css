@@ -2,33 +2,43 @@
 @plugin "@tailwindcss/typography";
 @plugin "daisyui";
 
+/*
+ * Design tokens: the only place colors, radii, border and font are defined.
+ * One accent (calmed carnival red). secondary, accent and neutral are aliased to
+ * neutrals so a leftover class can never bring back a second hue. Status colors
+ * are desaturated and used only inside status messages and form validation.
+ */
+
 @plugin "daisyui/theme" {
   name: "light";
   default: true;
   prefersdark: false;
   color-scheme: "light";
-  --color-base-100: oklch(100% 0 0);
-  --color-base-200: oklch(98% 0 0);
-  --color-base-300: oklch(95% 0 0);
-  --color-base-content: oklch(21% 0.006 285.885);
-  --color-primary: oklch(57% 0.245 27.325);
-  --color-primary-content: oklch(98% 0 0);
-  --color-secondary: oklch(45% 0.24 277.023);
-  --color-secondary-content: oklch(93% 0.034 272.788);
-  --color-accent: oklch(77% 0.152 181.912);
-  --color-accent-content: oklch(38% 0.063 188.416);
-  --color-neutral: oklch(14% 0.005 285.823);
-  --color-neutral-content: oklch(92% 0.004 286.32);
-  --color-info: oklch(74% 0.16 232.661);
-  --color-info-content: oklch(29% 0.066 243.157);
-  --color-success: oklch(76% 0.177 163.223);
-  --color-success-content: oklch(37% 0.077 168.94);
-  --color-warning: oklch(82% 0.189 84.429);
-  --color-warning-content: oklch(41% 0.112 45.904);
-  --color-error: oklch(71% 0.194 13.428);
-  --color-error-content: oklch(27% 0.105 12.094);
-  --radius-selector: 0.5rem;
-  --radius-field: 0.25rem;
+  --color-base-100: oklch(99.2% 0.002 250);
+  --color-base-200: oklch(97% 0.004 250);
+  --color-base-300: oklch(92% 0.006 250);
+  --color-base-content: oklch(23% 0.01 250);
+  --color-muted: oklch(50% 0.012 250);
+  --color-hairline: oklch(23% 0.01 250 / 0.12);
+  --color-field-border: oklch(62% 0.012 250);
+  --color-primary: oklch(52% 0.16 25);
+  --color-primary-content: oklch(99% 0.003 25);
+  --color-secondary: oklch(97% 0.004 250);
+  --color-secondary-content: oklch(23% 0.01 250);
+  --color-accent: oklch(97% 0.004 250);
+  --color-accent-content: oklch(23% 0.01 250);
+  --color-neutral: oklch(23% 0.01 250);
+  --color-neutral-content: oklch(99.2% 0.002 250);
+  --color-info: oklch(50% 0.07 240);
+  --color-info-content: oklch(99% 0.003 240);
+  --color-success: oklch(48% 0.08 155);
+  --color-success-content: oklch(99% 0.003 155);
+  --color-warning: oklch(52% 0.08 70);
+  --color-warning-content: oklch(99% 0.003 70);
+  --color-error: oklch(50% 0.09 25);
+  --color-error-content: oklch(99% 0.003 25);
+  --radius-selector: 9999px;
+  --radius-field: 0.375rem;
   --radius-box: 0.5rem;
   --size-selector: 0.25rem;
   --size-field: 0.25rem;
@@ -42,32 +52,124 @@
   default: false;
   prefersdark: true;
   color-scheme: "dark";
-  --color-base-100: oklch(25.33% 0.016 252.42);
-  --color-base-200: oklch(23.26% 0.014 253.1);
-  --color-base-300: oklch(21.15% 0.012 254.09);
-  --color-base-content: oklch(97.807% 0.029 256.847);
-  --color-primary: oklch(63% 0.237 25.331);
-  --color-primary-content: oklch(97.807% 0.029 256.847);
-  --color-secondary: oklch(58% 0.233 277.117);
-  --color-secondary-content: oklch(93% 0.034 272.788);
-  --color-accent: oklch(77% 0.152 181.912);
-  --color-accent-content: oklch(38% 0.063 188.416);
-  --color-neutral: oklch(14% 0.005 285.823);
-  --color-neutral-content: oklch(92% 0.004 286.32);
-  --color-info: oklch(74% 0.16 232.661);
-  --color-info-content: oklch(29% 0.066 243.157);
-  --color-success: oklch(76% 0.177 163.223);
-  --color-success-content: oklch(37% 0.077 168.94);
-  --color-warning: oklch(82% 0.189 84.429);
-  --color-warning-content: oklch(41% 0.112 45.904);
-  --color-error: oklch(71% 0.194 13.428);
-  --color-error-content: oklch(27% 0.105 12.094);
-  --radius-selector: 0.5rem;
-  --radius-field: 0.25rem;
+  --color-base-100: oklch(20% 0.008 250);
+  --color-base-200: oklch(23% 0.009 250);
+  --color-base-300: oklch(30% 0.01 250);
+  --color-base-content: oklch(94% 0.005 250);
+  --color-muted: oklch(68% 0.01 250);
+  --color-hairline: oklch(94% 0.005 250 / 0.12);
+  --color-field-border: oklch(55% 0.01 250);
+  --color-primary: oklch(72% 0.13 22);
+  --color-primary-content: oklch(18% 0.03 25);
+  --color-secondary: oklch(23% 0.009 250);
+  --color-secondary-content: oklch(94% 0.005 250);
+  --color-accent: oklch(23% 0.009 250);
+  --color-accent-content: oklch(94% 0.005 250);
+  --color-neutral: oklch(94% 0.005 250);
+  --color-neutral-content: oklch(20% 0.008 250);
+  --color-info: oklch(75% 0.07 240);
+  --color-info-content: oklch(18% 0.02 240);
+  --color-success: oklch(75% 0.08 155);
+  --color-success-content: oklch(18% 0.02 155);
+  --color-warning: oklch(78% 0.08 70);
+  --color-warning-content: oklch(18% 0.02 70);
+  --color-error: oklch(72% 0.09 25);
+  --color-error-content: oklch(18% 0.03 25);
+  --radius-selector: 9999px;
+  --radius-field: 0.375rem;
   --radius-box: 0.5rem;
   --size-selector: 0.25rem;
   --size-field: 0.25rem;
   --border: 1px;
   --depth: 0;
   --noise: 0;
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/inter-latin-var.woff2") format("woff2");
+}
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Secondary text: the one secondary-text token, replacing ad hoc opacities. */
+@utility text-muted {
+  color: var(--color-muted);
+}
+
+/* The shared border color. Pair with a width utility: `border border-hairline`. */
+@utility border-hairline {
+  border-color: var(--color-hairline);
+}
+
+/* Rendered Markdown follows the tokens instead of the typography plugin's grays. */
+@utility prose-tokens {
+  --tw-prose-body: var(--color-base-content);
+  --tw-prose-headings: var(--color-base-content);
+  --tw-prose-links: var(--color-base-content);
+  --tw-prose-bold: var(--color-base-content);
+  --tw-prose-quotes: var(--color-base-content);
+  --tw-prose-bullets: var(--color-muted);
+  --tw-prose-counters: var(--color-muted);
+  --tw-prose-hr: var(--color-hairline);
+  --tw-prose-code: var(--color-base-content);
+}
+
+/*
+ * Unlayered on purpose: unlayered rules win over every cascade layer, including
+ * DaisyUI's, so this is the one focus ring everywhere. Invalid fields keep their
+ * error ring.
+ */
+:focus-visible:not([aria-invalid="true"]) {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* A field inside a DaisyUI `input` wrapper shows the ring on the wrapper instead. */
+.input > input:focus-visible {
+  outline: none;
+}
+
+/* Fields keep a 3:1 boundary and a placeholder at the secondary-text contrast. */
+.input,
+.textarea {
+  border-color: var(--color-field-border);
+}
+::placeholder {
+  color: var(--color-muted);
+  opacity: 1;
+}
+
+/* Invalid fields: error border at rest, error ring on focus. */
+[aria-invalid="true"] {
+  border-color: var(--color-error);
+}
+[aria-invalid="true"]:focus-visible {
+  outline: 2px solid var(--color-error);
+  outline-offset: 2px;
+}
+
+/* Color transitions stay within the 150 ms motion budget. */
+.btn {
+  transition-duration: 150ms;
+}
+
+strong,
+b {
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
