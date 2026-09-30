@@ -136,5 +136,107 @@
   "total": 2767,
   "totalPages": 231,
   "pageSize": 12,
-  "generatedAt": "2026-09-30T10:37:51.974Z"
+  "letters": [
+    {
+      "letter": "A",
+      "count": 208
+    },
+    {
+      "letter": "B",
+      "count": 169
+    },
+    {
+      "letter": "C",
+      "count": 485
+    },
+    {
+      "letter": "D",
+      "count": 81
+    },
+    {
+      "letter": "E",
+      "count": 208
+    },
+    {
+      "letter": "F",
+      "count": 78
+    },
+    {
+      "letter": "G",
+      "count": 86
+    },
+    {
+      "letter": "H",
+      "count": 57
+    },
+    {
+      "letter": "I",
+      "count": 24
+    },
+    {
+      "letter": "J",
+      "count": 56
+    },
+    {
+      "letter": "K",
+      "count": 1
+    },
+    {
+      "letter": "L",
+      "count": 83
+    },
+    {
+      "letter": "M",
+      "count": 255
+    },
+    {
+      "letter": "N",
+      "count": 49
+    },
+    {
+      "letter": "Ñ",
+      "count": 19
+    },
+    {
+      "letter": "O",
+      "count": 20
+    },
+    {
+      "letter": "P",
+      "count": 414
+    },
+    {
+      "letter": "Q",
+      "count": 18
+    },
+    {
+      "letter": "R",
+      "count": 91
+    },
+    {
+      "letter": "S",
+      "count": 85
+    },
+    {
+      "letter": "T",
+      "count": 143
+    },
+    {
+      "letter": "U",
+      "count": 9
+    },
+    {
+      "letter": "V",
+      "count": 86
+    },
+    {
+      "letter": "Y",
+      "count": 13
+    },
+    {
+      "letter": "Z",
+      "count": 29
+    }
+  ],
+  "generatedAt": "2026-09-30T14:52:31.623Z"
 }

@@ -3,6 +3,7 @@ import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { randomUUID } from "crypto";
 import MiniSearch from "minisearch";
+import { compareWords, processTerm } from "../src/lib/text.js";
 
 /**
  * Build the client search index and normalized dataset.
@@ -94,13 +95,7 @@ async function build() {
   const rawData = JSON.parse(readFileSync(INPUT_PATH, "utf-8"));
   if (!Array.isArray(rawData)) throw new Error("Data must be an array");
 
-  const items = rawData.map(normalizeEntry).sort((a, b) => {
-    const aWord = a.word.toLowerCase();
-    const bWord = b.word.toLowerCase();
-    if (aWord < bWord) return -1;
-    if (aWord > bWord) return 1;
-    return 0;
-  });
+  const items = rawData.map(normalizeEntry).sort(compareWords);
 
   // 1. Configure MiniSearch
   // We index 'word' (primary) and 'definition'.
@@ -109,6 +104,7 @@ async function build() {
     fields: ["word", "definition"],
     storeFields: ["word", "definition"], // Store minimal fields for suggestions
     idField: "id",
+    processTerm,
     searchOptions: {
       boost: { word: 2, definition: 1.2 }, // Prefer matches in the word itself
       prefix: true,
