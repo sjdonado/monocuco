@@ -14,6 +14,8 @@
 		"lint": "eslint . && prettier --check .",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run",
+		"audit:ui": "node ./scripts/ui-audit.js",
+		"ci": "npm run check && npm run lint && npm run test && npm run audit:ui",
 		"format": "prettier --write .",
 		"add-word": "./scripts/add-word.js && npm run build-data",
 		"build-data": "node ./scripts/build-index.js && node ./scripts/generate-initial-words.js"
