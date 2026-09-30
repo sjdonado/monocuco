@@ -133,4 +133,7 @@ async function build() {
   );
 }
 
-build().catch(console.error);
+build().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
