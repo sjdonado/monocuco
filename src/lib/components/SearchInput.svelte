@@ -5,7 +5,19 @@
   import { SearchIcon } from "@lucide/svelte";
   import { searchFailed } from "$lib/stores/search-status";
 
-  const SUGGESTION_LIMIT = 4;
+  const SUGGESTION_LIMIT = 5;
+  const LISTBOX_ID = "search-suggestions";
+
+  // Index of the suggestion highlighted with the arrow keys, -1 for none.
+  let activeIndex = $state(-1);
+  let lookupFailed = $state(false);
+  let lookupToken = 0;
+
+  // Closing the list also forgets the highlight, so reopening never preselects a word.
+  const close = () => {
+    isOpen = false;
+    activeIndex = -1;
+  };
 
   let query = $state("");
   let suggestions = $state<WordSuggestion[]>([]);
@@ -30,7 +42,8 @@
     if (!isSearchFailed) return;
     suggestions = [];
     loading = false;
-    isOpen = false;
+    close();
+    ++lookupToken;
     if (debounceId) {
       clearTimeout(debounceId);
       debounceId = null;
@@ -40,11 +53,20 @@
   let debounceId: ReturnType<typeof setTimeout> | null = null;
   let lastUrlQuery = "";
 
+  // The field follows the URL on Back, Forward and links. A URL that only lost surrounding
+  // spaces is the same search, so it never overwrites what the visitor is typing.
   const syncFromUrl = (url: URL | null) => {
     const value = url?.searchParams.get("q") ?? "";
-    if (value !== lastUrlQuery) {
-      lastUrlQuery = value;
-      query = value;
+    if (value.trim() === lastUrlQuery.trim()) return;
+    lastUrlQuery = value;
+    query = value;
+    // Suggestions belong to the previous term: drop them and any lookup still running.
+    suggestions = [];
+    close();
+    ++lookupToken;
+    if (debounceId) {
+      clearTimeout(debounceId);
+      debounceId = null;
     }
   };
 
@@ -78,24 +100,32 @@
     }
 
     loading = true;
+    lookupFailed = false;
     suggestions = [];
+    activeIndex = -1;
 
+    // Only the latest lookup may end the pending state; an older one finishing late
+    // would otherwise show "Sin resultados" while the newer one still runs.
+    const request = ++lookupToken;
     debounceId = setTimeout(async () => {
       try {
         const result = await findSuggestions({
           term: trimmed,
           limit: SUGGESTION_LIMIT,
         });
-        if (trimmed === query.trim()) {
+        if (request === lookupToken && trimmed === query.trim()) {
           suggestions = result.slice(0, SUGGESTION_LIMIT);
         }
       } catch (error) {
         console.error("Failed to fetch suggestions", error);
-        suggestions = [];
+        if (request === lookupToken) {
+          suggestions = [];
+          lookupFailed = true;
+        }
       } finally {
-        loading = false;
-        if (!hasFocus) {
-          isOpen = false;
+        if (request === lookupToken) {
+          loading = false;
+          if (!hasFocus) close();
         }
       }
     }, 200);
@@ -124,10 +154,14 @@
   const handleSubmit = (event: Event) => {
     event.preventDefault();
     const term = query.trim();
+    close();
+    // Submitting an empty field clears a search (or a word opened from one): back to all
+    // words. On a letter or page, where nothing was searched, it does nothing.
     if (!term) {
+      const url = new URL(window.location.href);
+      if (url.searchParams.get("q") || url.searchParams.get("word")) goto("/");
       return;
     }
-    isOpen = false;
     navigateToSearch(term);
   };
 
@@ -142,8 +176,36 @@
   const handleBlur = () => {
     hasFocus = false;
     setTimeout(() => {
-      isOpen = false;
+      if (!hasFocus) close();
     }, 150);
+  };
+
+  // Combobox keys: Down and Up move through the suggestions, Enter opens the highlighted
+  // word (or searches when none is highlighted), Escape closes the list.
+  const handleKeydown = (event: KeyboardEvent) => {
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      if (!query.trim()) return;
+      event.preventDefault();
+      if (!isOpen) {
+        isOpen = true;
+        if (!suggestions.length) scheduleSuggestions(query);
+        return;
+      }
+      if (!suggestions.length) return;
+      const step = event.key === "ArrowDown" ? 1 : -1;
+      activeIndex = (activeIndex + step + suggestions.length + 1) % (suggestions.length + 1);
+      if (activeIndex === suggestions.length) activeIndex = -1;
+      return;
+    }
+    if (event.key === "Enter" && isOpen && activeIndex >= 0 && suggestions[activeIndex]) {
+      event.preventDefault();
+      handleSelect(suggestions[activeIndex]);
+      return;
+    }
+    if (event.key === "Escape" && isOpen) {
+      event.preventDefault();
+      close();
+    }
   };
 
   const handleSelect = (suggestion: WordSuggestion) => {
@@ -152,8 +214,12 @@
       debounceId = null;
     }
     query = suggestion.word;
-    isOpen = false;
-    goto(`/?word=${encodeURIComponent(suggestion.id)}&q=${encodeURIComponent(suggestion.word)}`);
+    suggestions = [];
+    close();
+    // Focus stays in the field, where the visitor was, after the word opens.
+    goto(`/?word=${encodeURIComponent(suggestion.id)}&q=${encodeURIComponent(suggestion.word)}`, {
+      keepFocus: true,
+    });
   };
 
   let storedBodyOverflow: string | null = null;
@@ -183,16 +249,24 @@
   });
 </script>
 
-<form class="w-full md:flex-1" role="search" aria-label="Buscar palabras" onsubmit={handleSubmit}>
+<form class="w-full" role="search" aria-label="Buscar palabras" onsubmit={handleSubmit}>
   <div class="dropdown w-full" class:dropdown-open={isOpen && !isDisabled}>
     <label
-      class="input input-bordered flex w-full items-center gap-2"
+      class="input bg-base-100 rounded-field focus-within:outline-primary flex h-10 w-full items-center gap-3 border focus-within:outline-2 focus-within:outline-offset-2"
       class:input-disabled={isDisabled}
     >
-      <SearchIcon class="text-base-content/60 size-5" aria-hidden="true" />
+      <SearchIcon class="text-muted size-4" aria-hidden="true" />
       <input
         type="search"
-        class="grow bg-transparent outline-none"
+        role="combobox"
+        aria-label="Buscar palabras"
+        aria-autocomplete="list"
+        aria-controls={LISTBOX_ID}
+        aria-expanded={isOpen && !isDisabled}
+        aria-activedescendant={isOpen && activeIndex >= 0
+          ? `${LISTBOX_ID}-${activeIndex}`
+          : undefined}
+        class="grow bg-transparent text-base outline-none sm:text-sm"
         placeholder="Buscar palabras..."
         autocomplete="off"
         disabled={isDisabled}
@@ -200,32 +274,61 @@
         oninput={handleInput}
         onfocus={handleFocus}
         onblur={handleBlur}
+        onkeydown={handleKeydown}
       />
     </label>
 
     {#if isOpen}
       <ul
-        class="dropdown-content rounded-box bg-base-100 border-base-200 z-20 mt-2 flex max-h-72 w-full flex-col overflow-y-auto border shadow-lg"
+        id={LISTBOX_ID}
+        class="dropdown-content bg-base-100 border-hairline rounded-box z-20 mt-2 flex max-h-80 w-full flex-col overflow-y-auto border p-1 text-left"
         role="listbox"
+        aria-label="Sugerencias"
+        aria-busy={loading}
       >
         {#if suggestions.length === 0}
-          {#if !loading}
-            <li class="text-base-content/70 px-4 py-3 text-sm">
-              <span>Sin resultados</span>
+          {#if loading}
+            <li
+              role="option"
+              aria-selected="false"
+              aria-disabled="true"
+              class="text-muted flex items-center gap-2 px-3 py-2 text-sm"
+            >
+              <span
+                class="loading loading-spinner loading-xs motion-reduce:hidden"
+                aria-hidden="true"
+              ></span>
+              <span>Buscando...</span>
+            </li>
+          {:else}
+            <li
+              role="option"
+              aria-selected="false"
+              aria-disabled="true"
+              class="text-muted px-3 py-2 text-sm"
+            >
+              <span>{lookupFailed ? "Búsqueda no disponible por ahora." : "Sin resultados"}</span>
             </li>
           {/if}
         {:else}
-          {#each suggestions as suggestion (suggestion.id)}
-            <li>
+          {#each suggestions as suggestion, index (suggestion.id)}
+            <li role="none">
               <button
                 type="button"
-                class="hover:bg-base-200 flex w-full flex-col items-start gap-1 px-4 py-3 text-left transition-colors"
+                id={`${LISTBOX_ID}-${index}`}
+                tabindex="-1"
+                class={[
+                  "rounded-field hover:bg-base-200 flex w-full flex-col items-start gap-1 px-3 py-2 text-left transition-colors duration-150",
+                  index === activeIndex && "bg-base-200",
+                ]}
+                onmousedown={(event) => event.preventDefault()}
+                onmouseenter={() => (activeIndex = index)}
                 onclick={() => handleSelect(suggestion)}
                 role="option"
-                aria-selected="false"
+                aria-selected={index === activeIndex}
               >
-                <span class="font-semibold">{suggestion.word}</span>
-                <span class="text-base-content/70 text-xs">
+                <span class="text-sm font-medium">{suggestion.word}</span>
+                <span class="text-muted line-clamp-1 text-xs">
                   <!-- eslint-disable-next-line svelte/no-at-html-tags -->
                   {@html parseMarkdown(suggestion.definition)}
                 </span>

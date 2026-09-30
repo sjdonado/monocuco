@@ -1,23 +1,30 @@
 <script lang="ts">
-  import { Share2Icon } from "@lucide/svelte";
+  import { CheckIcon, Share2Icon } from "@lucide/svelte";
   import type { Word } from "$lib/db/repository";
   import { parseMarkdown } from "$lib/markdown";
   import { onDestroy } from "svelte";
 
-  const { entry, shareUrl = null } = $props<{
+  const {
+    entry,
+    shareUrl = null,
+    heading = "h2",
+  } = $props<{
     entry: Word;
     shareUrl: string;
+    // On a word's own page the headword is the page's h1.
+    heading?: "h1" | "h2";
   }>();
 
   const definitionHtml = $derived(parseMarkdown(entry.definition));
   const exampleHtml = $derived(parseMarkdown(entry.example));
+  // Spanish order ("1 de noviembre de 2025"), read in UTC so the stored day is the shown day.
   const formattedDate = $derived(
-    (() => {
-      const date = new Date(entry.createdAt);
-      const month = date.toLocaleString("es-ES", { month: "long" });
-      const capitalizedMonth = month.charAt(0).toUpperCase() + month.slice(1);
-      return `${capitalizedMonth} ${date.getDate()}, ${date.getFullYear()}`;
-    })()
+    new Date(entry.createdAt).toLocaleDateString("es-CO", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    })
   );
 
   let copied = $state(false);
@@ -64,58 +71,64 @@
 
 <article
   id={entry.id}
-  class="card bg-base-100 border-base-200 max-w-2xl border shadow-lg dark:border-gray-700"
+  class="border-hairline flex max-w-2xl flex-col gap-3 border-t py-6 first:border-t-0 first:pt-0"
 >
-  <div class="card-body gap-4">
-    <header class="flex items-center justify-between gap-2">
-      <h2 class="card-title text-3xl leading-snug">{entry.word}</h2>
-      <div class="flex items-center gap-2" aria-live="polite">
-        {#if copied}
-          <span class="text-success text-xs font-normal">Enlace copiado</span>
-        {/if}
-        <button
-          type="button"
-          class="btn btn-ghost btn-sm gap-2"
-          onclick={handleShare}
-          aria-label={`Compartir ${entry.word}`}
-        >
-          <Share2Icon class="size-4" aria-hidden="true" />
-          <span class="hidden sm:inline">Compartir</span>
-        </button>
-      </div>
-    </header>
-
-    <section class="flex-1 space-y-4">
-      <div class="prose max-w-none">
-        <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-        {@html definitionHtml}
-      </div>
-
-      {#if exampleHtml}
-        <div class="prose mt-1 italic">
-          <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-          {@html exampleHtml}
-        </div>
+  <header class="flex items-center justify-between gap-2">
+    <svelte:element this={heading} class="text-2xl font-semibold tracking-tight sm:text-3xl"
+      >{entry.word}</svelte:element
+    >
+    <div class="flex items-center gap-2" aria-live="polite">
+      {#if copied}
+        <span class="text-muted flex items-center gap-1 text-xs font-normal">
+          <CheckIcon class="size-4" aria-hidden="true" />
+          Enlace copiado
+        </span>
       {/if}
-    </section>
+      <button
+        type="button"
+        class="btn btn-ghost btn-sm btn-square text-muted hover:text-primary -mr-2"
+        onclick={handleShare}
+        aria-label={`Compartir ${entry.word}`}
+      >
+        <Share2Icon class="size-4" aria-hidden="true" />
+      </button>
+    </div>
+  </header>
 
-    <footer class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold">
-      <div>
-        <span>por</span>
-        {#if entry.createdBy?.website}
-          <a
-            class="link link-primary"
-            href={entry.createdBy.website}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {entry.createdBy.name}
-          </a>
-        {:else}
-          <span>{entry.createdBy.name}</span>
-        {/if}
-        <span>{formattedDate}</span>
+  <section class="flex flex-1 flex-col gap-3">
+    <div class="prose prose-tokens prose-p:my-0 prose-ol:my-0 prose-ul:my-0 max-w-none">
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+      {@html definitionHtml}
+    </div>
+
+    {#if exampleHtml}
+      <div
+        class="prose prose-tokens prose-p:my-0 prose-ol:my-0 prose-ul:my-0 text-muted max-w-none italic"
+      >
+        <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+        {@html exampleHtml}
       </div>
-    </footer>
-  </div>
+    {/if}
+  </section>
+
+  <!-- Author and date on one line from `sm` up; on phones the date gets its own line. -->
+  <footer class="text-muted flex flex-col text-sm sm:flex-row sm:items-center sm:gap-x-2">
+    <span class="flex items-center gap-x-1">
+      <span>por</span>
+      {#if entry.createdBy?.website}
+        <a
+          class="hover:text-primary inline-flex min-h-6 items-center underline underline-offset-2"
+          href={entry.createdBy.website}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {entry.createdBy.name}
+        </a>
+      {:else}
+        <span>{entry.createdBy.name}</span>
+      {/if}
+    </span>
+    <span class="hidden sm:inline" aria-hidden="true">•</span>
+    <span>{formattedDate}</span>
+  </footer>
 </article>

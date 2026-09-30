@@ -1,13 +1,13 @@
 <svelte:head>
-  <title>Pautas de contenido | Monocuco</title>
+  <title>Monocuco | Pautas de contenido</title>
 </svelte:head>
 
-<section class="text-base-content mx-auto w-full max-w-3xl space-y-8">
-  <header class="space-y-3">
-    <h1 class="text-3xl font-bold">Pautas de contenido</h1>
-    <p class="text-base-content/70">
+<section class="mx-auto flex w-full max-w-2xl flex-col gap-8">
+  <header class="flex flex-col gap-3">
+    <h1 class="text-2xl font-semibold tracking-tight">Pautas de contenido</h1>
+    <p class="text-muted">
       Monocuco es un proyecto comunitario inspirado en <a
-        class="link"
+        class="link hover:text-primary"
         href="https://www.urbandictionary.com/"
         target="_blank"
         rel="noreferrer">Urban Dictionary</a
@@ -16,9 +16,9 @@
     </p>
   </header>
 
-  <section class="space-y-4">
-    <h2 class="text-success text-2xl font-semibold">✅ Lo que esperamos de tus aportes</h2>
-    <div class="card bg-base-100 space-y-3 p-6 shadow-sm">
+  <section class="flex flex-col gap-4">
+    <h2 class="text-lg font-semibold">Lo que esperamos de tus aportes</h2>
+    <div class="bg-base-100 border-hairline rounded-box border p-5 sm:p-6">
       <ul class="list-disc space-y-3 pl-6">
         <li>
           <strong>Escribe para un público amplio.</strong> Explica el contexto de la palabra, cuándo
@@ -36,9 +36,9 @@
     </div>
   </section>
 
-  <section class="space-y-4">
-    <h2 class="text-error text-2xl font-semibold">🛑 Lo que no aceptamos</h2>
-    <div class="card bg-base-100 space-y-3 p-6 shadow-sm">
+  <section class="flex flex-col gap-4">
+    <h2 class="text-lg font-semibold">Lo que no aceptamos</h2>
+    <div class="bg-base-100 border-hairline rounded-box border p-5 sm:p-6">
       <ul class="list-disc space-y-3 pl-6">
         <li>
           <strong>No publiques información personal.</strong> Nada de nombres completos, direcciones,
@@ -58,18 +58,31 @@
     </div>
   </section>
 
-  <section class="space-y-3">
-    <h2 class="text-2xl font-semibold">¿Tienes dudas?</h2>
-    <p class="text-base-content/70 text-sm">
-      Escríbenos a <a class="link link-primary" href="mailto:cedar.onyxes0q@icloud.com"
+  <section class="flex flex-col gap-3">
+    <h2 class="text-lg font-semibold">¿Cómo proponer una palabra?</h2>
+    <p class="text-muted">
+      Agrega la palabra con el CLI del repositorio y abre un Pull Request en
+      <a
+        class="link hover:text-primary"
+        href="https://github.com/sjdonado/monocuco#cómo-contribuir"
+        target="_blank"
+        rel="noreferrer">Github</a
+      >. El README explica cada paso.
+    </p>
+  </section>
+
+  <section class="flex flex-col gap-3">
+    <h2 class="text-lg font-semibold">¿Tienes dudas?</h2>
+    <p class="text-muted text-sm">
+      Escríbenos a <a class="link hover:text-primary" href="mailto:cedar.onyxes0q@icloud.com"
         >este correo</a
       >
       o abre un issue en
       <a
-        class="link link-primary"
+        class="link hover:text-primary"
         href="https://github.com/sjdonado/monocuco/issues"
         target="_blank"
-        rel="noreferer">Github</a
+        rel="noreferrer">Github</a
       >. Gracias por mantener viva la memoria lingüística de la Costa Caribe.
     </p>
   </section>
