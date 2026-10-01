@@ -42,6 +42,8 @@ export default defineConfig({
           environment: "browser",
           browser: {
             enabled: true,
+            // Never open a browser window or the report page; also outside CI.
+            headless: true,
             provider: "playwright",
             instances: [{ browser: "chromium" }],
           },

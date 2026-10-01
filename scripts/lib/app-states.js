@@ -18,15 +18,16 @@ export const ORIGIN = `http://localhost:${PORT}`;
 export const words = JSON.parse(readFileSync(resolve(ROOT, "static/data.json"), "utf-8"));
 export const sample = words[Math.floor(words.length / 2)];
 
-// `ready` waits for content that only the named state shows, after the search data has
-// loaded. The prerendered home page already has cards, so a generic "article" wait would
-// pass before the client loaded, searched or paged.
+// `ready` waits for content that only the named state shows, once the page has hydrated and
+// loaded the search data (`data-search-ready`): the server already renders most states, so
+// their HTML alone proves nothing about the client.
 
 // The page shows exactly the dataset entries `start..start+12`, and the numbered page
-// links (rendered only once the client has its own result) mark the current page.
+// links mark the current page.
 export const cardsAre = (start) => (page) =>
   page.waitForFunction(
     (expected) => {
+      if (!("searchReady" in document.documentElement.dataset)) return false;
       if (!document.querySelector("button[aria-current=page]")) return false;
       const shown = [...document.querySelectorAll("article h2")].map((h) => h.textContent?.trim());
       return JSON.stringify(shown) === JSON.stringify(expected);
@@ -37,6 +38,7 @@ export const cardsAre = (start) => (page) =>
 // The result count line renders only once `findAll(term)` resolved, and every card matches.
 export const searchShows = (term) => (page) =>
   page.waitForFunction((t) => {
+    if (!("searchReady" in document.documentElement.dataset)) return false;
     const count = [...document.querySelectorAll("p[aria-live]")].some((el) =>
       /^\d+ palabras? (encontradas? para|parecidas? a) /.test(
         el.textContent?.replace(/\s+/g, " ").trim() ?? ""
@@ -53,6 +55,7 @@ export const searchShows = (term) => (page) =>
 // app's own `firstLetter`, not a copy).
 export const letterShows = (letter) => async (page) => {
   await page.waitForFunction(() => {
+    if (!("searchReady" in document.documentElement.dataset)) return false;
     const count = [...document.querySelectorAll("p[aria-live]")].some((el) =>
       /^\d+ palabras? encontradas? con /.test(el.textContent?.replace(/\s+/g, " ").trim() ?? "")
     );
@@ -68,6 +71,7 @@ export const filedUnder = firstLetter;
 export const wordShows = (word) => (page) =>
   page.waitForFunction(
     (w) => {
+      if (!("searchReady" in document.documentElement.dataset)) return false;
       const cards = document.querySelectorAll("article");
       return cards.length === 1 && cards[0].querySelector("h1, h2")?.textContent?.trim() === w;
     },
@@ -125,6 +129,21 @@ export const PAGES = [
     path: "/add",
     allowStatus: [404],
     ready: (page) => page.getByRole("heading", { name: "Página no encontrada" }).waitFor(),
+  },
+  {
+    name: "about",
+    path: "/about",
+    ready: (page) => page.getByRole("heading", { level: 1, name: "Acerca de Monocuco" }).waitFor(),
+  },
+  {
+    name: "contact",
+    path: "/contact",
+    ready: (page) => page.getByRole("heading", { level: 1, name: "Contacto" }).waitFor(),
+  },
+  {
+    name: "privacy",
+    path: "/privacy",
+    ready: (page) => page.getByRole("heading", { level: 1, name: "Privacidad" }).waitFor(),
   },
   {
     name: "guidelines",

@@ -13,6 +13,10 @@
  * font sizes and radii outside the token scale, a single h1, a visible keyboard focus
  * ring, and third-party font requests.
  *
+ * Before the browser, scripts/lib/machine-checks.js reads what agents and crawlers get over
+ * plain HTTP (raw HTML, Markdown, sitemap, robots.txt, llms.txt, OpenAPI, the API and its
+ * errors); those are hard checks too.
+ *
  * Usage: node scripts/ui-audit.js [--strict] [--no-build] [--only=<page-name>]
  * Output: .svelte-kit/ui-audit/report.json and one screenshot per page, viewport and scheme.
  */
@@ -37,6 +41,7 @@ import {
   startPreview,
   wordShows,
 } from "./lib/app-states.js";
+import { auditMachineReadable } from "./lib/machine-checks.js";
 
 const OUT_DIR = resolve(ROOT, ".svelte-kit/ui-audit");
 
@@ -265,6 +270,7 @@ function measure({ design, focusOnly = false }) {
       h1: document.querySelector("h1")?.textContent?.replace(/\s+/g, " ").trim() ?? "",
       lang: document.documentElement.lang,
       ogUrl: document.querySelector('meta[property="og:url"]')?.getAttribute("content") ?? "",
+      canonicals: [...document.querySelectorAll('link[rel="canonical"]')].map((l) => l.href),
     },
     // Entries are rows everywhere: a word entry with side borders or corners is a boxed card.
     boxedEntries: [...document.querySelectorAll("article")].filter((a) => {
@@ -498,6 +504,10 @@ async function auditPages(browser) {
           ...(!m.seo.ogUrl.startsWith("https://")
             ? [`og:url "${m.seo.ogUrl}" is not absolute`]
             : []),
+          ...(!spec.allowStatus?.includes(404) &&
+          (m.seo.canonicals.length !== 1 || !m.seo.canonicals[0].startsWith("https://"))
+            ? [`canonical links ${JSON.stringify(m.seo.canonicals)} (expected one absolute)`]
+            : []),
           ...(m.resultLine === null &&
           ["home", "page-2", "letter", "search", "search-empty", "word"].includes(spec.name)
             ? ["no result line at the top of the list"]
@@ -557,6 +567,49 @@ async function auditFlows(browser) {
       await welcomeShows(page);
     });
 
+    await step("search-stays-local", "about", async (page) => {
+      // Searching from another page, and going home, never asks the server: the search
+      // stays in the browser (the privacy page says so) and works offline.
+      await page.waitForFunction(() => "hydrated" in document.documentElement.dataset);
+      const asked = [];
+      page.on("request", (request) => {
+        const url = new URL(request.url());
+        if (url.pathname === "/" || url.pathname.endsWith("__data.json")) asked.push(url.href);
+      });
+      const input = page.getByRole("combobox", { name: "Buscar palabras" });
+      await input.fill("carnaval");
+      await input.press("Enter");
+      await page.waitForURL(/\?q=carnaval/);
+      await searchShows("carnaval")(page);
+      await page.getByRole("link", { name: "Monocuco, inicio" }).click();
+      await welcomeShows(page);
+      if (asked.length) throw new Error(`asked the server for ${asked.join(", ")}`);
+    });
+
+    {
+      // After one visit the service worker opens any state of the home page offline. Its own
+      // context, so the service worker and cache are this flow's alone.
+      const own = await newContext(browser, viewport, "light");
+      let page;
+      try {
+        ({ page } = await openPage(own, pageNamed("home"), at("offline-home")));
+        await page.evaluate(async () => {
+          await navigator.serviceWorker.ready;
+          if (!navigator.serviceWorker.controller)
+            await new Promise((r) =>
+              navigator.serviceWorker.addEventListener("controllerchange", r)
+            );
+        });
+        await own.setOffline(true);
+        await page.goto(`${ORIGIN}/?letter=M`);
+        await letterShows("M")(page);
+      } catch (err) {
+        fail(at("offline-home"), err.message.split("\n")[0]);
+      } finally {
+        await own.close();
+      }
+    }
+
     await step("suggestion-select", "home", async (page) => {
       await page.getByRole("combobox", { name: "Buscar palabras" }).fill(sample.word);
       const option = page.locator("[role=option]:not([aria-disabled=true])").first();
@@ -598,9 +651,39 @@ async function auditFlows(browser) {
           (b) => b.textContent?.trim() === "Siguiente" && !b.disabled
         )
       );
+      // Clicked from the bottom of the list, the new page starts at the top, and the result
+      // line names it.
+      await next.scrollIntoViewIfNeeded();
       await next.click();
       await page.waitForURL(/after=/);
       await cardsAre(12)(page);
+      const scrolled = await page.evaluate(() => scrollY);
+      if (scrolled > 0) throw new Error(`page 2 opened scrolled ${scrolled}px down`);
+      // The page sits on the right of the result line, level with the count.
+      const row = await page.evaluate(() => {
+        const count = document.querySelector("p[aria-live]");
+        const label = count?.nextElementSibling;
+        if (!count || !label) return null;
+        const a = count.getBoundingClientRect();
+        const b = label.getBoundingClientRect();
+        return {
+          text: label.textContent?.trim(),
+          right: b.left >= a.right,
+          level: Math.abs(a.bottom - b.bottom) < 4,
+        };
+      });
+      if (!row || !/^Página 2 de \d+$/.test(row.text ?? "") || !row.right || !row.level)
+        throw new Error(`page label not on the right of the result line: ${JSON.stringify(row)}`);
+      // Back to page 1 with "Anterior": focus moves to the page number without scrolling.
+      const previous = page.getByRole("button", { name: "Anterior" });
+      await previous.scrollIntoViewIfNeeded();
+      await previous.click();
+      await cardsAre(0)(page);
+      await page.waitForFunction(() =>
+        document.activeElement?.matches("button[aria-current=page]")
+      );
+      const back = await page.evaluate(() => scrollY);
+      if (back > 0) throw new Error(`page 1 opened scrolled ${back}px down`);
     });
 
     await step("suggestion-keyboard", "home", async (page) => {
@@ -703,14 +786,22 @@ async function auditFlows(browser) {
         throw new Error(`"aja" shows ${plain.length} words, "ajá" shows ${accented.length}`);
     });
 
-    await step("word-not-found", "home", async (page) => {
-      await page.goto(`${ORIGIN}/?word=nope`);
-      await page.getByText("No encontramos la palabra solicitada.").waitFor();
-      if (await page.getByRole("button", { name: "Siguiente" }).count())
-        throw new Error("a missing word still shows the pager");
-      await page.getByRole("link", { name: "Ver todas las palabras" }).click();
-      await welcomeShows(page);
-    });
+    await step(
+      "word-not-found",
+      {
+        // A link to a missing word is a real 404, with the page's own message.
+        path: "/?word=nope",
+        allowStatus: [404],
+        allowConsole: [/status of 404/],
+        ready: (page) => page.getByText("No encontramos la palabra solicitada.").waitFor(),
+      },
+      async (page) => {
+        if (await page.getByRole("button", { name: "Siguiente" }).count())
+          throw new Error("a missing word still shows the pager");
+        await page.getByRole("link", { name: "Ver todas las palabras" }).click();
+        await welcomeShows(page);
+      }
+    );
 
     await step("not-found-home", "not-found", async (page) => {
       await page.getByText("Ya no recibimos palabras desde la web.", { exact: false }).waitFor();
@@ -756,13 +847,16 @@ async function main() {
   mkdirSync(OUT_DIR, { recursive: true });
 
   const server = await startPreview();
-  const browser = await chromium.launch();
+  let browser;
   try {
+    // Launched inside the try, so a missing browser build never leaves the server running.
+    browser = await chromium.launch();
+    if (!ONLY) await auditMachineReadable(fail);
     await auditPages(browser);
     await auditFlows(browser);
     await auditFocus(browser);
   } finally {
-    await browser.close();
+    await browser?.close();
     server.kill();
   }
 

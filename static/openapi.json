@@ -1,0 +1,115 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Monocuco API",
+    "version": "1.0.0",
+    "summary": "Read-only access to Monocuco, the open dictionary of Barranquilla Spanish (español barranquillero).",
+    "description": "Search and browse the words and expressions of Barranquilla Spanish, with their definitions in Spanish. No authentication. Every error is an RFC 9457 problem document (application/problem+json) with a stable `code` and a `hint`. Definitions and examples are Markdown. The whole dataset is also published as one file at https://monocuco.sjdonado.com/data.json.",
+    "license": { "name": "MIT", "identifier": "MIT" },
+    "contact": { "name": "Monocuco on GitHub", "url": "https://github.com/sjdonado/monocuco/issues" }
+  },
+  "externalDocs": { "description": "Guide for agents", "url": "https://monocuco.sjdonado.com/llms.txt" },
+  "servers": [{ "url": "https://monocuco.sjdonado.com" }],
+  "security": [],
+  "paths": {
+    "/api/words": {
+      "get": {
+        "operationId": "listWords",
+        "summary": "Search words, or browse them in dictionary order",
+        "description": "With `q`, the words that match every term of the query, best match first (accents are ignored; ñ is kept). When nothing matches exactly, typo-tolerant results are returned with `approximate: true`. Without `q`, every word in Spanish dictionary order, optionally only those filed under `letter`. Pages are linked by `next` and `previous`.",
+        "parameters": [
+          { "name": "q", "in": "query", "description": "Search terms, matched against the word and its definition. An empty value is the same as no q.", "schema": { "type": "string" }, "example": "carnaval" },
+          { "name": "letter", "in": "query", "description": "Only words filed under this letter (leading punctuation and accents are ignored; Ñ is its own letter). Cannot be combined with q.", "schema": { "type": "string", "minLength": 1, "maxLength": 1 }, "example": "M" },
+          { "name": "after", "in": "query", "description": "Page cursor: the id of a word in this result list; the page that holds it is returned. Use the `next` or `previous` URL of a response instead of building it.", "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "description": "Words per page.", "schema": { "type": "integer", "minimum": 1, "maximum": 50, "default": 12 } }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page of words.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WordPage" } } }
+          },
+          "400": { "$ref": "#/components/responses/Problem" },
+          "405": { "$ref": "#/components/responses/Problem" },
+          "500": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/api/words/{id}": {
+      "get": {
+        "operationId": "getWord",
+        "summary": "Get one word by its id",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "description": "The word's id, as returned by listWords.", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "The word.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Word" } } }
+          },
+          "404": { "$ref": "#/components/responses/Problem" },
+          "405": { "$ref": "#/components/responses/Problem" },
+          "500": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Word": {
+        "type": "object",
+        "required": ["id", "word", "definition", "example", "createdBy", "createdAt", "url"],
+        "properties": {
+          "id": { "type": "string" },
+          "word": { "type": "string", "description": "The word or expression." },
+          "definition": { "type": "string", "description": "Definition in Spanish, Markdown." },
+          "example": { "type": "string", "description": "Example of use, Markdown. May be empty." },
+          "createdBy": {
+            "type": "object",
+            "required": ["name", "website"],
+            "properties": {
+              "name": { "type": "string" },
+              "website": { "type": "string", "description": "May be empty." }
+            }
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "url": { "type": "string", "format": "uri", "description": "The word's page on the website." }
+        }
+      },
+      "WordPage": {
+        "type": "object",
+        "required": ["total", "page", "totalPages", "approximate", "items", "next", "previous"],
+        "properties": {
+          "total": { "type": "integer", "description": "Words in the whole result, not only this page." },
+          "page": { "type": "integer", "minimum": 1 },
+          "totalPages": { "type": "integer", "minimum": 1 },
+          "approximate": { "type": "boolean", "description": "True when no word matched q exactly and the results are typo-tolerant matches." },
+          "items": { "type": "array", "items": { "$ref": "#/components/schemas/Word" } },
+          "next": { "type": ["string", "null"], "format": "uri" },
+          "previous": { "type": ["string", "null"], "format": "uri" }
+        }
+      },
+      "Problem": {
+        "type": "object",
+        "description": "RFC 9457 problem details.",
+        "required": ["type", "title", "status", "code", "detail", "hint"],
+        "properties": {
+          "type": { "type": "string", "const": "about:blank" },
+          "title": { "type": "string", "description": "The HTTP status phrase." },
+          "status": { "type": "integer" },
+          "code": {
+            "type": "string",
+            "enum": ["unknown_parameter", "conflicting_parameters", "invalid_letter", "invalid_limit", "invalid_cursor", "word_not_found", "not_found", "method_not_allowed", "internal_error"]
+          },
+          "detail": { "type": "string", "description": "What went wrong with this request." },
+          "hint": { "type": "string", "description": "How to change the request so it succeeds." }
+        }
+      }
+    },
+    "responses": {
+      "Problem": {
+        "description": "The request failed; the body says why and how to fix it.",
+        "content": { "application/problem+json": { "schema": { "$ref": "#/components/schemas/Problem" } } }
+      }
+    }
+  }
+}

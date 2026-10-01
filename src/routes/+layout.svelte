@@ -1,15 +1,26 @@
 <script lang="ts">
   import "../app.css";
-  import { env } from "$env/dynamic/public";
   import logo from "$lib/assets/logo.webp";
   import { onMount } from "svelte";
   import { dev } from "$app/environment";
   import SearchInput from "$lib/components/SearchInput.svelte";
   import { APP_VERSION } from "$lib/config";
+  import { page } from "$app/state";
+  import { SITE_DESCRIPTION, SITE_URL, canonicalPath } from "$lib/site";
+
+  const canonical = $derived(`${SITE_URL}${canonicalPath(page.url)}`);
+  // A link to a missing word is answered with a 404 after rendering (src/hooks.server.ts).
+  // `ssr` describes only the URL the visitor opened, so it counts only while that is the URL.
+  const missingWord = $derived(
+    // `word === null` first: prerendered pages have no `ssr` and may not read the query.
+    page.data.ssr?.word === null && page.data.ssr.search === page.url.search
+  );
 
   const { children } = $props();
 
   onMount(() => {
+    // The audit waits for this before it clicks: the server's HTML has no handlers yet.
+    document.documentElement.dataset.hydrated = "";
     if (dev || !("serviceWorker" in navigator)) {
       return;
     }
@@ -32,12 +43,14 @@
 </script>
 
 <svelte:head>
-  {#if env.PUBLIC_MODE === "production"}
-    <script
-      defer
-      src="https://umami.donado.co/script.js"
-      data-website-id="1c0c2c7a-ae4f-4f41-9e8c-7de069c9e06c"
-    ></script>
+  <!-- An error page has no address of its own to keep. -->
+  {#if page.status < 400 && !missingWord}
+    <link rel="canonical" href={canonical} />
+  {/if}
+  <meta property="og:url" content={canonical} />
+  <!-- The home page writes its own description: it changes with the word or letter shown. -->
+  {#if page.route.id !== "/"}
+    <meta name="description" content={SITE_DESCRIPTION} />
   {/if}
 </svelte:head>
 
@@ -72,6 +85,24 @@
         <span aria-hidden="true">•</span>
         <a href="/guidelines" class="link hover:text-primary inline-flex min-h-6 items-center"
           >Pautas de contenido</a
+        >
+      </span>
+      <span class="whitespace-nowrap">
+        <span aria-hidden="true">•</span>
+        <a href="/about" class="link hover:text-primary inline-flex min-h-6 items-center"
+          >Acerca de</a
+        >
+      </span>
+      <span class="whitespace-nowrap">
+        <span aria-hidden="true">•</span>
+        <a href="/contact" class="link hover:text-primary inline-flex min-h-6 items-center"
+          >Contacto</a
+        >
+      </span>
+      <span class="whitespace-nowrap">
+        <span aria-hidden="true">•</span>
+        <a href="/privacy" class="link hover:text-primary inline-flex min-h-6 items-center"
+          >Privacidad</a
         >
       </span>
       <span class="whitespace-nowrap">

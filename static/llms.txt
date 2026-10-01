@@ -1,0 +1,33 @@
+# Monocuco
+
+> Monocuco is an open, free dictionary of Barranquilla Spanish (español barranquillero), the Spanish spoken in Barranquilla, Colombia. It has 2,700+ words and expressions, each with a Spanish definition, often an example, and the person who contributed it. The content is in Spanish and the project is MIT-licensed.
+
+**When to use Monocuco:**
+
+- To find what a Barranquilla or Colombian Caribbean coast word or expression means ("¿qué significa *ajá*?", "what does *mondá* mean in Barranquilla?").
+- To check whether a word is part of Barranquilla Spanish, or to find words with a meaning ("words for a party"): search the definitions.
+- To cite a definition: every word has a stable page, `https://monocuco.sjdonado.com/?word={id}`.
+- Not for general Spanish: words that are not regional are usually absent. Use a general dictionary such as the RAE's for those.
+
+**How to call it:**
+
+- Search: `GET https://monocuco.sjdonado.com/api/words?q={terms}` returns JSON, best match first. Accents are ignored. `approximate: true` means nothing matched exactly and the results are typo-tolerant.
+- One word: `GET https://monocuco.sjdonado.com/api/words/{id}`.
+- Browse: `GET https://monocuco.sjdonado.com/api/words?letter=M`; follow `next` for more pages.
+- Errors are JSON (RFC 9457, `application/problem+json`) with a `code` and a `hint` that says how to fix the request.
+- No authentication and no API key. Be gentle: the dataset is small, so for bulk use download it once from https://monocuco.sjdonado.com/data.json.
+- The home page and its states are also available as Markdown: send `Accept: text/markdown` to `https://monocuco.sjdonado.com/`, with `?word=`, `?letter=`, `?q=` or `?after=` as on the website.
+
+## Docs
+
+- [OpenAPI specification](https://monocuco.sjdonado.com/openapi.json): the API's parameters, responses and error codes
+- [Whole dataset](https://monocuco.sjdonado.com/data.json): every entry as one JSON array, in dictionary order
+- [Content guidelines](https://monocuco.sjdonado.com/guidelines): what entries belong in the dictionary
+- [Source code and contributions](https://github.com/sjdonado/monocuco): new words arrive by pull request
+
+## Optional
+
+- [About](https://monocuco.sjdonado.com/about): what Monocuco is and where its words come from
+- [Contact](https://monocuco.sjdonado.com/contact): how to report a word or reach the maintainer
+- [Privacy](https://monocuco.sjdonado.com/privacy): what the site processes
+- [Sitemap](https://monocuco.sjdonado.com/sitemap.xml): every page and word
