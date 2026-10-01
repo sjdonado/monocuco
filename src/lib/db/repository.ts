@@ -71,7 +71,6 @@ export const seedWords = (list: Word[]) => {
 export const seedIndex = (indexJson: string) => {
   miniSearch = MiniSearch.loadJSON(indexJson, {
     fields: ["word", "definition"],
-    storeFields: ["word", "definition"],
     idField: "id",
     processTerm,
     searchOptions: {

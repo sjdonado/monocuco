@@ -1,3 +1,4 @@
+#!/usr/bin/env bun
 import { readFileSync, writeFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
@@ -102,7 +103,8 @@ async function build() {
   // 'id' is the unique identifier.
   const miniSearch = new MiniSearch({
     fields: ["word", "definition"],
-    storeFields: ["word", "definition"], // Store minimal fields for suggestions
+    // No stored fields: the client looks every result up by id in data.json, so storing the
+    // word and definition here again only doubled the download and the memory.
     idField: "id",
     processTerm,
     searchOptions: {

@@ -44,12 +44,16 @@ describe("published data", () => {
       readFileSync(resolve(root, "static/search-index.json"), "utf-8"),
       {
         fields: ["word", "definition"],
-        storeFields: ["word", "definition"],
         idField: "id",
       }
     );
     expect(index.documentCount).toBe(published.length);
     expect(published.filter((w) => !index.has(w.id)).map((w) => w.id)).toEqual([]);
+  });
+
+  it("stores no fields in the index: results are looked up by id in data.json", () => {
+    const json = JSON.parse(readFileSync(resolve(root, "static/search-index.json"), "utf-8"));
+    expect(Object.keys(json.storedFields ?? {})).toEqual([]);
   });
 
   it("builds the letter row with the same filing rule the client uses", () => {
