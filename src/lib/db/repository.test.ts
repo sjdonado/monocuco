@@ -219,4 +219,18 @@ describe("repository", () => {
     await expect(repo.findAll()).rejects.toThrow("Failed to load data.json");
     await expect(repo.initDB()).rejects.toThrow();
   });
+
+  it("serves seeded words without fetching, and searches once the index is seeded", async () => {
+    vi.stubGlobal("fetch", serveStatic());
+    const repo = await loadRepository();
+    repo.seedWords(words);
+    const letter = await repo.findAll({ letter: "M", pageSize: 12 });
+    expect(letter.items.every((w) => repo.firstLetter(w.word) === "M")).toBe(true);
+    expect(await repo.findById(words[3].id)).toEqual(words[3]);
+    expect(fetch).not.toHaveBeenCalled();
+    repo.seedIndex(INDEX);
+    const search = await repo.findAll({ term: "carnaval" });
+    expect(search.total).toBeGreaterThan(0);
+    expect(fetch).not.toHaveBeenCalled();
+  });
 });

@@ -2,7 +2,7 @@
   import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
   import { tick } from "svelte";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import WordCard from "$lib/components/WordCard.svelte";
   import LetterNav from "$lib/components/LetterNav.svelte";
   import {
@@ -14,7 +14,7 @@
     type Word,
   } from "$lib/db/repository";
   import { AlertCircleIcon, SearchIcon } from "@lucide/svelte";
-  import type { Page } from "@sveltejs/kit";
+  import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, plainText, wordPath } from "$lib/site";
   import type { PageData } from "./$types";
   import { searchFailed, searchError } from "$lib/stores/search-status";
 
@@ -23,9 +23,32 @@
 
   const PAGE_SIZE = 12;
 
+  const NOT_FOUND = "No encontramos la palabra solicitada.";
+
+  // The server rendered the words for the URL the page opened with; they show until the
+  // browser has loaded the data and its own result for the same URL.
+  const singleResult = (word: Word): QueryAllResult => ({
+    items: [word],
+    total: 1,
+    currentAfter: null,
+    nextAfter: null,
+    prevAfter: null,
+    startIndex: 1,
+    endIndex: 1,
+    currentPage: 1,
+    totalPages: 1,
+    pages: [],
+    loadTimeSeconds: 0,
+    approximate: false,
+  });
+  const rendered = data.ssr?.search === page.url.search ? data.ssr : null;
+  const renderedWord = rendered && "word" in rendered ? rendered.word : undefined;
+
   // State for displaying words
-  let items = $state<Word[]>(data.initialWords || []); // Start with prerendered data!
-  let error = $state<string | null>(null);
+  let items = $state<Word[]>(
+    renderedWord ? [renderedWord] : (rendered?.result?.items ?? data.initialWords ?? [])
+  );
+  let error = $state<string | null>(renderedWord === null ? NOT_FOUND : null);
 
   let initStarted = $state(false);
   let initDone = $state(false);
@@ -43,27 +66,18 @@
     };
   });
 
-  let pageData = $state<Page | null>(null);
-
-  $effect(() => {
-    const unsubscribe = page.subscribe((value) => {
-      pageData = value;
-    });
-    return () => unsubscribe();
-  });
-
-  const searchValue = $derived((() => (pageData?.url.searchParams.get("q") ?? "").trim())());
+  const searchValue = $derived((() => (page.url.searchParams.get("q") ?? "").trim())());
 
   const wordIdParam = $derived(
     (() => {
-      const value = (pageData?.url.searchParams.get("word") ?? "").trim();
+      const value = (page.url.searchParams.get("word") ?? "").trim();
       return value.length > 0 ? value : null;
     })()
   );
 
   const afterParam = $derived(
     (() => {
-      const value = (pageData?.url.searchParams.get("after") ?? "").trim();
+      const value = (page.url.searchParams.get("after") ?? "").trim();
       return value.length > 0 ? value : null;
     })()
   );
@@ -71,20 +85,22 @@
   const letterParam = $derived(
     (() => {
       // Same filing rule as the letter row: `?letter=é` browses E.
-      const value = firstLetter((pageData?.url.searchParams.get("letter") ?? "").trim());
+      const value = firstLetter((page.url.searchParams.get("letter") ?? "").trim());
       return value.length > 0 ? value : null;
     })()
   );
 
-  let result = $state<QueryAllResult | null>(null);
+  let result = $state<QueryAllResult | null>(
+    renderedWord ? singleResult(renderedWord) : (rendered?.result ?? null)
+  );
+  // The server's result is for this URL (until the visitor navigates elsewhere).
+  const showsRendered = $derived(Boolean(rendered) && data.ssr?.search === page.url.search);
 
   const isSearching = $derived(Boolean(searchValue));
   const isPaginating = $derived(Boolean(afterParam));
   const isWordDetail = $derived(Boolean(wordIdParam));
   // A word link that fails names what went wrong in the title and the page's h1.
-  const wordError = $derived(
-    error === "No encontramos la palabra solicitada." ? "Palabra no encontrada" : "Error"
-  );
+  const wordError = $derived(error === NOT_FOUND ? "Palabra no encontrada" : "Error");
   const isLetter = $derived(Boolean(letterParam) && !isSearching && !isWordDetail);
   // User needs the search data if they're searching, paginating, browsing a letter, or viewing a word
   const needsDB = $derived(isSearching || isPaginating || isWordDetail || isLetter);
@@ -100,7 +116,8 @@
   // first page, which is the wrong content; show a pending line instead. A word page also
   // waits for its own entry, so the previous list never shows under it.
   const isPending = $derived(
-    !searchHasFailed && ((needsDB && !initDone) || (isWordDetail && !shownWord && !error))
+    !searchHasFailed &&
+      ((needsDB && !initDone && !showsRendered) || (isWordDetail && !shownWord && !error))
   );
 
   // Use prerendered pagination data initially, then switch to search data when available
@@ -203,23 +220,10 @@
 
       if (word) {
         items = [word];
-        result = {
-          items: [word],
-          total: 1,
-          currentAfter: null,
-          nextAfter: null,
-          prevAfter: null,
-          startIndex: 1,
-          endIndex: 1,
-          currentPage: 1,
-          totalPages: 1,
-          pages: [],
-          loadTimeSeconds: 0,
-          approximate: false,
-        };
+        result = singleResult(word);
       } else {
         items = [];
-        error = "No encontramos la palabra solicitada.";
+        error = NOT_FOUND;
         result = null;
       }
     } catch (err) {
@@ -288,6 +292,8 @@
     initDB()
       .then(() => {
         stopInitialLoadingBar();
+        // The audit waits for this: the server's HTML alone proves nothing about the client.
+        document.documentElement.dataset.searchReady = "";
         console.log("[Page] Search data ready");
       })
       .catch((err) => {
@@ -315,10 +321,13 @@
     const failed = searchHasFailed;
 
     if (failed) {
-      // The welcome screen still has its prerendered first page to show.
-      items = needsDatabase ? [] : data.initialWords || [];
+      // Keep what the server rendered for this URL; otherwise the welcome screen still has
+      // the first page built with the site.
+      if (!showsRendered) {
+        items = needsDatabase ? [] : data.initialWords || [];
+        result = null;
+      }
       error = null;
-      result = null;
       return;
     }
 
@@ -344,7 +353,7 @@
   });
 
   const buildShareUrl = (wordId: string, word: string): string => {
-    const url = new URL("/", window.location.origin);
+    const url = new URL("/", page.url.origin);
 
     url.searchParams.set("word", wordId);
     url.searchParams.set("q", word);
@@ -372,6 +381,70 @@
     }
   };
 
+  const description = $derived(
+    shownWord
+      ? `${shownWord.word}: ${plainText(shownWord.definition)}`.slice(0, 300)
+      : isLetter
+        ? `Palabras y expresiones del español barranquillero que empiezan por ${letterParam}, con su definición, en Monocuco.`
+        : SITE_DESCRIPTION
+  );
+
+  // Structured data: the site and its dictionary, or the word on a word's page. `<` is
+  // escaped so a definition can never close the script element.
+  const structuredData = $derived(
+    JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": shownWord
+        ? [
+            {
+              "@type": "DefinedTerm",
+              name: shownWord.word,
+              description: plainText(shownWord.definition),
+              url: `${SITE_URL}${wordPath(shownWord.id)}`,
+              inLanguage: "es",
+              inDefinedTermSet: `${SITE_URL}/#dictionary`,
+            },
+          ]
+        : [
+            {
+              "@type": "WebSite",
+              "@id": `${SITE_URL}/#website`,
+              url: `${SITE_URL}/`,
+              name: SITE_NAME,
+              description: SITE_DESCRIPTION,
+              inLanguage: "es",
+              potentialAction: {
+                "@type": "SearchAction",
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate: `${SITE_URL}/?q={search_term_string}`,
+                },
+                "query-input": "required name=search_term_string",
+              },
+            },
+            {
+              "@type": "DefinedTermSet",
+              "@id": `${SITE_URL}/#dictionary`,
+              name: "Monocuco, diccionario de español barranquillero",
+              url: `${SITE_URL}/`,
+              inLanguage: "es",
+              license: "https://opensource.org/licenses/MIT",
+              creator: {
+                "@type": "Person",
+                name: "Juan Rodriguez Donado",
+                alternateName: "sjdonado",
+                url: "https://sjdonado.com",
+                sameAs: ["https://github.com/sjdonado"],
+              },
+            },
+          ],
+    }).replace(/</g, "\\u003c")
+  );
+  // Split so the closing tag never ends this component's own script block.
+  const structuredDataTag = $derived(
+    `<script type="application/ld+json">${structuredData}</` + "script>"
+  );
+
   const handlePrev = () => goToAfter(result?.prevAfter ?? null);
   const handleNext = () => goToAfter(result?.nextAfter ?? null);
 </script>
@@ -391,6 +464,13 @@
   {:else}
     <title>Monocuco | Diccionario de español barranquillero</title>
   {/if}
+  <meta name="description" content={description} />
+  {#if (isSearching && !isWordDetail) || (isWordDetail && error)}
+    <!-- A search result or a missing word is not a page to keep in an index. -->
+    <meta name="robots" content="noindex" />
+  {/if}
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+  {@html structuredDataTag}
 </svelte:head>
 
 <div class="flex flex-col gap-6">
@@ -421,8 +501,8 @@
         </div>
       </div>
     </section>
-    {#if isWelcome && items.length > 0}
-      <!-- The prerendered first page still works without the search data. -->
+    {#if (isWelcome || showsRendered) && items.length > 0}
+      <!-- The server's words, or the first page built with the site, work without the data. -->
       <div class="flex flex-col">
         {#each items as entry (entry.id)}
           <WordCard {entry} shareUrl={buildShareUrl(entry.id, entry.word)} />

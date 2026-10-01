@@ -26,6 +26,7 @@ let items: Word[] = [];
 let itemMap: Map<string, Word> = new Map();
 let itemIndexMap: Map<string, number> = new Map(); // ID -> Index in 'items' array
 let miniSearch: MiniSearch | null = null;
+let wordsLoaded = false;
 let initPromise: Promise<void> | null = null;
 let initError: Error | null = null;
 
@@ -54,6 +55,32 @@ const searchWithFallback = (term: string) => {
   return { results: [], approximate: false };
 };
 
+// The server has the data in its bundle and passes it in instead of fetching it. It loads
+// the index only when it needs to search, because loading it costs tens of milliseconds.
+export const seedWords = (list: Word[]) => {
+  items = list;
+  itemMap = new Map();
+  itemIndexMap = new Map();
+  items.forEach((item, idx) => {
+    itemMap.set(item.id, item);
+    itemIndexMap.set(item.id, idx);
+  });
+  wordsLoaded = true;
+};
+
+export const seedIndex = (indexJson: string) => {
+  miniSearch = MiniSearch.loadJSON(indexJson, {
+    fields: ["word", "definition"],
+    storeFields: ["word", "definition"],
+    idField: "id",
+    processTerm,
+    searchOptions: {
+      boost: { word: 2, definition: 1.2 },
+      prefix: true,
+    },
+  });
+};
+
 export const initDB = async () => {
   if (initError) return Promise.reject(initError);
   if (initPromise) return initPromise;
@@ -65,26 +92,8 @@ export const initDB = async () => {
       if (!dataRes.ok) throw new Error(`Failed to load data.json: ${dataRes.statusText}`);
       if (!indexRes.ok) throw new Error(`Failed to load search-index.json: ${indexRes.statusText}`);
 
-      items = await dataRes.json();
-      const indexJson = await indexRes.text();
-
-      itemMap = new Map();
-      itemIndexMap = new Map();
-      items.forEach((item, idx) => {
-        itemMap.set(item.id, item);
-        itemIndexMap.set(item.id, idx);
-      });
-
-      miniSearch = MiniSearch.loadJSON(indexJson, {
-        fields: ["word", "definition"],
-        storeFields: ["word", "definition"],
-        idField: "id",
-        processTerm,
-        searchOptions: {
-          boost: { word: 2, definition: 1.2 },
-          prefix: true,
-        },
-      });
+      seedWords(await dataRes.json());
+      seedIndex(await indexRes.text());
 
       console.log(`[Repository] Search data initialized. ${items.length} words loaded.`);
     } catch (e) {
@@ -94,6 +103,7 @@ export const initDB = async () => {
       items = [];
       itemMap = new Map();
       itemIndexMap = new Map();
+      wordsLoaded = false;
       console.error("[Repository] Failed to init search data", normalizedError);
       // initPromise = null; // Allow retry
       throw normalizedError;
@@ -103,9 +113,10 @@ export const initDB = async () => {
   return initPromise;
 };
 
-const ensureDB = async () => {
+// Browsing and lookups need only the words; searching also needs the index.
+const ensureDB = async (needIndex = false) => {
   if (initError) throw initError;
-  if (!miniSearch) await initDB();
+  if (needIndex ? !miniSearch : !wordsLoaded) await initDB();
 };
 
 export interface QueryAllOptions {
@@ -134,9 +145,9 @@ export interface QueryAllResult {
 
 export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllResult> => {
   const startedAt = performance.now();
-  await ensureDB();
-
   const term = options.term?.trim() ?? "";
+  await ensureDB(term.length > 0);
+
   const pageSize = Math.max(1, options.pageSize ?? DEFAULT_PAGE_SIZE);
   const after = options.after?.trim() || null;
   const letter = firstLetter(options.letter?.trim() ?? "") || null;
@@ -271,7 +282,7 @@ export interface QuerySuggestionsOptions {
 export const findSuggestions = async (
   options: QuerySuggestionsOptions
 ): Promise<WordSuggestion[]> => {
-  await ensureDB();
+  await ensureDB(true);
   const term = options.term.trim();
   if (!term) return [];
 

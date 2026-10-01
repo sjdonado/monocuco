@@ -2,11 +2,11 @@
 
 Open, free dictionary of Barranquilla Spanish (Español barranquillero), served at https://monocuco.sjdonado.com. The UI copy is Spanish; keep it Spanish. LICENSE is MIT and the README invites contributions, so "open source" is an accurate claim here.
 
-The app is a static SvelteKit site with no server of its own: the browser downloads the whole dataset and a prebuilt MiniSearch index and searches locally. New words arrive only through the CLI (`bun run add-word`) and a pull request. The web submission form (`/add`) was removed because production never had its webhook configured (the live `/_app/env.js` is `{}`).
+The app is a SvelteKit site whose search runs in the browser: the browser downloads the whole dataset and a prebuilt MiniSearch index and searches locally. The Cloudflare worker renders the home page and its states to HTML (so readers without JavaScript, crawlers and agents get the words), answers `Accept: text/markdown` on `/`, and serves a read-only JSON API under `/api` (`static/openapi.json`, `static/llms.txt`). New words arrive only through the CLI (`bun run add-word`) and a pull request. The web submission form (`/add`) was removed because production never had its webhook configured (the live `/_app/env.js` is `{}`).
 
 ## Stack
 
-- **Framework**: SvelteKit 2 with Svelte 5 runes, `ssr = false` for every route (`src/routes/+layout.ts`); `/` and `/guidelines` are prerendered
+- **Framework**: SvelteKit 2 with Svelte 5 runes, server-rendered then hydrated. `/` is rendered by the worker on each request (`src/routes/+layout.server.ts`); `/guidelines`, `/about`, `/contact`, `/privacy` and `/sitemap.xml` are prerendered
 - **Hosting**: Cloudflare Pages through `@sveltejs/adapter-cloudflare` (`wrangler.toml`)
 - **Styling**: TailwindCSS 4 with DaisyUI 5 and `@tailwindcss/typography`. `src/app.css` is the only place design tokens live: both themes (`light`, `dark` with `prefersdark`, chosen by the OS), the one accent, the self-hosted Inter font (`static/fonts/`), the shared utilities `text-muted`, `border-hairline` and `prose-tokens`, and the global focus ring. The rules every page follows are the design-system spec, `openspec/specs/design-system/spec.md`; the reasoning behind them is in `openspec/changes/archive/2026-10-01-revamp-minimalist-design/design.md`
 - **Search**: MiniSearch, index built at data time by `scripts/build-index.js`, loaded client-side by `src/lib/db/repository.ts`
@@ -31,8 +31,15 @@ src/lib/components/              # SearchInput (combobox), WordCard (entry row; 
 src/lib/stores/search-status.ts  # searchFailed / searchError, shared by the search UI
 src/routes/+layout.svelte        # Sticky header (logo, search) on every page, footer, SW registration, analytics
 src/routes/+page.svelte          # Home: count label, letter row and list; letter (?letter=), search results (?q=), word detail (?word=), pagination (?after=)
+src/routes/+layout.server.ts     # Server render of the home states (not ?q=) for the first page view only: untracked, so no browser navigation calls the worker
+src/hooks.server.ts              # Markdown for `Accept: text/markdown` on /, and Vary: Accept
+src/lib/server/                  # dictionary (the data bundled in the worker), markdown (the Markdown home), api (problem+json helpers)
+src/lib/site.ts                  # Site URL, canonical paths, plain text for meta tags
+src/routes/api/                  # GET /api/words, GET /api/words/{id}, JSON 404 for any other /api path
+src/routes/sitemap.xml/          # Prerendered sitemap: pages, letters, every word
+src/routes/{about,contact,privacy}/ # Trust pages (prerendered)
 src/routes/guidelines/           # Content guidelines
-static/                          # Generated data.json and search-index.json, icons, manifest
+static/                          # Generated data.json and search-index.json, icons, manifest, robots.txt, llms.txt, openapi.json
 ```
 
 ## Commands
@@ -62,15 +69,17 @@ bun run deploy       # vite build && wrangler pages deploy (publishes to product
 2. `lint`: ESLint, Prettier in check mode, then `scripts/design-lint.js`, which fails on class patterns the design system bans in `.svelte` files (shadows, off-scale radii and sizes, `font-bold`, `text-base-content/NN`, a second hue, status alerts, `dark:`, raw palette colors, arbitrary px or viewport values, bare `prose`, removing the focus ring, decorative emoji). Each finding names the token to use instead. Prettier ignores `*.json`, `*.md` and `static/` (`.prettierignore`). Verified green.
 3. `test`: Vitest with two projects defined in `vite.config.ts`. Verified green.
    - `unit` (Node): `src/**/*.{test,spec}.{js,ts}`, excluding the `.svelte.` ones. `src/lib/db/repository.test.ts` covers init, browse pagination, search ranking, fuzzy fallback, suggestions, lookup, letter counts and init failure against the real published data. `src/lib/data/published-data.test.ts` fails when an entry's id, word or definition in `data.json` differs from `static/data.json` (that is, `bun run build-data` was not run), or when the prerendered first page differs from the first page the client loads.
-   - `client` (Chromium through Playwright): `src/**/*.svelte.test.ts`, component tests with `vitest-browser-svelte`. `WordCard.svelte.test.ts` is the example to copy.
+   - `client` (Chromium through Playwright, always headless): `src/**/*.svelte.test.ts`, component tests with `vitest-browser-svelte`. `WordCard.svelte.test.ts` is the example to copy.
+   - `src/routes/api/api.test.ts` calls the API handlers directly and checks every error code against `static/openapi.json`; `src/lib/server/markdown.test.ts` covers Accept negotiation and the Markdown home.
 4. `audit:ui -- --strict`: `vite build`, then `scripts/ui-audit.js` serves the build with `vite preview` on port 4179 and opens every page and state (home, page 2, a letter, search, empty search, a word with and without `q`, data failure, not found, `/guidelines`) at 360 px and 1440 px in light and dark, with third-party requests blocked. Verified green, about 50 s.
-   - **Hard checks** always fail the run: console errors, page errors, same-origin 4xx/5xx or failed requests, horizontal scroll, a page that never reaches its named state (each entry in `PAGES` waits until the client has loaded its own result and shows exactly the expected cards, because the prerendered home already has cards), and every flow in `auditFlows` (search, suggestions by mouse and keyboard, pending suggestions, letters, paging and history, clearing the search, accents, missing word, not-found). The `data-failure` state runs in its own context with the service worker blocked, because a worker from an earlier page would serve cached data.
+   - **Machine-readable checks** (`scripts/lib/machine-checks.js`) run first over plain HTTP and are hard checks: raw HTML of `/`, a word, a letter and the content pages has the content, one h1, sequential headings, canonical, `lang`, `og:type`, `og:image` and JSON-LD; `Accept: text/markdown` on `/` gets Markdown with `Vary: Accept` and browsers get HTML; the sitemap lists every word; robots.txt names it; llms.txt has its when-to-use section; every documented API endpoint answers, and every error is `application/problem+json` with a code from the OpenAPI document.
+   - **Hard checks** always fail the run: console errors, page errors, same-origin 4xx/5xx or failed requests, horizontal scroll, a page that never reaches its named state (each entry in `PAGES` waits until the page has hydrated and the browser has loaded the search data, then for exactly the expected cards, because the server's HTML already has them), and every flow in `auditFlows` (search, suggestions by mouse and keyboard, pending suggestions, letters, paging and history, clearing the search, accents, missing word, not-found). The `data-failure` state runs in its own context with the service worker blocked, because a worker from an earlier page would serve cached data.
    - **Design checks** fail the run with `--strict`, which `ci` passes: text contrast (4.5:1, 3:1 for large text), tap targets under 24 px (a `<label for>` is not a target; its field is), the search field and pagination buttons under 40 px tall at 360 px, visible box shadows, more than one chromatic hue family outside status messages and form validation, font sizes off the 12/14/16/18/24/30 scale, radii other than 6 px, 8 px or a pill, more or fewer than one `h1`, a keyboard focus stop on home, a search or `/guidelines` (at 1440 and 360 px) without a visible ring of at least 3:1, and third-party font requests. The thresholds are the `DESIGN` object at the top of the script and must match the design-system spec. Without `--strict` they are only reported, which is useful while a visual change is in progress.
    - Output: `.svelte-kit/ui-audit/report.json` (every measurement, including radii, font sizes and families per page) and a full-page screenshot per page, width and scheme. Look at the screenshots after any visual change. `--only=<page>` narrows the run, `--no-build` reuses the last build.
 
 There is no remote CI: no `.github/workflows`, so nothing runs on a pull request unless it is added. `bun run deploy` does not run the ladder first.
 
-When you add a page, a route state or a flow, add it to `PAGES` or `auditFlows` in `scripts/ui-audit.js` in the same change. When you change `repository.ts`, extend its test.
+When you add a page, a route state or a flow, add it to `PAGES` or `auditFlows` in `scripts/ui-audit.js` in the same change. When you change the API, update `static/openapi.json` and `static/llms.txt` with it; the API test fails on an error code the document does not list. When you change `repository.ts`, extend its test.
 
 ## Data pipeline
 
@@ -87,6 +96,10 @@ When you add a page, a route state or a flow, add it to `PAGES` or `auditFlows` 
 **Vite loads `.env` into tests and builds.** `PUBLIC_MODE=production` adds the Umami analytics script. `PUBLIC_WORD_SUBMISSION_WEBHOOK` is no longer read by any code. The audit blocks every third-party request, so it never sends analytics or a submission.
 
 **Playwright needs its own Chromium build.** The browser test project and the audit use the `playwright` version pinned in `package.json`. After an install or upgrade, run `bunx playwright install chromium` if a run fails with "Executable doesn't exist".
+
+**Prerendered pages never reach a hook.** The adapter's worker serves prerendered paths straight from the static assets (`node_modules/@sveltejs/adapter-cloudflare/files/worker.js`), so `src/hooks.server.ts` never runs for them; it runs for `/`, `/api` and every unknown path. That is why `/` is rendered per request: prerendering it again would silently drop Markdown negotiation. Prerendered pages may not read `url.searchParams`; `canonicalPath` reads the query only on `/`.
+
+**The worker loads the data, not the index, for pages.** Parsing `static/data.json` costs about 2 ms; loading the search index costs 12 to 38 ms, too much for every page on Cloudflare's CPU limits. So the server renders `?q=` as pending (the browser searches), and only `/api/words?q=` and the Markdown `?q=` call `ensureIndex()`, once per worker instance.
 
 **Text rules live in one module.** `src/lib/text.js` holds `firstLetter` (a word is under its first letter after leading punctuation, without accents, with Ñ as its own letter), `compareWords` (Spanish dictionary order) and `processTerm` (accent folding for the search index and every query). `scripts/build-index.js`, `scripts/generate-initial-words.js` and `src/lib/db/repository.ts` all import it; change a rule there and run `bun run build-data`, or the published index and the client disagree. `scripts/lib/app-states.js` mirrors `firstLetter` inside browser checks. Search requires every query word (AND) and falls back to typo-tolerant matching only when nothing matches, marking those results approximate. `/?q=A` is a text search, not a letter; the letter row links to `/?letter=A`.
 

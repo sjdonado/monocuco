@@ -13,7 +13,8 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(ASSET_CACHE)
-      .then((cache) => cache.addAll(Array.from(PRECACHE)))
+      // The home page is rendered by the server, so it is not in `prerendered`; cache it too.
+      .then((cache) => cache.addAll([...PRECACHE, "/"]))
       .catch((error) => {
         console.error("SW install failed", error);
       })
@@ -74,6 +75,14 @@ async function networkFirstWithCacheFallback(request: Request): Promise<Response
   } catch {
     const cached = await cache.match(request);
     if (cached) return cached;
+    // Offline, any state of the home page opens from the cached home page, which then
+    // shows the word, letter or search from the cached data.
+    const url = new URL(request.url);
+    if (request.mode === "navigate" && url.pathname === "/") {
+      // Every / response varies on Accept; the cached home matches any navigation.
+      const home = await cache.match("/", { ignoreVary: true });
+      if (home) return home;
+    }
     throw new Error("Network error and no cached response available");
   }
 }
