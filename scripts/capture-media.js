@@ -11,41 +11,23 @@ import { spawnSync } from "node:child_process";
 import { mkdirSync, rmSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { chromium } from "playwright";
-import {
-  ORIGIN,
-  ROOT,
-  VITE,
-  newContext,
-  welcomeShows,
-  startPreview,
-  wordShows,
-  words,
-} from "./lib/app-states.js";
+import { ORIGIN, ROOT, VITE, newContext, welcomeShows, startPreview } from "./lib/app-states.js";
 
 const OUT_DIR = resolve(ROOT, "docs/media");
 const TMP_DIR = resolve(ROOT, ".svelte-kit/media");
 const MAX_BYTES = 200 * 1024;
 
-const word = words.find((w) => w.word === "Monocuco");
-if (!word) throw new Error('"Monocuco" is missing from static/data.json; pick another word');
-
+// One shot: the home page with nothing searched, on a desktop, in the dark theme.
 const SHOTS = [
   {
-    file: "home-light.webp",
-    // Just wider than the content column, so the text stays legible in the README.
-    viewport: { width: 760, height: 900, isMobile: false, hasTouch: false },
-    scheme: "light",
+    file: "home-dark.webp",
+    // A real desktop layout, narrow enough that the interface text stays legible at the
+    // width GitHub renders the README.
+    viewport: { width: 1024, height: 720, isMobile: false, hasTouch: false },
+    scheme: "dark",
     path: "/",
     ready: welcomeShows,
-    width: 1520,
-  },
-  {
-    file: "word-dark.webp",
-    viewport: { width: 390, height: 844, isMobile: true, hasTouch: true },
-    scheme: "dark",
-    path: `/?word=${encodeURIComponent(word.id)}&q=${encodeURIComponent(word.word)}`,
-    ready: wordShows(word.word),
-    width: 780,
+    width: 1600,
   },
 ];
 

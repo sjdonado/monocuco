@@ -1,11 +1,7 @@
 # Monocuco
 Diccionario abierto y gratuito de [Español barranquillero](https://es.wikipedia.org/wiki/Espa%C3%B1ol_barranquillero).
 
-<img src="docs/media/home-light.webp" alt="Pantalla de inicio de Monocuco: el buscador, la fila de letras y la lista de palabras" width="100%" />
-
-<p align="center">
-  <img src="docs/media/word-dark.webp" alt="La palabra Monocuco en un teléfono con el tema oscuro: definición, ejemplos y autor" width="300" />
-</p>
+<img src="docs/media/home-dark.webp" alt="Pantalla de inicio de Monocuco con el tema oscuro: el buscador, la fila de letras y la lista de palabras" width="100%" />
 
 ## ¿Cómo contribuir?
 
