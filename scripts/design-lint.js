@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 /**
  * Fails when Svelte components use a class or character the design system bans
  * (openspec/changes/revamp-minimalist-design/design.md, decision 8). Colors, radii,

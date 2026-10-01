@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 /**
  * Generate initial words data for prerendering
  * Runs after build-index.js and extracts the first page of static/data.json

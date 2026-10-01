@@ -11,7 +11,7 @@ The app is a SvelteKit site whose search runs in the browser: the browser downlo
 - **Styling**: TailwindCSS 4 with DaisyUI 5 and `@tailwindcss/typography`. `src/app.css` is the only place design tokens live: both themes (`light`, `dark` with `prefersdark`, chosen by the OS), the one accent, the self-hosted Inter font (`static/fonts/`), the shared utilities `text-muted`, `border-hairline` and `prose-tokens`, and the global focus ring. The rules every page follows are the design-system spec, `openspec/specs/design-system/spec.md`; the reasoning behind them is in `openspec/changes/archive/2026-10-01-revamp-minimalist-design/design.md`
 - **Search**: MiniSearch, index built at data time by `scripts/build-index.js`, loaded client-side by `src/lib/db/repository.ts`
 - **Offline**: a service worker (`src/service-worker.ts`) precaches the build and static files; it is registered only outside dev
-- **Tooling**: Bun for scripts and installs (`bun.lock`); the chained `package.json` scripts call `npm run`, so `npm` (it ships with Node) must be on PATH
+- **Tooling**: Bun for installs (`bun.lock`), for the repository scripts (`scripts/*.js` start with `#!/usr/bin/env bun`) and for every `package.json` chain (`bun run`). Vite, Vitest, ESLint, Prettier and svelte-check still start through their own `node_modules/.bin` entries, which run on Node, so Node must be installed too; `npm` is not needed
 
 ## Layout
 

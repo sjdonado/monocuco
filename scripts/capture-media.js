@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 /**
  * Regenerates the README screenshots from the production build (docs/MEDIA.md).
  * Each shot has a fixed viewport, color scheme and page state, so two runs on the
