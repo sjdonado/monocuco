@@ -81,7 +81,7 @@ const DESIGN = {
   minBrowseTarget: 32, // px, letters and page numbers
   browseTargets: 'nav[aria-label="Navegación por letras"] a, button[data-page]',
   minFieldBoundary: 3, // WCAG 1.4.11: a field's border against the surface around it
-  focusPages: ["home", "search", "guidelines"],
+  focusPages: ["home", "search", "about"],
   focusViewports: ["1440", "360"],
   maxFocusStops: 80,
 };
@@ -970,6 +970,26 @@ async function auditFlows(browser: Browser) {
       await page.getByRole("link", { name: /^M, \d+ palabras$/ }).click();
       await page.waitForURL(/\?letter=M/);
       await letterShows("M")(page);
+      // The current letter is marked exactly like the current page: one style for "current".
+      // Waits out the 150 ms color transition the click starts.
+      await page
+        .waitForFunction(
+          () => {
+            const mark = (selector: string) => {
+              const el = document.querySelector(selector);
+              if (!el) return null;
+              const st = getComputedStyle(el);
+              return `${st.borderTopWidth} ${st.borderTopColor} ${st.backgroundColor}`;
+            };
+            const letter = mark('nav[aria-label="Navegación por letras"] a[aria-current=page]');
+            return letter !== null && letter === mark("button[aria-current=page]");
+          },
+          null,
+          { timeout: 2000 }
+        )
+        .catch(() => {
+          throw new Error("the current letter is not marked like the current page");
+        });
     });
 
     await step("letter-pagination", "letter", async (page) => {

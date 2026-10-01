@@ -20,9 +20,7 @@ export const GET = async () => {
 
   const entries: Array<[string, string | null]> = [
     ["/", day(latest)],
-    ["/guidelines", null],
     ["/about", null],
-    ["/contact", null],
     ["/privacy", null],
     ...letters.map((l): [string, string] => [
       letterPath(l.letter),

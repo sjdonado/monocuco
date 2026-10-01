@@ -193,19 +193,9 @@ export const PAGES: PageSpec[] = [
       page.getByRole("heading", { level: 1, name: "Acerca de Monocuco" }).waitFor(),
   },
   {
-    name: "contact",
-    path: "/contact",
-    ready: (page: Page) => page.getByRole("heading", { level: 1, name: "Contacto" }).waitFor(),
-  },
-  {
     name: "privacy",
     path: "/privacy",
     ready: (page: Page) => page.getByRole("heading", { level: 1, name: "Privacidad" }).waitFor(),
-  },
-  {
-    name: "guidelines",
-    path: "/guidelines",
-    ready: (page: Page) => page.getByRole("heading", { name: "Pautas de contenido" }).waitFor(),
   },
 ];
 

@@ -15,11 +15,9 @@
   <section class="flex flex-col gap-3">
     <h2 class="text-lg font-semibold">Búsquedas</h2>
     <p>
-      El buscador funciona dentro de tu navegador con una copia del diccionario: mientras escribes,
-      las sugerencias y los resultados se calculan sin enviar el texto a ningún servidor. Al buscar,
-      la búsqueda pasa a la dirección de la página, por ejemplo /?q=carnaval. Si abres esa dirección
-      directamente, o una con una palabra, el servidor la recibe para entregar la página, como
-      cualquier otra, y Monocuco no la guarda.
+      Lo que escribes en el buscador no sale de tu navegador. Al buscar, la búsqueda pasa a la
+      dirección de la página, por ejemplo /?q=carnaval; si abres esa dirección directamente, o una
+      con una palabra, el servidor la recibe para entregar la página y Monocuco no la guarda.
     </p>
   </section>
 
@@ -51,13 +49,15 @@
   <section class="flex flex-col gap-3">
     <h2 class="text-lg font-semibold">Preguntas</h2>
     <p>
-      Si tienes preguntas sobre esta página, escríbenos en
+      Si tienes preguntas sobre esta página, abre un reporte en
       <a
         class="link hover:text-primary"
         href="https://github.com/sjdonado/monocuco/issues"
         target="_blank"
         rel="noreferrer">GitHub Issues</a
-      >.
+      >
+      o escribe a
+      <a class="link hover:text-primary" href="mailto:cedar.onyxes0q@icloud.com">este correo</a>.
     </p>
   </section>
 </article>

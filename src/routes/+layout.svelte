@@ -77,27 +77,15 @@
         class="link hover:text-primary"
         href="https://es.wikipedia.org/wiki/Español_barranquillero"
         target="_blank"
-        rel="noreferrer">Español barranquillero</a
+        rel="noreferrer">español barranquillero</a
       >.
     </p>
     <p class="flex flex-wrap items-center justify-center gap-x-2">
       <span class="tabular-nums">v{APP_VERSION}</span>
       <span class="whitespace-nowrap">
         <span aria-hidden="true">•</span>
-        <a href="/guidelines" class="link hover:text-primary inline-flex min-h-6 items-center"
-          >Pautas de contenido</a
-        >
-      </span>
-      <span class="whitespace-nowrap">
-        <span aria-hidden="true">•</span>
         <a href="/about" class="link hover:text-primary inline-flex min-h-6 items-center"
           >Acerca de</a
-        >
-      </span>
-      <span class="whitespace-nowrap">
-        <span aria-hidden="true">•</span>
-        <a href="/contact" class="link hover:text-primary inline-flex min-h-6 items-center"
-          >Contacto</a
         >
       </span>
       <span class="whitespace-nowrap">
@@ -112,20 +100,8 @@
           href="https://github.com/sjdonado/monocuco"
           target="_blank"
           rel="noreferrer"
-          class="link hover:text-primary inline-flex min-h-6 items-center">Github</a
+          class="link hover:text-primary inline-flex min-h-6 items-center">Código fuente</a
         >
-      </span>
-      <span class="whitespace-nowrap">
-        <span aria-hidden="true">•</span>
-        Desarrollado por
-        <a
-          href="https://sjdonado.com"
-          target="_blank"
-          rel="noreferrer"
-          class="link hover:text-primary inline-flex min-h-6 items-center"
-        >
-          @sjdonado
-        </a>
       </span>
     </p>
   </footer>

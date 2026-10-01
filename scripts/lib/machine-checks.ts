@@ -49,9 +49,7 @@ export async function auditMachineReadable(fail: (where: string, message: string
       text: words.find((w) => firstLetter(w.word) === "M")!.word,
     },
     { path: "/about", h1: /Acerca de/ },
-    { path: "/contact", h1: /Contacto/ },
     { path: "/privacy", h1: /Privacidad/ },
-    { path: "/guidelines", h1: /Pautas/ },
   ];
   for (const spec of pages) {
     const where = `raw ${spec.path}`;
@@ -91,6 +89,37 @@ export async function auditMachineReadable(fail: (where: string, message: string
       } catch {
         fail(where, "no valid JSON-LD");
       }
+    }
+  }
+
+  // The pages merged into /about keep their old addresses: a permanent redirect to the section,
+  // which must still exist.
+  const about = await (await get("/about", { accept: "text/html" })).text();
+  for (const id of ["pautas", "contacto"])
+    if (!about.includes(`id="${id}"`))
+      fail("raw /about", `no section id="${id}" for the old links`);
+  for (const [path, target] of [
+    ["/guidelines", "/about#pautas"],
+    ["/contact", "/about#contacto"],
+  ]) {
+    const res = await get(path, { accept: "text/html" });
+    await res.body?.cancel();
+    const location = res.headers.get("location") ?? "";
+    if (![301, 308].includes(res.status) || !location.endsWith(target))
+      fail(
+        `raw ${path}`,
+        `${res.status} to "${location}" (expected a permanent redirect to ${target})`
+      );
+  }
+
+  // Every internal link on the content pages resolves.
+  for (const path of ["/about", "/privacy"]) {
+    const html = await (await get(path, { accept: "text/html" })).text();
+    const main = /<main[^>]*>([\s\S]*)<\/main>/.exec(html)?.[1] ?? "";
+    for (const [, href] of main.matchAll(/href="(\/[^"#]*)/g)) {
+      const res = await get(href);
+      await res.body?.cancel();
+      if (res.status >= 400) fail(`raw ${path}`, `link to ${href} answers ${res.status}`);
     }
   }
 
@@ -152,7 +181,7 @@ export async function auditMachineReadable(fail: (where: string, message: string
   if (/&(?!amp;|lt;|gt;)/.test(sitemap)) fail("sitemap.xml", "unescaped &");
   const missing = words.filter((w) => !locs.includes(`${SITE}/?word=${encodeURIComponent(w.id)}`));
   if (missing.length) fail("sitemap.xml", `${missing.length} words missing`);
-  for (const path of ["/", "/about", "/contact", "/privacy", "/guidelines"])
+  for (const path of ["/", "/about", "/privacy"])
     if (!locs.includes(SITE + path)) fail("sitemap.xml", `no ${path}`);
   const llms = await (await get("/llms.txt")).text();
   if (!/^# Monocuco\n\n> /.test(llms)) fail("llms.txt", "does not start with an h1 and a summary");

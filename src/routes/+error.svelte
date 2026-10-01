@@ -22,7 +22,7 @@
   {#if isOldForm}
     <p class="text-muted max-w-sm">
       Ya no recibimos palabras desde la web. Consulta
-      <a href="/guidelines" class="link hover:text-primary">cómo proponer una palabra</a>.
+      <a href="/about#contacto" class="link hover:text-primary">cómo proponer una palabra</a>.
     </p>
   {/if}
   <a href="/" class="btn btn-primary mt-3">Volver al inicio</a>

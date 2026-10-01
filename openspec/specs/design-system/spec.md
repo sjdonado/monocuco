@@ -17,7 +17,7 @@ The site SHALL render every page with one of two themes, light and dark, built o
 
 #### Scenario: Every page uses the shared theme
 
-- **WHEN** any route or state is rendered (all words, page 2, a letter, search results, empty search, a word, search data failure, not found, `/guidelines`)
+- **WHEN** any route or state is rendered (all words, page 2, a letter, search results, empty search, a word, search data failure, not found, `/about`)
 - **THEN** its background, text, borders and controls use the colors of the active theme, and no element sets a color outside the token set
 
 ### Requirement: One accent color
@@ -29,9 +29,9 @@ The palette SHALL contain exactly one brand accent, a red in the hue family of t
 - **WHEN** any page or state is rendered and every visible color is measured
 - **THEN** at most one chromatic hue family appears outside status messages, and it is the accent
 
-#### Scenario: Guidelines headings are neutral
+#### Scenario: Section headings are neutral
 
-- **WHEN** a visitor opens `/guidelines`
+- **WHEN** a visitor opens `/about`
 - **THEN** the section headings use the primary text color, not a success or error color
 
 #### Scenario: Empty search is not a warning
@@ -106,7 +106,7 @@ Every link, button, input and option SHALL show a visible focus indicator when i
 
 #### Scenario: Keyboard focus is visible
 
-- **WHEN** a keyboard user tabs through every focusable element on the home page, a search result page and `/guidelines`
+- **WHEN** a keyboard user tabs through every focusable element on the home page, a search result page and `/about`
 - **THEN** each focused element shows an outline or ring with at least 3:1 contrast against the surface around it
 
 #### Scenario: Field boundaries and placeholders
@@ -121,7 +121,7 @@ Every link, button, input and option SHALL show a visible focus indicator when i
 
 ### Requirement: One layout on every page
 
-Every page SHALL use the same layout from the first load: a sticky header with the logo linking home and the search field, then one content column. Every state is a search: all words is the empty query, a letter or a single word is a narrower one. Each SHALL start with the same left-aligned result line in the same place: "2767 palabras encontradas", "255 palabras encontradas con M", "8 palabras encontradas para "carnaval"", "1 palabra encontrada para "Ira"", and "N palabras parecidas a "x"" when the results are approximate. Browse pages (all words, a later page, a letter) SHALL show the letter row below the result line. There SHALL be no separate welcome layout, sidebar or menu. The footer SHALL hold the one-line description with its link, the version, the link to `/guidelines`, the source code link and the author link.
+Every page SHALL use the same layout from the first load: a sticky header with the logo linking home and the search field, then one content column. Every state is a search: all words is the empty query, a letter or a single word is a narrower one. Each SHALL start with the same left-aligned result line in the same place: "2767 palabras encontradas", "255 palabras encontradas con M", "8 palabras encontradas para "carnaval"", "1 palabra encontrada para "Ira"", and "N palabras parecidas a "x"" when the results are approximate. Browse pages (all words, a later page, a letter) SHALL show the letter row below the result line. There SHALL be no separate welcome layout, sidebar or menu. The footer SHALL hold the one-line description with its link, the version, and the links "Acerca de" (`/about`), "Privacidad" (`/privacy`) and "Código fuente".
 
 #### Scenario: First visit
 
@@ -139,7 +139,7 @@ Less visible text SHALL NOT make a page harder to understand for assistive techn
 
 #### Scenario: Lighthouse
 
-- **WHEN** Lighthouse audits `/`, a search, a letter, a word and `/guidelines`
+- **WHEN** Lighthouse audits `/`, a search, a letter, a word and `/about`
 - **THEN** accessibility and SEO both score 100
 
 #### Scenario: A word's page
@@ -251,29 +251,29 @@ Each page SHALL have exactly one `h1` (see "Pages stay findable and understandab
 
 Interface copy SHALL NOT contain decorative emoji. Copy SHALL stay in Spanish, in sentence case, and SHALL make no claim the product cannot back: in particular the site SHALL NOT offer a way to submit words that production cannot deliver. Displayed numbers SHALL be exact counts, without timings.
 
-#### Scenario: Guidelines without emoji
+#### Scenario: One page about the project
 
-- **WHEN** a visitor opens `/guidelines`
-- **THEN** the section headings read "Lo que esperamos de tus aportes" and "Lo que no aceptamos", with no emoji
+- **WHEN** a visitor opens `/about`, or an old link to `/guidelines` or `/contact`
+- **THEN** one page covers what Monocuco is, where its words come from, the content guidelines (`#pautas`) and how to propose, fix or report a word (`#contacto`), and ends with the credit "Desarrollado por @sjdonado", with no emoji; the old addresses redirect permanently (308) to those sections
 
 #### Scenario: Result count reads correctly
 
 - **WHEN** a search returns 0, 1 or 8 results
 - **THEN** the result line reads "0 palabras encontradas para", "1 palabra encontrada para" or "8 palabras encontradas para", followed by the search term
 
-#### Scenario: Footer spelling
+#### Scenario: Footer links
 
 - **WHEN** any page is rendered
-- **THEN** the footer reads "Desarrollado por"
+- **THEN** the footer shows the version and the links "Acerca de", "Privacidad" and "Código fuente", and no author credit
 
 ### Requirement: Scope of behavior changes
 
-The redesign SHALL change behavior only where this spec says so: the `/add` page and every link to it are removed, because production has no submission webhook, and contributing is described only in the README; letters browse by first letter; the search field is a keyboard combobox; the mobile drawer and the letter sidebar are removed. Search ranking, pagination, sharing and word detail URLs SHALL work as before. Offline, every page SHALL open after one visit, and search SHALL work after one search online (the search data is cached on first use, not precached). The site loads no analytics (removed after the redesign; `/privacy` states that it collects no data).
+The redesign SHALL change behavior only where this spec says so: the `/add` page and every link to it are removed, because production has no submission webhook, and contributing is described in the README and on `/about`; letters browse by first letter; the search field is a keyboard combobox; the mobile drawer and the letter sidebar are removed. Search ranking, pagination, sharing and word detail URLs SHALL work as before. Offline, every page SHALL open after one visit, and search SHALL work after one search online (the search data is cached on first use, not precached). The site loads no analytics (removed after the redesign; `/privacy` states that it collects no data).
 
 #### Scenario: Removed submission
 
 - **WHEN** a visitor opens `/add` after the change, for example from an old bookmark
-- **THEN** no submission form exists, no page links to `/add`, and the visitor sees the site's own "Página no encontrada" page in the shared style, saying that words are no longer received on the web with a link to how to propose one on `/guidelines`, and "Volver al inicio" leading to all words (`/`)
+- **THEN** no submission form exists, no page links to `/add`, and the visitor sees the site's own "Página no encontrada" page in the shared style, saying that words are no longer received on the web with a link to how to propose one on `/about`, and "Volver al inicio" leading to all words (`/`)
 
 #### Scenario: Back and forward
 

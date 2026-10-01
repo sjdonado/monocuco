@@ -5,7 +5,7 @@ Diccionario abierto y gratuito de [Español barranquillero](https://es.wikipedia
 
 ## ¿Cómo contribuir?
 
-Antes de escribir una definición, por favor revisa nuestras [pautas de contenido](https://monocuco.sjdonado.com/guidelines). En resumen: comparte definiciones útiles para otras personas y nunca publiques discursos de odio ni información personal.
+Antes de escribir una definición, por favor revisa nuestras [pautas de contenido](https://monocuco.sjdonado.com/about#pautas). En resumen: comparte definiciones útiles para otras personas y nunca publiques discursos de odio ni información personal.
 
 Para aportar nuevas palabras al diccionario, usa el CLI y abre un Pull Request:
 
