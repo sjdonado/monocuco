@@ -4,14 +4,21 @@
  * Each shot has a fixed viewport, color scheme and page state, so two runs on the
  * same commit produce the same images. Needs `cwebp` on PATH.
  *
- * Usage: node scripts/capture-media.js [--no-build]
+ * Usage: bun scripts/capture-media.js [--no-build]
  */
 
 import { spawnSync } from "node:child_process";
 import { mkdirSync, rmSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { chromium } from "playwright";
-import { ORIGIN, ROOT, VITE, newContext, welcomeShows, startPreview } from "./lib/app-states.js";
+import {
+  ORIGIN,
+  ROOT,
+  newContext,
+  viteCommand,
+  welcomeShows,
+  startPreview,
+} from "./lib/app-states.js";
 
 const OUT_DIR = resolve(ROOT, "docs/media");
 const TMP_DIR = resolve(ROOT, ".svelte-kit/media");
@@ -41,7 +48,7 @@ async function main() {
   if (spawnSync("cwebp", ["-version"]).status !== 0) {
     throw new Error("cwebp is not installed (macOS: brew install webp)");
   }
-  if (!process.argv.includes("--no-build")) run(VITE, ["build"]);
+  if (!process.argv.includes("--no-build")) run(...viteCommand("build"));
   rmSync(TMP_DIR, { recursive: true, force: true });
   mkdirSync(TMP_DIR, { recursive: true });
   mkdirSync(OUT_DIR, { recursive: true });

@@ -5,7 +5,7 @@
  * type and borders come from the tokens in src/app.css, so these patterns are either
  * off-system or bring back a second hue, a shadow or an ad hoc size.
  *
- * Usage: node scripts/design-lint.js [--report]   (--report lists without failing)
+ * Usage: bun scripts/design-lint.js [--report]   (--report lists without failing)
  */
 
 import { readdirSync, readFileSync } from "node:fs";

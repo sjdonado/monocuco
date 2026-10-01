@@ -151,7 +151,7 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
   const after = options.after?.trim() || null;
   const letter = firstLetter(options.letter?.trim() ?? "") || null;
 
-  let resultIds: string[] = [];
+  let resultIds: string[];
   let approximate = false;
 
   if (term.length > 0) {

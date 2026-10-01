@@ -21,16 +21,16 @@
     <div class="bg-base-100 border-hairline rounded-box border p-5 sm:p-6">
       <ul class="list-disc space-y-3 pl-6">
         <li>
-          <strong>Escribe para un público amplio.</strong> Explica el contexto de la palabra, cuándo
-          se usa y qué significa. Imagina que la persona que lee nunca ha visitado Barranquilla, Colombia.
+          <strong>Escribe para un público amplio.</strong> Explica el contexto de la palabra, cuándo se
+          usa y qué significa. Imagina que la persona que lee nunca ha visitado Barranquilla, Colombia.
         </li>
         <li>
           <strong>Sé creativo.</strong> Nos encantan las definiciones ingeniosas, los ejemplos divertidos
           y los giros locales que muestran la personalidad del español barranquillero.
         </li>
         <li>
-          <strong>Diviértete.</strong> Este no es un diccionario tradicional; también celebramos las
-          expresiones que nacen en la calle, en la música o en la cotidianidad.
+          <strong>Diviértete.</strong> Este no es un diccionario tradicional; también celebramos las expresiones
+          que nacen en la calle, en la música o en la cotidianidad.
         </li>
       </ul>
     </div>
@@ -42,13 +42,12 @@
       <ul class="list-disc space-y-3 pl-6">
         <li>
           <strong>No publiques información personal.</strong> Nada de nombres completos, direcciones,
-          números de contacto, usuarios de redes ni otros datos que puedan usarse para identificar o
-          hostigar a alguien.
+          números de contacto, usuarios de redes ni otros datos que puedan usarse para identificar o hostigar
+          a alguien.
         </li>
         <li>
           <strong>No uses el diccionario para atacar.</strong> Puedes definir palabras ofensivas si eso
-          ayuda a entender su significado, pero nunca para promover odio, discriminar o incitar a la
-          violencia.
+          ayuda a entender su significado, pero nunca para promover odio, discriminar o incitar a la violencia.
         </li>
         <li>
           <strong>Respeta a la comunidad.</strong> Si ves una definición que rompe estas reglas, avísanos

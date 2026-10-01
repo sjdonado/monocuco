@@ -32,7 +32,8 @@
         });
         // Immediately check for updates. Browsers that block service workers can resolve
         // without a registration.
-        void registration?.update();
+        // Offline, the update check cannot reach the network; the cached worker keeps serving.
+        registration?.update().catch(() => {});
       } catch (error) {
         console.error("Service worker registration failed", error);
       }
