@@ -24,7 +24,7 @@ describe("published data", () => {
 
   it("carries each source entry's current word and definition", () => {
     const byId = new Map(published.map((w) => [w.id, w]));
-    // Legacy entries (no `word` field) are normalized by build-index.js; compare the rest verbatim.
+    // Legacy entries (no `word` field) are normalized by build-index.ts; compare the rest verbatim.
     const stale = source
       .filter((w) => "word" in w && "createdBy" in w)
       .filter((w) => {

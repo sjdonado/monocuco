@@ -9,17 +9,17 @@
 		"preview": "bun --bun vite preview",
 		"deploy": "bun --bun vite build && bun --bun wrangler pages deploy",
 		"prepare": "bun --bun svelte-kit sync || echo ''",
-		"check": "bun --bun svelte-kit sync && bun --bun svelte-check --tsconfig ./tsconfig.json",
+		"check": "bun --bun svelte-kit sync && bun --bun svelte-check --tsconfig ./tsconfig.json && bun --bun tsc -p scripts/tsconfig.json",
 		"check:watch": "bun --bun svelte-kit sync && bun --bun svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "bun --bun eslint . && bun --bun prettier --check . && bun ./scripts/design-lint.js",
+		"lint": "bun --bun eslint . && bun --bun prettier --check . && bun ./scripts/design-lint.ts",
 		"test:unit": "bun --bun vitest",
 		"test": "bun run test:unit -- --run",
-		"audit:ui": "bun ./scripts/ui-audit.js",
-		"media": "bun ./scripts/capture-media.js",
+		"audit:ui": "bun ./scripts/ui-audit.ts",
+		"media": "bun ./scripts/capture-media.ts",
 		"ci": "bun run check && bun run lint && bun run test && bun run audit:ui -- --strict",
 		"format": "bun --bun prettier --write .",
-		"add-word": "./scripts/add-word.js && bun run build-data",
-		"build-data": "bun ./scripts/build-index.js && bun ./scripts/generate-initial-words.js"
+		"add-word": "./scripts/add-word.ts && bun run build-data",
+		"build-data": "bun ./scripts/build-index.ts && bun ./scripts/generate-initial-words.ts"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.1.1",

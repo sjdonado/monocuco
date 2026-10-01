@@ -4,28 +4,38 @@
  * Each shot has a fixed viewport, color scheme and page state, so two runs on the
  * same commit produce the same images. Needs `cwebp` on PATH.
  *
- * Usage: bun scripts/capture-media.js [--no-build]
+ * Usage: bun scripts/capture-media.ts [--no-build]
  */
 
 import { spawnSync } from "node:child_process";
 import { mkdirSync, rmSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { chromium } from "playwright";
+import type { Page } from "playwright";
 import {
   ORIGIN,
   ROOT,
   newContext,
+  type Scheme,
+  type Viewport,
   viteCommand,
   welcomeShows,
   startPreview,
-} from "./lib/app-states.js";
+} from "./lib/app-states.ts";
 
 const OUT_DIR = resolve(ROOT, "docs/media");
 const TMP_DIR = resolve(ROOT, ".svelte-kit/media");
 const MAX_BYTES = 200 * 1024;
 
 // One shot: the home page with nothing searched, on a desktop, in the dark theme.
-const SHOTS = [
+const SHOTS: {
+  file: string;
+  viewport: Viewport;
+  scheme: Scheme;
+  path: string;
+  ready: (page: Page) => Promise<unknown>;
+  width: number;
+}[] = [
   {
     file: "home-dark.webp",
     // A real desktop layout, narrow enough that the interface text stays legible at the
@@ -38,7 +48,7 @@ const SHOTS = [
   },
 ];
 
-function run(cmd, args) {
+function run(cmd: string, args: string[]) {
   const result = spawnSync(cmd, args, { cwd: ROOT, stdio: "inherit" });
   if (result.error) throw result.error;
   if (result.status !== 0) throw new Error(`${cmd} ${args.join(" ")} exited ${result.status}`);
@@ -65,7 +75,7 @@ async function main() {
       await shot.ready(page);
       await page.evaluate(() => document.fonts.ready);
       // No caret, focus ring or hover state in the picture.
-      await page.evaluate(() => document.activeElement?.blur());
+      await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
       await page.mouse.move(0, 0);
       const png = resolve(TMP_DIR, shot.file.replace(".webp", ".png"));
       await page.screenshot({ path: png });

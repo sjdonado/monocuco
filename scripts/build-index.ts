@@ -17,49 +17,50 @@ const INPUT_PATH = resolve(__dirname, "../data.json");
 const OUTPUT_DATA_PATH = resolve(__dirname, "../static/data.json");
 const OUTPUT_INDEX_PATH = resolve(__dirname, "../static/search-index.json");
 
-/**
- * Coerce any value to a string
- * @param {unknown} value - Value to coerce
- * @returns {string} String value
- */
-function toStr(value) {
+/** Coerce any value to a string */
+function toStr(value: unknown): string {
   if (typeof value === "string") return value;
   return value != null ? String(value) : "";
 }
 
-/**
- * Normalize legacy/modern entries into the canonical format
- * @param {Record<string, unknown>} raw - Raw entry data
- * @returns {{
- *   id: string,
- *   word: string,
- *   definition: string,
- *   example: string,
- *   createdBy: { name: string, website: string },
- *   createdAt: string
- * }} Normalized entry
- */
-function normalizeEntry(raw) {
+interface NormalizedEntry {
+  id: string;
+  word: string;
+  definition: string;
+  example: string;
+  createdBy: { name: string; website: string };
+  createdAt: string;
+}
+
+/** The author of a legacy entry. */
+interface LegacyAuthor {
+  name?: unknown;
+  link?: unknown;
+}
+
+/** Normalize legacy/modern entries into the canonical format */
+function normalizeEntry(raw: Record<string, unknown>): NormalizedEntry {
   const rawId = raw.id;
   const entryId = typeof rawId === "string" && rawId.trim() ? rawId.trim() : randomUUID();
 
   // Handle normalized format
   if ("word" in raw && "createdBy" in raw) {
+    const createdBy = raw.createdBy as { name?: unknown; website?: unknown };
     return {
       id: entryId,
       word: toStr(raw.word),
       definition: toStr(raw.definition),
       example: toStr(raw.example),
       createdBy: {
-        name: toStr(raw.createdBy.name),
-        website: toStr(raw.createdBy.website),
+        name: toStr(createdBy.name),
+        website: toStr(createdBy.website),
       },
       createdAt: toStr(raw.createdAt),
     };
   }
 
   // Handle legacy format (if any still exists in data.json)
-  const synonyms = raw.synonyms || [];
+  const synonyms = (raw.synonyms || []) as unknown[];
   const cleanedSynonyms = synonyms
     .map((s) => toStr(s).trim())
     .filter((s) => s)
@@ -70,14 +71,14 @@ function normalizeEntry(raw) {
     definition = `${definition}\n\nSinónimos: ${cleanedSynonyms}`;
   }
 
-  const authors = raw.authors || [];
+  const authors = (raw.authors || []) as LegacyAuthor[];
   const firstAuthor = authors[0] || {};
 
   return {
     id: entryId,
     word: toStr(raw.text || ""),
     definition,
-    example: (raw.examples || []).map((ex) => toStr(ex).trim()).join("\n"),
+    example: ((raw.examples || []) as unknown[]).map((ex) => toStr(ex).trim()).join("\n"),
     createdBy: {
       name: toStr(firstAuthor.name || "Anónimo").trim() || "Anónimo",
       website: toStr(firstAuthor.link || "").trim(),
@@ -93,7 +94,7 @@ function normalizeEntry(raw) {
 async function build() {
   console.log("🏗️  Building search index...");
 
-  const rawData = JSON.parse(readFileSync(INPUT_PATH, "utf-8"));
+  const rawData: unknown = JSON.parse(readFileSync(INPUT_PATH, "utf-8"));
   if (!Array.isArray(rawData)) throw new Error("Data must be an array");
 
   const items = rawData.map(normalizeEntry).sort(compareWords);

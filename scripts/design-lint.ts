@@ -5,7 +5,7 @@
  * type and borders come from the tokens in src/app.css, so these patterns are either
  * off-system or bring back a second hue, a shadow or an ad hoc size.
  *
- * Usage: bun scripts/design-lint.js [--report]   (--report lists without failing)
+ * Usage: bun scripts/design-lint.ts [--report]   (--report lists without failing)
  */
 
 import { readdirSync, readFileSync } from "node:fs";
@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = resolve(fileURLToPath(import.meta.url), "../..");
 const REPORT = process.argv.includes("--report");
 
-const BANNED = [
+const BANNED: [RegExp, string][] = [
   [/\bshadow-/, "shadows: separate surfaces with border-hairline"],
   [
     /\brounded-(sm|md|lg|xl|2xl|3xl)\b/,
@@ -47,8 +47,8 @@ const BANNED = [
   [/\bfocus(-visible)?:outline-none\b/, "removes the global focus ring"],
 ];
 
-const files = [];
-const walk = (dir) => {
+const files: string[] = [];
+const walk = (dir: string) => {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const path = join(dir, entry.name);
     if (entry.isDirectory()) walk(path);
@@ -57,7 +57,7 @@ const walk = (dir) => {
 };
 walk(resolve(ROOT, "src"));
 
-const findings = [];
+const findings: string[] = [];
 for (const file of files) {
   readFileSync(file, "utf-8")
     .split("\n")
