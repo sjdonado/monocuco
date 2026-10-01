@@ -253,7 +253,7 @@ Interface copy SHALL NOT contain decorative emoji. Copy SHALL stay in Spanish, i
 
 ### Requirement: Scope of behavior changes
 
-The redesign SHALL change behavior only where this spec says so: the `/add` page and every link to it are removed, because production has no submission webhook, and contributing is described only in the README; letters browse by first letter; the search field is a keyboard combobox; the mobile drawer and the letter sidebar are removed. Search ranking, pagination, sharing, word detail URLs, analytics and offline behavior SHALL work as before.
+The redesign SHALL change behavior only where this spec says so: the `/add` page and every link to it are removed, because production has no submission webhook, and contributing is described only in the README; letters browse by first letter; the search field is a keyboard combobox; the mobile drawer and the letter sidebar are removed. Search ranking, pagination, sharing, word detail URLs and offline behavior SHALL work as before. The site loads no analytics (removed after the redesign; `/privacy` states that it collects no data).
 
 #### Scenario: Removed submission
 

@@ -6,8 +6,9 @@
   <header class="flex flex-col gap-3">
     <h1 class="text-2xl font-semibold tracking-tight">Privacidad</h1>
     <p class="text-muted">
-      Monocuco no tiene cuentas, formularios ni publicidad, y no te pide ningún dato personal. Esta
-      página explica qué información se procesa cuando visitas el sitio.
+      Monocuco no recopila datos sobre ti. No tiene cuentas, formularios de registro, publicidad ni
+      estadísticas de visitas, no pone cookies y no carga herramientas de seguimiento. Esta página
+      explica qué pasa con la información cuando visitas el sitio.
     </p>
   </header>
 
@@ -17,38 +18,33 @@
       El buscador funciona dentro de tu navegador con una copia del diccionario: mientras escribes,
       las sugerencias y los resultados se calculan sin enviar el texto a ningún servidor. Al buscar,
       la búsqueda pasa a la dirección de la página, por ejemplo /?q=carnaval. Si abres esa dirección
-      directamente, o una con una palabra, llega al servidor como cualquier página.
+      directamente, o una con una palabra, el servidor la recibe para entregar la página, como
+      cualquier otra, y Monocuco no la guarda.
     </p>
   </section>
 
   <section class="flex flex-col gap-3">
-    <h2 class="text-lg font-semibold">Estadísticas de visitas</h2>
+    <h2 class="text-lg font-semibold">Alojamiento</h2>
     <p>
-      El sitio puede contar visitas con <a
-        class="link hover:text-primary"
-        href="https://umami.is"
-        target="_blank"
-        rel="noreferrer">Umami</a
-      >, una herramienta de estadísticas que no usa cookies. Cuando está activa, registra qué
-      páginas se abren, incluida la palabra o la búsqueda de su dirección, desde qué país y con qué
-      tipo de navegador o dispositivo. No vendemos ni compartimos estos datos y no los usamos para
-      identificarte.
-    </p>
-  </section>
-
-  <section class="flex flex-col gap-3">
-    <h2 class="text-lg font-semibold">Alojamiento y almacenamiento</h2>
-    <p>
-      El sitio está alojado en
-      <a
+      El sitio está alojado en <a
         class="link hover:text-primary"
         href="https://www.cloudflare.com/privacypolicy/"
         target="_blank"
         rel="noreferrer">Cloudflare</a
-      >, que procesa las solicitudes, incluida tu dirección IP, para entregar las páginas y proteger
-      el sitio. Para funcionar sin conexión, el sitio guarda sus archivos y el diccionario en la
-      caché de tu navegador; puedes borrarlos en cualquier momento desde la configuración del
-      navegador.
+      >, que recibe cada solicitud antes que el sitio, incluida tu dirección IP, para entregar las
+      páginas y protegerlas de abusos; para eso puede poner sus propias cookies técnicas de
+      seguridad. Cloudflare trata esa información según su propia política de privacidad; Monocuco
+      no lleva registros propios de visitas.
+    </p>
+  </section>
+
+  <section class="flex flex-col gap-3">
+    <h2 class="text-lg font-semibold">Almacenamiento en tu navegador</h2>
+    <p>
+      Para funcionar sin conexión, el sitio guarda en la caché de tu navegador sus archivos, el
+      diccionario y las páginas que abres, incluida la búsqueda o la palabra de su dirección. Esa
+      copia se queda en tu dispositivo, nunca se envía a ningún servidor, y puedes borrarla en
+      cualquier momento desde la configuración del navegador.
     </p>
   </section>
 

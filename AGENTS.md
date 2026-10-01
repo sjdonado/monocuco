@@ -29,7 +29,7 @@ src/app.html                     # Document shell, meta tags, theme-color
 src/lib/db/repository.ts         # initDB, findAll (browse, letter, search, cursor pagination), findSuggestions, findById, getLetterCounts, firstLetter
 src/lib/components/              # SearchInput (combobox), WordCard (entry row; h1 headword on a word page, h2 in lists), LetterNav (letter row)
 src/lib/stores/search-status.ts  # searchFailed / searchError, shared by the search UI
-src/routes/+layout.svelte        # Sticky header (logo, search) on every page, footer, SW registration, analytics
+src/routes/+layout.svelte        # Sticky header (logo, search) on every page, footer, SW registration
 src/routes/+page.svelte          # Home: count label, letter row and list; letter (?letter=), search results (?q=), word detail (?word=), pagination (?after=)
 src/routes/+layout.server.ts     # Server render of the home states (not ?q=) for the first page view only: untracked, so no browser navigation calls the worker
 src/hooks.server.ts              # Markdown for `Accept: text/markdown` on /, and Vary: Accept
@@ -93,7 +93,7 @@ When you add a page, a route state or a flow, add it to `PAGES` or `auditFlows` 
 
 **The repository module holds state.** `initDB()` caches both success and failure for the page's lifetime; after a failed load every query rejects until reload. Tests reload the module with `vi.resetModules()` to get a clean copy.
 
-**Vite loads `.env` into tests and builds.** `PUBLIC_MODE=production` adds the Umami analytics script. `PUBLIC_WORD_SUBMISSION_WEBHOOK` is no longer read by any code. The audit blocks every third-party request, so it never sends analytics or a submission.
+**Vite loads `.env` into tests and builds.** No code reads any variable from it any more: the analytics script (`PUBLIC_MODE`) and the web submission form (`PUBLIC_WORD_SUBMISSION_WEBHOOK`) were removed. The site collects no data itself, and `/privacy` says so; adding any tracking means updating that page in the same change. The audit blocks every third-party request.
 
 **Playwright needs its own Chromium build.** The browser test project and the audit use the `playwright` version pinned in `package.json`. After an install or upgrade, run `bunx playwright install chromium` if a run fails with "Executable doesn't exist".
 

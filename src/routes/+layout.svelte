@@ -1,6 +1,5 @@
 <script lang="ts">
   import "../app.css";
-  import { env } from "$env/dynamic/public";
   import logo from "$lib/assets/logo.webp";
   import { onMount } from "svelte";
   import { dev } from "$app/environment";
@@ -22,17 +21,6 @@
   onMount(() => {
     // The audit waits for this before it clicks: the server's HTML has no handlers yet.
     document.documentElement.dataset.hydrated = "";
-
-    // Analytics follow `PUBLIC_MODE` from the Cloudflare Pages project's variables (through
-    // `/_app/env.js` on prerendered pages and the worker's env on /; Pages gives both the same
-    // variables). Added in the browser only, so no rendered HTML carries the script.
-    if (env.PUBLIC_MODE === "production") {
-      const script = document.createElement("script");
-      script.defer = true;
-      script.src = "https://umami.donado.co/script.js";
-      script.dataset.websiteId = "1c0c2c7a-ae4f-4f41-9e8c-7de069c9e06c";
-      document.head.append(script);
-    }
     if (dev || !("serviceWorker" in navigator)) {
       return;
     }
