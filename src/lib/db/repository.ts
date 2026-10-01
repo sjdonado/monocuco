@@ -71,7 +71,6 @@ export const seedWords = (list: Word[]) => {
 export const seedIndex = (indexJson: string) => {
   miniSearch = MiniSearch.loadJSON(indexJson, {
     fields: ["word", "definition"],
-    storeFields: ["word", "definition"],
     idField: "id",
     processTerm,
     searchOptions: {
@@ -152,7 +151,7 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
   const after = options.after?.trim() || null;
   const letter = firstLetter(options.letter?.trim() ?? "") || null;
 
-  let resultIds: string[] = [];
+  let resultIds: string[];
   let approximate = false;
 
   if (term.length > 0) {

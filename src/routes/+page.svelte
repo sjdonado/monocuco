@@ -1,7 +1,7 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
-  import { tick } from "svelte";
+  import { tick, untrack } from "svelte";
   import { page } from "$app/state";
   import WordCard from "$lib/components/WordCard.svelte";
   import LetterNav from "$lib/components/LetterNav.svelte";
@@ -9,14 +9,13 @@
     findAll,
     findById,
     firstLetter,
-    initDB,
     type QueryAllResult,
     type Word,
   } from "$lib/db/repository";
   import { AlertCircleIcon, SearchIcon } from "@lucide/svelte";
   import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, plainText, wordPath } from "$lib/site";
   import type { PageData } from "./$types";
-  import { searchFailed, searchError } from "$lib/stores/search-status";
+  import { searchFailed, searchError, searchReady, warmSearch } from "$lib/stores/search-status";
 
   // Get prerendered data from load function
   const { data } = $props<{ data: PageData }>();
@@ -41,16 +40,35 @@
     loadTimeSeconds: 0,
     approximate: false,
   });
-  const rendered = data.ssr?.search === page.url.search ? data.ssr : null;
+  // The first page of all words, built with the site, pager included: shown when the visitor
+  // navigates back to all words, so that page never needs the search data either.
+  const initialResult = (): QueryAllResult => ({
+    items: data.initialWords,
+    total: data.totalWords,
+    currentAfter: null,
+    nextAfter: data.nextAfter,
+    prevAfter: null,
+    startIndex: 1,
+    endIndex: Math.min(data.pageSize, data.totalWords),
+    currentPage: 1,
+    totalPages: data.totalPages,
+    pages: data.pages,
+    loadTimeSeconds: 0,
+    approximate: false,
+  });
+
+  // Read once, on purpose: what the server rendered for the URL the page opened with.
+  const rendered = untrack(() => (data.ssr?.search === page.url.search ? data.ssr : null));
   const renderedWord = rendered && "word" in rendered ? rendered.word : undefined;
 
   // State for displaying words
   let items = $state<Word[]>(
-    renderedWord ? [renderedWord] : (rendered?.result?.items ?? data.initialWords ?? [])
+    renderedWord
+      ? [renderedWord]
+      : (rendered?.result?.items ?? untrack(() => data.initialWords) ?? [])
   );
   let error = $state<string | null>(renderedWord === null ? NOT_FOUND : null);
 
-  let initStarted = $state(false);
   let initDone = $state(false);
 
   // Track search data errors from shared store
@@ -104,8 +122,10 @@
   const isLetter = $derived(Boolean(letterParam) && !isSearching && !isWordDetail);
   // User needs the search data if they're searching, paginating, browsing a letter, or viewing a word
   const needsDB = $derived(isSearching || isPaginating || isWordDetail || isLetter);
-  // Home with no search, letter, page or word.
-  const isWelcome = $derived(!needsDB);
+  // The failure screen only when this state needs the data: a load started by a reader who
+  // only hovered the letters or the pager must not replace the page they are reading.
+  const showFailure = $derived(searchHasFailed && needsDB && !showsRendered);
+  const searchOff = $derived(searchHasFailed && !showFailure);
 
   // The word a word page shows, once it is the loaded entry (not the previous list).
   const shownWord = $derived(
@@ -279,31 +299,42 @@
     }
   }
 
-  // Initialize search data in background (even if not immediately needed)
+  // Back on the URL the server rendered, before the data is ready: its words again, not the
+  // state the visitor left (for example all words after "Todas", then Back).
+  const showRendered = () => {
+    items = renderedWord ? [renderedWord] : (rendered?.result?.items ?? data.initialWords ?? []);
+    result = renderedWord ? singleResult(renderedWord) : (rendered?.result ?? null);
+    error = renderedWord === null ? NOT_FOUND : null;
+  };
   $effect(() => {
-    if (!browser || initStarted || searchHasFailed) return;
+    if (browser && !initDone && showsRendered) showRendered();
+  });
 
-    initStarted = true;
+  // The search data loads on first use (`warmSearch`), not on every visit: here, as soon as
+  // the URL asks for a state the server did not render and the site did not build (a search,
+  // a letter, a page or a word reached in the app). All words uses the first page built with
+  // the site.
+  $effect(() => {
+    if (!browser || initDone || searchHasFailed || showsRendered) return;
+    if (!needsDB) {
+      items = data.initialWords || [];
+      result = initialResult();
+      error = null;
+      return;
+    }
     startInitialLoadingBar();
-    searchError.set(null);
-    searchFailed.set(false);
+    warmSearch();
+  });
 
-    // Warm up the search index and data in the background
-    initDB()
-      .then(() => {
-        stopInitialLoadingBar();
-        // The audit waits for this: the server's HTML alone proves nothing about the client.
-        document.documentElement.dataset.searchReady = "";
-        console.log("[Page] Search data ready");
-      })
-      .catch((err) => {
-        console.error("[Page] Search data initialization failed:", err);
-        searchFailed.set(true);
-        searchError.set(
-          "No pudimos cargar los datos de búsqueda locales. Intenta de nuevo más tarde."
-        );
-        stopInitialLoadingBar();
-      });
+  $effect(() => {
+    const unsubscribe = searchReady.subscribe((ready) => {
+      if (ready) stopInitialLoadingBar();
+    });
+    return unsubscribe;
+  });
+
+  $effect(() => {
+    if (searchHasFailed) stopInitialLoadingBar();
   });
 
   // Load data when URL params change
@@ -321,13 +352,15 @@
     const failed = searchHasFailed;
 
     if (failed) {
-      // Keep what the server rendered for this URL; otherwise the welcome screen still has
-      // the first page built with the site.
-      if (!showsRendered) {
+      // The server's words for its URL (also after Back); otherwise the welcome screen still
+      // has the first page built with the site.
+      if (showsRendered) {
+        showRendered();
+      } else {
         items = needsDatabase ? [] : data.initialWords || [];
-        result = null;
+        result = needsDatabase ? null : initialResult();
+        error = null;
       }
-      error = null;
       return;
     }
 
@@ -460,7 +493,7 @@
 </script>
 
 <svelte:head>
-  {#if searchHasFailed}
+  {#if showFailure}
     <title>Monocuco | Error</title>
   {:else if isWordDetail}
     <!-- Neutral while loading, then the word, or "not found". -->
@@ -491,7 +524,7 @@
       class="bg-primary pointer-events-none fixed top-0 left-0 z-50 h-1 w-full motion-safe:animate-pulse"
     ></div>
   {/if}
-  {#if searchHasFailed}
+  {#if showFailure}
     <section role="alert" class="bg-base-100 border-hairline rounded-box flex gap-3 border p-6">
       <AlertCircleIcon class="text-error size-5 shrink-0" aria-hidden="true" />
       <div class="flex flex-col gap-2">
@@ -511,14 +544,6 @@
         </div>
       </div>
     </section>
-    {#if (isWelcome || showsRendered) && items.length > 0}
-      <!-- The server's words, or the first page built with the site, work without the data. -->
-      <div class="flex flex-col">
-        {#each items as entry (entry.id)}
-          <WordCard {entry} shareUrl={buildShareUrl(entry.id, entry.word)} />
-        {/each}
-      </div>
-    {/if}
   {:else}
     <!-- Every state is a search: all words is the empty query, a letter or a word is a
          narrower one. Each starts with the same result line, on the left. The h1 names the
@@ -582,6 +607,22 @@
         {#if !isSearching && !isWordDetail}
           <LetterNav current={isLetter ? letterParam : null} />
         {/if}
+        <!-- A load started by hovering failed: the page stays, and search says why it is off.
+             The live region is always there (out of the layout), so the sentence is announced
+             when it appears; the visible copy is hidden from assistive technology. -->
+        <span role="status" class="sr-only"
+          >{#if searchOff}La búsqueda no está disponible en este momento.{/if}</span
+        >
+        {#if searchOff}
+          <p class="text-muted flex flex-wrap items-center gap-x-2 text-sm">
+            <span aria-hidden="true">La búsqueda no está disponible en este momento.</span>
+            <button
+              type="button"
+              class="link hover:text-primary inline-flex min-h-6 items-center"
+              onclick={() => location.reload()}>Reintentar</button
+            >
+          </p>
+        {/if}
       </section>
     {/if}
 
@@ -629,8 +670,12 @@
     {/if}
 
     {#if displayTotal > PAGE_SIZE && !isPending && !isWordDetail && !error}
-      <div
+      <!-- Reaching for the pager starts loading the search data the next page needs. -->
+      <nav
+        aria-label="Paginación"
         class="border-hairline flex min-h-10 max-w-2xl items-center justify-center gap-1 border-t pt-8 sm:gap-2"
+        onpointerenter={warmSearch}
+        onfocusin={warmSearch}
       >
         <button
           type="button"
@@ -678,7 +723,7 @@
         >
           Siguiente
         </button>
-      </div>
+      </nav>
     {/if}
   {/if}
 </div>

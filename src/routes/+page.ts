@@ -7,6 +7,8 @@ interface InitialWordsData {
   total: number;
   totalPages: number;
   pageSize: number;
+  pages: Array<{ number: number; after: string | null }>;
+  nextAfter: string | null;
   generatedAt: string;
 }
 
@@ -19,5 +21,7 @@ export const load: PageLoad = () => {
     totalWords: data.total,
     totalPages: data.totalPages,
     pageSize: data.pageSize,
+    pages: data.pages,
+    nextAfter: data.nextAfter,
   };
 };

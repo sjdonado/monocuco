@@ -4,14 +4,14 @@
  * Plain HTTP against the preview server; every finding is a hard failure.
  */
 
-import { ORIGIN, sample, words } from "./app-states.js";
+import { ORIGIN, sample, words } from "./app-states.ts";
 import { firstLetter } from "../../src/lib/text.js";
 
 const SITE = "https://monocuco.sjdonado.com";
 const MIN_TEXT = 500;
 
 // Visible text of the <main> element, as a client that does not run JavaScript reads it.
-const mainText = (html) =>
+const mainText = (html: string) =>
   (/<main[^>]*>([\s\S]*)<\/main>/.exec(html)?.[1] ?? "")
     .replace(/<(script|style)[\s\S]*?<\/\1>/g, " ")
     .replace(/<!--[\s\S]*?-->/g, "")
@@ -20,20 +20,20 @@ const mainText = (html) =>
     .replace(/\s+/g, " ")
     .trim();
 
-const headings = (html) =>
+const headings = (html: string) =>
   [...html.matchAll(/<h([1-6])[^>]*>([\s\S]*?)<\/h\1>/g)].map((m) => ({
     level: Number(m[1]),
     text: m[2].replace(/<[^>]+>/g, "").trim(),
   }));
 
-const attr = (html, pattern) => new RegExp(pattern).exec(html)?.[1] ?? null;
+const attr = (html: string, pattern: string) => new RegExp(pattern).exec(html)?.[1] ?? null;
 
-export async function auditMachineReadable(fail) {
-  const get = (path, headers = {}, init = {}) =>
+export async function auditMachineReadable(fail: (where: string, message: string) => void) {
+  const get = (path: string, headers: Record<string, string> = {}, init: RequestInit = {}) =>
     fetch(ORIGIN + path, { headers, redirect: "manual", ...init });
 
   // Pages: content, one h1, sequential headings and metadata, before any JavaScript runs.
-  const pages = [
+  const pages: { path: string; h1: string | RegExp; text?: string; min?: number }[] = [
     { path: "/", h1: /Monocuco/, text: words[0].word },
     // A word page is as long as its definition: it must carry the word, not 500 characters.
     {
@@ -45,7 +45,8 @@ export async function auditMachineReadable(fail) {
     {
       path: "/?letter=M",
       h1: /Palabras con M/,
-      text: words.find((w) => firstLetter(w.word) === "M").word,
+      // The dataset has words under M, or the audit has nothing to check.
+      text: words.find((w) => firstLetter(w.word) === "M")!.word,
     },
     { path: "/about", h1: /Acerca de/ },
     { path: "/contact", h1: /Contacto/ },
@@ -85,7 +86,8 @@ export async function auditMachineReadable(fail) {
       try {
         const graph = JSON.parse(jsonLd ?? "")["@graph"];
         const type = spec.path.includes("word=") ? "DefinedTerm" : "WebSite";
-        if (!graph.some((node) => node["@type"] === type)) fail(where, `JSON-LD has no ${type}`);
+        if (!graph.some((node: { "@type": string }) => node["@type"] === type))
+          fail(where, `JSON-LD has no ${type}`);
       } catch {
         fail(where, "no valid JSON-LD");
       }
@@ -178,7 +180,7 @@ export async function auditMachineReadable(fail) {
   const required = spec.components.schemas.WordPage.required;
   const list = await get("/api/words?q=carnaval");
   const listBody = await list.json();
-  if (list.status !== 200 || required.some((k) => !(k in listBody)))
+  if (list.status !== 200 || required.some((k: string) => !(k in listBody)))
     fail("api", `GET /api/words?q=carnaval: ${list.status}, keys ${Object.keys(listBody)}`);
   if (!listBody.items?.length) fail("api", "search for carnaval found nothing");
   if (listBody.next) {
@@ -193,7 +195,7 @@ export async function auditMachineReadable(fail) {
 
   // Every error is an RFC 9457 problem document with the documented code.
   const codes = spec.components.schemas.Problem.properties.code.enum;
-  const errors = [
+  const errors: [string, number, string, string?][] = [
     ["/api/words/does-not-exist", 404, "word_not_found"],
     ["/api/words?letter=MM", 400, "invalid_letter"],
     ["/api/words?limit=0", 400, "invalid_limit"],

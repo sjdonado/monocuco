@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 /**
  * Browser audit of the built app. Serves the production build with `vite preview`,
  * opens every page and state in Chromium at a phone and a desktop width, in light and
@@ -13,11 +13,11 @@
  * font sizes and radii outside the token scale, a single h1, a visible keyboard focus
  * ring, and third-party font requests.
  *
- * Before the browser, scripts/lib/machine-checks.js reads what agents and crawlers get over
+ * Before the browser, scripts/lib/machine-checks.ts reads what agents and crawlers get over
  * plain HTTP (raw HTML, Markdown, sitemap, robots.txt, llms.txt, OpenAPI, the API and its
  * errors); those are hard checks too.
  *
- * Usage: node scripts/ui-audit.js [--strict] [--no-build] [--only=<page-name>]
+ * Usage: bun scripts/ui-audit.ts [--strict] [--no-build] [--only=<page-name>]
  * Output: .svelte-kit/ui-audit/report.json and one screenshot per page, viewport and scheme.
  */
 
@@ -25,11 +25,12 @@ import { spawnSync } from "node:child_process";
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { chromium } from "playwright";
+import type { Browser, BrowserContext, Page } from "playwright";
 import {
   ORIGIN,
   PAGES,
   ROOT,
-  VITE,
+  viteCommand,
   cardsAre,
   filedUnder,
   letterShows,
@@ -37,11 +38,14 @@ import {
   words,
   newContext,
   sample,
+  type PageState,
+  type Scheme,
+  type Viewport,
   searchShows,
   startPreview,
   wordShows,
-} from "./lib/app-states.js";
-import { auditMachineReadable } from "./lib/machine-checks.js";
+} from "./lib/app-states.ts";
+import { auditMachineReadable } from "./lib/machine-checks.ts";
 
 const OUT_DIR = resolve(ROOT, ".svelte-kit/ui-audit");
 
@@ -50,11 +54,11 @@ const STRICT = args.has("--strict");
 const BUILD = !args.has("--no-build");
 const ONLY = [...args].find((a) => a.startsWith("--only="))?.slice("--only=".length);
 
-const VIEWPORTS = [
+const VIEWPORTS: (Viewport & { name: string })[] = [
   { name: "360", width: 360, height: 800, isMobile: true, hasTouch: true },
   { name: "1440", width: 1440, height: 900, isMobile: false, hasTouch: false },
 ];
-const SCHEMES = ["light", "dark"];
+const SCHEMES: Scheme[] = ["light", "dark"];
 
 // Design thresholds. The design spec owns these numbers; keep them in sync with it.
 const DESIGN = {
@@ -72,7 +76,7 @@ const DESIGN = {
     ["search field", "form[role=search] label"],
     ["pagination previous", "button[data-pagination=prev]"],
     ["pagination next", "button[data-pagination=next]"],
-  ],
+  ] as [string, string][],
   minFocusContrast: 3,
   minBrowseTarget: 32, // px, letters and page numbers
   browseTargets: 'nav[aria-label="Navegación por letras"] a, button[data-page]',
@@ -87,13 +91,64 @@ if (PAGES_AUDITED.length === 0) {
   throw new Error(`unknown page ${ONLY}; one of ${PAGES.map((p) => p.name).join(", ")}`);
 }
 
-const failures = [];
-const designIssues = [];
-const report = { strict: STRICT, design: DESIGN, pages: [] };
+/** What `measure` reports about the page it runs in. */
+interface Measurements {
+  h1Count: number;
+  seo: {
+    title: string;
+    descriptions: number;
+    h1: string;
+    lang: string;
+    ogUrl: string;
+    canonicals: string[];
+  };
+  boxedEntries: number;
+  resultLine: number | null;
+  offScaleFonts: string[];
+  offScaleRadii: string[];
+  shortPrimaryTargets: string[];
+  scrollWidth: number;
+  clientWidth: number;
+  lowContrast: string[];
+  weakFields: string[];
+  smallTargets: string[];
+  shadows: string[];
+  hues: Record<string, { count: number; examples: string[] }>;
+  radii: Record<string, number>;
+  fontSizes: Record<string, number>;
+  fontFamilies: Record<string, number>;
+}
 
-const fail = (where, message) => failures.push(`${where}: ${message}`);
+/** The focus ring of the focused element; `wrapped` once the tab order came back around. */
+interface FocusRing {
+  wrapped?: true;
+  where?: string;
+  ok?: boolean;
+  why?: string;
+}
 
-function run(cmd, cmdArgs) {
+interface Report {
+  strict: boolean;
+  design: typeof DESIGN;
+  pages: ({ where: string; external: string[] } & Measurements)[];
+  failures?: string[];
+  designIssues?: string[];
+}
+
+/** Red, green, blue (0-255) and alpha (0-1). */
+type Rgba = [number, number, number, number];
+
+const failures: string[] = [];
+const designIssues: string[] = [];
+const report: Report = { strict: STRICT, design: DESIGN, pages: [] };
+
+const fail = (where: string, message: string) => failures.push(`${where}: ${message}`);
+
+// The first line of a thrown error's message, for the one-line failure report.
+const firstLine = (err: unknown) =>
+  (err instanceof Error ? err.message : String(err)).split("\n")[0];
+
+function run(cmd: string, cmdArgs: string[]) {
   const result = spawnSync(cmd, cmdArgs, { cwd: ROOT, stdio: "inherit" });
   if (result.status !== 0) throw new Error(`${cmd} ${cmdArgs.join(" ")} exited ${result.status}`);
 }
@@ -102,8 +157,14 @@ function run(cmd, cmdArgs) {
  * Wire up error capture for a page. Third-party requests are blocked so the audit
  * is offline and deterministic; a blocked request is recorded, not treated as an error.
  */
-function instrument(page, where, allowStatus = [], allowConsole = [], allowRequestFailed = []) {
-  const external = [];
+function instrument(
+  page: Page,
+  where: string,
+  allowStatus: number[] = [],
+  allowConsole: RegExp[] = [],
+  allowRequestFailed: RegExp[] = []
+): string[] {
+  const external: string[] = [];
   page.on("request", (req) => {
     const url = req.url();
     if (!url.startsWith(ORIGIN) && !url.startsWith("data:")) external.push(url);
@@ -139,13 +200,20 @@ function instrument(page, where, allowStatus = [], allowConsole = [], allowReque
  * Runs in the page. Returns layout and design measurements, or with `focusOnly` only the
  * focus ring of the focused element.
  */
-function measure({ design, focusOnly = false }) {
+function measure({
+  design,
+  focusOnly = false,
+}: {
+  design: typeof DESIGN;
+  focusOnly?: boolean;
+}): Measurements | FocusRing | null {
   const canvas = document.createElement("canvas");
   canvas.width = canvas.height = 1;
-  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  // A 1x1 canvas always has a 2d context.
+  const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
 
   // Resolve any CSS color (oklch, color-mix, named) to sRGB through the canvas.
-  const toRgba = (css) => {
+  const toRgba = (css: string | null): Rgba => {
     if (!css || css === "transparent") return [0, 0, 0, 0];
     ctx.clearRect(0, 0, 1, 1);
     ctx.fillStyle = "#000";
@@ -156,42 +224,42 @@ function measure({ design, focusOnly = false }) {
     // getImageData returns premultiplied-then-unpremultiplied values; alpha is 0-255.
     return [r, g, b, a / 255];
   };
-  const over = (top, bottom) => {
+  const over = (top: Rgba, bottom: Rgba): Rgba => {
     const a = top[3] + bottom[3] * (1 - top[3]);
     if (a === 0) return [0, 0, 0, 0];
-    const mix = (i) => (top[i] * top[3] + bottom[i] * bottom[3] * (1 - top[3])) / a;
+    const mix = (i: number) => (top[i] * top[3] + bottom[i] * bottom[3] * (1 - top[3])) / a;
     return [mix(0), mix(1), mix(2), a];
   };
-  const luminance = ([r, g, b]) => {
-    const lin = (c) => {
+  const luminance = ([r, g, b]: Rgba) => {
+    const lin = (c: number) => {
       const s = c / 255;
       return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
     };
     return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
   };
-  const contrast = (a, b) => {
+  const contrast = (a: Rgba, b: Rgba) => {
     const [l1, l2] = [luminance(a), luminance(b)].sort((x, y) => y - x);
     return (l1 + 0.05) / (l2 + 0.05);
   };
-  const hue = ([r, g, b]) => {
+  const hue = ([r, g, b]: Rgba): number | null => {
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
     const d = max - min;
     if (d < design.minChroma) return null;
-    let h;
+    let h: number;
     if (max === r) h = ((g - b) / d) % 6;
     else if (max === g) h = (b - r) / d + 2;
     else h = (r - g) / d + 4;
     return (h * 60 + 360) % 360;
   };
-  const visible = (el) => {
+  const visible = (el: Element) => {
     const rect = el.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) return false;
     const style = getComputedStyle(el);
     return style.visibility !== "hidden" && style.display !== "none" && Number(style.opacity) > 0;
   };
-  const describe = (el) => {
-    const text = (el.innerText || el.getAttribute("aria-label") || "")
+  const describe = (el: Element) => {
+    const text = ((el as HTMLElement).innerText || el.getAttribute("aria-label") || "")
       .replace(/\s+/g, " ")
       .trim()
       .slice(0, 40);
@@ -205,11 +273,12 @@ function measure({ design, focusOnly = false }) {
   // Background behind an element: composite every ancestor's background from the root.
   // The canvas behind a transparent root is white in light and dark gray in dark schemes.
   const dark = matchMedia("(prefers-color-scheme: dark)").matches;
-  const rootBg = dark ? [18, 18, 18, 1] : [255, 255, 255, 1];
-  const backgroundOf = (el) => {
-    const chain = [];
-    for (let node = el; node && node.nodeType === 1; node = node.parentElement) chain.push(node);
-    let bg = rootBg;
+  const rootBg: Rgba = dark ? [18, 18, 18, 1] : [255, 255, 255, 1];
+  const backgroundOf = (el: Element) => {
+    const chain: Element[] = [];
+    for (let node: Element | null = el; node && node.nodeType === 1; node = node.parentElement)
+      chain.push(node);
+    let bg: Rgba = rootBg;
     let unknown = false;
     for (const node of chain.reverse()) {
       const style = getComputedStyle(node);
@@ -220,17 +289,17 @@ function measure({ design, focusOnly = false }) {
   };
 
   // Focus ring of the focused element: outline, or a box-shadow ring, against its surroundings.
-  const focusRing = () => {
+  const focusRing = (): FocusRing | null => {
     const focused = document.activeElement;
     if (!focused || focused === document.body) return null;
     // A field inside a DaisyUI `input` wrapper shows its ring on the wrapper.
-    const el = focused.closest(".input") ?? focused;
+    const el = (focused.closest(".input") ?? focused) as HTMLElement;
     // Focus came back to an element already checked: the tab order has wrapped.
     if (el.dataset.auditFocused) return { wrapped: true };
     el.dataset.auditFocused = "1";
     const style = getComputedStyle(el);
     const outline = style.outlineStyle !== "none" && parseFloat(style.outlineWidth) >= 1;
-    const ringColor = outline
+    const ringColor: string | null | undefined = outline
       ? style.outlineColor
       : style.boxShadow !== "none"
         ? style.boxShadow.match(/(?:rgba?|oklch|oklab|lab|lch|hsla?|color)\([^)]*\)/i)?.[0]
@@ -253,15 +322,16 @@ function measure({ design, focusOnly = false }) {
   // Status colors are allowed only in status messages and form validation (design.md, decision 5).
   const describedByInvalid = new Set(
     [...document.querySelectorAll("[aria-invalid=true][aria-describedby]")].flatMap((f) =>
-      f.getAttribute("aria-describedby").split(/\s+/)
+      // The selector requires the attribute.
+      f.getAttribute("aria-describedby")!.split(/\s+/)
     )
   );
-  const isStatus = (el) =>
+  const isStatus = (el: Element) =>
     Boolean(el.closest("[role=status], [role=alert], [aria-invalid=true]")) ||
     [...describedByInvalid].some((id) => el.closest(`#${CSS.escape(id)}`));
 
   const doc = document.documentElement;
-  const result = {
+  const result: Measurements = {
     h1Count: document.querySelectorAll("h1").length,
     // What search engines and assistive technology read about the page.
     seo: {
@@ -270,7 +340,9 @@ function measure({ design, focusOnly = false }) {
       h1: document.querySelector("h1")?.textContent?.replace(/\s+/g, " ").trim() ?? "",
       lang: document.documentElement.lang,
       ogUrl: document.querySelector('meta[property="og:url"]')?.getAttribute("content") ?? "",
-      canonicals: [...document.querySelectorAll('link[rel="canonical"]')].map((l) => l.href),
+      canonicals: [...document.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]')].map(
+        (l) => l.href
+      ),
     },
     // Entries are rows everywhere: a word entry with side borders or corners is a boxed card.
     boxedEntries: [...document.querySelectorAll("article")].filter((a) => {
@@ -302,8 +374,9 @@ function measure({ design, focusOnly = false }) {
   };
 
   const all = [...document.body.querySelectorAll("*")].filter(visible);
-  const bucket = (h) => (Math.round(h / design.hueBucketDegrees) * design.hueBucketDegrees) % 360;
-  const addHue = (el, css, prop) => {
+  const bucket = (h: number) =>
+    (Math.round(h / design.hueBucketDegrees) * design.hueBucketDegrees) % 360;
+  const addHue = (el: Element, css: string, prop: string) => {
     if (isStatus(el)) return;
     const rgba = toRgba(css);
     if (rgba[3] < 0.1) return;
@@ -339,7 +412,7 @@ function measure({ design, focusOnly = false }) {
       if (offScale) result.offScaleRadii.push(`${style.borderRadius} ${describe(el)}`);
     }
 
-    const hasText = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
+    const hasText = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent?.trim());
     if (hasText) {
       result.fontSizes[style.fontSize] = (result.fontSizes[style.fontSize] ?? 0) + 1;
       if (!design.allowedFontSizes.includes(parseFloat(style.fontSize)))
@@ -367,7 +440,8 @@ function measure({ design, focusOnly = false }) {
     // A <label for> is a target of its own only for a checkbox or radio;
     // a text field's label is not, because the field itself is the target (and is measured).
     const forControl = el.matches("label[for]")
-      ? document.getElementById(el.getAttribute("for"))
+      ? // The selector requires the attribute.
+        document.getElementById(el.getAttribute("for")!)
       : null;
     const interactive =
       forControl?.matches("[type=checkbox], [type=radio]") ||
@@ -403,7 +477,8 @@ function measure({ design, focusOnly = false }) {
           `boundary ${ratio.toFixed(2)} < ${design.minFieldBoundary} ${describe(el)}`
         );
     }
-    const field = el.matches("label.input") ? el.querySelector("input") : el;
+    const field = (el.matches("label.input") ? el.querySelector("input") : el) as
+      HTMLInputElement | HTMLTextAreaElement | null;
     if (field?.placeholder && !field.value) {
       const bg = backgroundOf(field).bg;
       const ph = over(toRgba(getComputedStyle(field, "::placeholder").color), bg);
@@ -439,7 +514,7 @@ function measure({ design, focusOnly = false }) {
   return result;
 }
 
-async function openPage(context, spec, where) {
+async function openPage(context: BrowserContext, spec: PageState, where: string) {
   const page = await context.newPage();
   const external = instrument(
     page,
@@ -451,14 +526,12 @@ async function openPage(context, spec, where) {
   if (spec.setup) await spec.setup(page);
   await page.goto(ORIGIN + spec.path, { waitUntil: "networkidle" });
   page.setDefaultTimeout(10_000);
-  await spec
-    .ready(page)
-    .catch((err) => fail(where, `never reached its state: ${err.message.split("\n")[0]}`));
+  await spec.ready(page).catch((err) => fail(where, `never reached its state: ${firstLine(err)}`));
   page.setDefaultTimeout(5_000);
   return { page, external };
 }
 
-async function auditPages(browser) {
+async function auditPages(browser: Browser) {
   for (const viewport of VIEWPORTS) {
     for (const scheme of SCHEMES) {
       const context = await newContext(browser, viewport, scheme);
@@ -472,7 +545,7 @@ async function auditPages(browser) {
           path: resolve(OUT_DIR, `${spec.name}-${viewport.name}-${scheme}.png`),
           fullPage: true,
         });
-        const m = await page.evaluate(measure, { design: DESIGN });
+        const m = (await page.evaluate(measure, { design: DESIGN })) as Measurements;
 
         if (m.scrollWidth > m.clientWidth)
           fail(where, `horizontal scroll: scrollWidth ${m.scrollWidth} > ${m.clientWidth}`);
@@ -536,20 +609,25 @@ async function auditPages(browser) {
 }
 
 /** Core flows, run once per viewport. Each step asserts the visible outcome. */
-async function auditFlows(browser) {
+async function auditFlows(browser: Browser) {
   if (ONLY) return;
   for (const viewport of VIEWPORTS) {
     const context = await newContext(browser, viewport, "light");
-    const at = (flow) => `flow:${flow}@${viewport.name}`;
-    const pageNamed = (name) =>
-      typeof name === "string" ? PAGES.find((p) => p.name === name) : name;
-    const step = async (flow, startAt, fn) => {
-      let page;
+    const at = (flow: string) => `flow:${flow}@${viewport.name}`;
+    // Every name passed here is in PAGES.
+    const pageNamed = (name: string | PageState): PageState =>
+      typeof name === "string" ? PAGES.find((p) => p.name === name)! : name;
+    const step = async (
+      flow: string,
+      startAt: string | PageState,
+      fn: (page: Page) => Promise<unknown>
+    ) => {
+      let page: Page | undefined;
       try {
         ({ page } = await openPage(context, pageNamed(startAt), at(flow)));
         await fn(page);
       } catch (err) {
-        fail(at(flow), err.message.split("\n")[0]);
+        fail(at(flow), firstLine(err));
       } finally {
         await page?.close();
       }
@@ -567,11 +645,132 @@ async function auditFlows(browser) {
       await welcomeShows(page);
     });
 
+    // A reader downloads no search data: not on load, not from the service worker, not on the
+    // way back to all words from another page. The first focus on the search field does.
+    // Context-level requests include the service worker's; the listener exists before loading.
+    {
+      const own = await newContext(browser, viewport, "light");
+      const fetched: string[] = [];
+      own.on("request", (request) => {
+        if (/\/(data|search-index)\.json$/.test(new URL(request.url()).pathname))
+          fetched.push(`${request.serviceWorker() ? "worker " : ""}${request.url()}`);
+      });
+      let page: Page | undefined;
+      try {
+        ({ page } = await openPage(own, pageNamed("about"), at("reader-loads-no-search-data")));
+        await page.waitForFunction(() => "hydrated" in document.documentElement.dataset);
+        await page.evaluate(() => navigator.serviceWorker.ready);
+        await page.getByRole("link", { name: "Monocuco, inicio" }).click();
+        await welcomeShows(page);
+        await page.mouse.wheel(0, 1500);
+        await page.waitForTimeout(1500);
+        if (fetched.length) throw new Error(`a reader downloaded ${fetched.join(", ")}`);
+        await page.getByRole("combobox", { name: "Buscar palabras" }).focus();
+        await page.waitForFunction(() => "searchReady" in document.documentElement.dataset);
+        const names = new Set(fetched.map((f) => new URL(f.split(" ").pop()!).pathname));
+        if (!names.has("/data.json") || !names.has("/search-index.json"))
+          throw new Error(`focusing search fetched only ${fetched.join(", ")}`);
+        // The worker fetches the pair once, not once per request.
+        const byWorker = fetched.filter((f) => f.startsWith("worker "));
+        if (byWorker.length !== 2) throw new Error(`the worker fetched ${byWorker.join(", ")}`);
+      } catch (err) {
+        fail(at("reader-loads-no-search-data"), firstLine(err));
+      } finally {
+        await own.close();
+      }
+    }
+
+    // Back on a page the server rendered shows its words again, also before the search data is
+    // ready: a letter page, then "Todas" (the first page built with the site), then Back.
+    {
+      const own = await newContext(browser, viewport, "light", { serviceWorkers: "block" });
+      let page: Page | undefined;
+      try {
+        ({ page } = await openPage(
+          own,
+          {
+            ...pageNamed("letter"),
+            // Hold the data back, so all of this happens before it is ready.
+            setup: (p) =>
+              p.route("**/data.json", async (route) => {
+                await new Promise((r) => setTimeout(r, 4000));
+                await route.continue();
+              }),
+          },
+          at("back-to-rendered")
+        ));
+        await page.getByRole("link", { name: "Todas" }).click();
+        await page.waitForURL((url) => !url.search);
+        await cardsAre(0)(page);
+        await page.goBack();
+        await page.waitForURL(/letter=M/);
+        const expected = words
+          .filter((w) => filedUnder(w.word) === "M")
+          .slice(0, 12)
+          .map((w) => w.word);
+        await page.waitForFunction(
+          (want) =>
+            JSON.stringify(
+              [...document.querySelectorAll("article h2")].map((h) => h.textContent?.trim())
+            ) === JSON.stringify(want),
+          expected,
+          { timeout: 2000 }
+        );
+        // Only meaningful before the data arrived; otherwise the browser computed the cards.
+        if (await page.evaluate(() => "searchReady" in document.documentElement.dataset))
+          throw new Error("the data was ready before Back; the flow proved nothing");
+      } catch (err) {
+        fail(at("back-to-rendered"), firstLine(err));
+      } finally {
+        await own.close();
+      }
+    }
+
+    // Reaching for the pager starts the load; when it fails, the reader keeps the page, and
+    // only the state that needs the data (the next page) shows the failure.
+    {
+      const own = await newContext(browser, viewport, "light", { serviceWorkers: "block" });
+      let page: Page | undefined;
+      try {
+        ({ page } = await openPage(
+          own,
+          {
+            ...pageNamed("home"),
+            setup: (p) => p.route("**/data.json", (route) => route.fulfill({ status: 500 })),
+            allowStatus: [500],
+            allowConsole: [/Failed to init search data/, /Search data initialization failed/],
+            allowRequestFailed: [/\/data\.json$/],
+          },
+          at("warm-failure-keeps-page")
+        ));
+        const asked = page.waitForRequest((r) => r.url().endsWith("/data.json"));
+        await page.getByRole("button", { name: "Siguiente" }).focus();
+        await asked;
+        await page
+          .getByRole("combobox", { name: "Buscar palabras" })
+          .and(page.locator("[disabled]"))
+          .waitFor();
+        if (await page.getByRole("alert").count())
+          throw new Error("a failed load started by focusing the pager replaced the page");
+        if ((await page.locator("article").count()) !== 12)
+          throw new Error("the page lost its words after a failed load");
+        await page.getByText("La búsqueda no está disponible", { exact: false }).first().waitFor();
+        if ((await page.getByRole("button", { name: "Reintentar" }).count()) !== 1)
+          throw new Error("the notice has no Reintentar button");
+        await page.getByRole("button", { name: "Siguiente" }).click();
+        await page.getByRole("alert").getByRole("button", { name: "Reintentar" }).waitFor();
+      } catch (err) {
+        fail(at("warm-failure-keeps-page"), firstLine(err));
+      } finally {
+        await own.close();
+      }
+    }
+
     await step("search-stays-local", "about", async (page) => {
       // Searching from another page, and going home, never asks the server: the search
       // stays in the browser (the privacy page says so) and works offline.
       await page.waitForFunction(() => "hydrated" in document.documentElement.dataset);
-      const asked = [];
+      const asked: string[] = [];
       page.on("request", (request) => {
         const url = new URL(request.url());
         if (url.pathname === "/" || url.pathname.endsWith("__data.json")) asked.push(url.href);
@@ -587,12 +786,17 @@ async function auditFlows(browser) {
     });
 
     {
-      // After one visit the service worker opens any state of the home page offline. Its own
+      // After one visit with a search, the service worker opens any state of the home page offline. Its own
       // context, so the service worker and cache are this flow's alone.
       const own = await newContext(browser, viewport, "light");
-      let page;
+      let page: Page | undefined;
       try {
-        ({ page } = await openPage(own, pageNamed("home"), at("offline-home")));
+        ({ page } = await openPage(
+          own,
+          // Offline, the browser logs that the worker's update check could not fetch the script.
+          { ...pageNamed("home"), allowConsole: [/error occurred when fetching the script/] },
+          at("offline-home")
+        ));
         await page.evaluate(async () => {
           await navigator.serviceWorker.ready;
           if (!navigator.serviceWorker.controller)
@@ -600,11 +804,15 @@ async function auditFlows(browser) {
               navigator.serviceWorker.addEventListener("controllerchange", r)
             );
         });
+        // The search data is cached the first time it is used (it is not precached), so search
+        // once online; after that every state opens offline.
+        await page.getByRole("combobox", { name: "Buscar palabras" }).focus();
+        await page.waitForFunction(() => "searchReady" in document.documentElement.dataset);
         await own.setOffline(true);
         await page.goto(`${ORIGIN}/?letter=M`);
         await letterShows("M")(page);
       } catch (err) {
-        fail(at("offline-home"), err.message.split("\n")[0]);
+        fail(at("offline-home"), firstLine(err));
       } finally {
         await own.close();
       }
@@ -815,12 +1023,13 @@ async function auditFlows(browser) {
 }
 
 /** Tabs through each focus page and checks every stop shows a visible ring. */
-async function auditFocus(browser) {
+async function auditFocus(browser: Browser) {
   for (const viewport of VIEWPORTS.filter((v) => DESIGN.focusViewports.includes(v.name)))
     for (const scheme of SCHEMES) {
       const context = await newContext(browser, viewport, scheme);
       for (const name of DESIGN.focusPages) {
-        const spec = PAGES.find((p) => p.name === name);
+        // focusPages names pages in PAGES.
+        const spec = PAGES.find((p) => p.name === name)!;
         if (ONLY && ONLY !== name) continue;
         const where = `focus:${name}@${viewport.name}/${scheme}`;
         const { page } = await openPage(context, spec, where);
@@ -830,7 +1039,10 @@ async function auditFocus(browser) {
           await page.evaluate(
             () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))
           );
-          const ring = await page.evaluate(measure, { design: DESIGN, focusOnly: true });
+          const ring = (await page.evaluate(measure, {
+            design: DESIGN,
+            focusOnly: true,
+          })) as FocusRing | null;
           if (!ring) continue;
           if (ring.wrapped) break;
           if (!ring.ok) designIssues.push(`${where}: focus ${ring.why} ${ring.where}`);
@@ -842,12 +1054,12 @@ async function auditFocus(browser) {
 }
 
 async function main() {
-  if (BUILD) run(VITE, ["build"]);
+  if (BUILD) run(...viteCommand("build"));
   rmSync(OUT_DIR, { recursive: true, force: true });
   mkdirSync(OUT_DIR, { recursive: true });
 
   const server = await startPreview();
-  let browser;
+  let browser: Browser | undefined;
   try {
     // Launched inside the try, so a missing browser build never leaves the server running.
     browser = await chromium.launch();
@@ -866,15 +1078,15 @@ async function main() {
 
   // Group findings that differ only by page, viewport, scheme or element text,
   // so one repeated class shows as one line with an example.
-  const summarize = (title, list, { ignoreText = false } = {}) => {
-    const groups = new Map();
+  const summarize = (title: string, list: string[], { ignoreText = false } = {}) => {
+    const groups = new Map<string, { example: string; wheres: Set<string>; count: number }>();
     for (const line of list) {
       const split = line.indexOf(": ");
       const where = line.slice(0, split);
       const what = line.slice(split + 2).split("\n")[0];
       const key = ignoreText ? what.replace(/ "[^"]*"/, "") : what;
       if (!groups.has(key)) groups.set(key, { example: what, wheres: new Set(), count: 0 });
-      const group = groups.get(key);
+      const group = groups.get(key)!; // set just above
       group.wheres.add(where);
       group.count++;
     }

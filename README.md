@@ -11,7 +11,7 @@ Para aportar nuevas palabras al diccionario, usa el CLI y abre un Pull Request:
 
 ### Usar el CLI
 
-Requisitos: Node.js (o [Bun](https://bun.sh/)).
+Requisitos: [Bun](https://bun.sh/).
 
 ```sh
 bun install

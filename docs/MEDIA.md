@@ -13,7 +13,7 @@ Regenerate the image in the same change whenever that change alters how the home
 3. Run `bun run media`. It builds the app, serves it with `vite preview`, opens each state with third-party requests blocked and reduced motion on, waits until the client shows the state (the home page's word list and letter row, or the single word), removes focus and hover, and captures at device pixel ratio 2. Then it converts each capture with `cwebp -q 80` to 1600 px wide.
 4. The script fails when `cwebp` is missing, when a state never appears, or when the image is over 200 KB.
 
-The shot, its viewport, scheme and state are the `SHOTS` table in `scripts/capture-media.js`. Change them there, not by hand.
+The shot, its viewport, scheme and state are the `SHOTS` table in `scripts/capture-media.ts`. Change them there, not by hand.
 
 ## Checks on the result
 

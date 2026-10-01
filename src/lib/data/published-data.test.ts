@@ -24,7 +24,7 @@ describe("published data", () => {
 
   it("carries each source entry's current word and definition", () => {
     const byId = new Map(published.map((w) => [w.id, w]));
-    // Legacy entries (no `word` field) are normalized by build-index.js; compare the rest verbatim.
+    // Legacy entries (no `word` field) are normalized by build-index.ts; compare the rest verbatim.
     const stale = source
       .filter((w) => "word" in w && "createdBy" in w)
       .filter((w) => {
@@ -44,12 +44,16 @@ describe("published data", () => {
       readFileSync(resolve(root, "static/search-index.json"), "utf-8"),
       {
         fields: ["word", "definition"],
-        storeFields: ["word", "definition"],
         idField: "id",
       }
     );
     expect(index.documentCount).toBe(published.length);
     expect(published.filter((w) => !index.has(w.id)).map((w) => w.id)).toEqual([]);
+  });
+
+  it("stores no fields in the index: results are looked up by id in data.json", () => {
+    const json = JSON.parse(readFileSync(resolve(root, "static/search-index.json"), "utf-8"));
+    expect(Object.keys(json.storedFields ?? {})).toEqual([]);
   });
 
   it("builds the letter row with the same filing rule the client uses", () => {
@@ -66,5 +70,13 @@ describe("published data", () => {
     expect(initial.total).toBe(source.length);
     expect(initial.totalPages).toBe(Math.ceil(source.length / initial.pageSize));
     expect(initial.words).toEqual(published.slice(0, initial.pageSize));
+  });
+
+  it("builds the first page's pager exactly as the client computes it", async () => {
+    const repo = await import("../db/repository");
+    repo.seedWords(published as never);
+    const first = await repo.findAll({ pageSize: initial.pageSize });
+    expect(initial.pages).toEqual(first.pages);
+    expect(initial.nextAfter).toBe(first.nextAfter);
   });
 });

@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 /**
  * CLI to append a new word entry to the project JSON dataset.
  */
@@ -21,11 +21,11 @@ const CONTRIBUTORS_HEADER = "## Contribuidores";
  * @param {string} line - Markdown table row
  * @returns {string[]} Array of cell contents
  */
-function splitMarkdownRow(line) {
+function splitMarkdownRow(line: string): string[] {
   let core = line.trim();
   if (core.startsWith("|")) core = core.slice(1);
   if (core.endsWith("|")) core = core.slice(0, -1);
-  return core.split("|").map((cell) => cell.trim());
+  return core.split("|").map((cell: string) => cell.trim());
 }
 
 /**
@@ -33,7 +33,7 @@ function splitMarkdownRow(line) {
  * @param {string[]} cells - Array of cell contents
  * @returns {string} Formatted markdown row
  */
-function formatMarkdownRow(cells) {
+function formatMarkdownRow(cells: string[]): string {
   return `| ${cells.join(" | ")} |`;
 }
 
@@ -42,7 +42,7 @@ function formatMarkdownRow(cells) {
  * @param {string | null | undefined} value - Value to normalize
  * @returns {string} Normalized identifier
  */
-function normalizeIdentifier(value) {
+function normalizeIdentifier(value: string | null | undefined): string {
   if (!value) return "";
   return value
     .normalize("NFKD")
@@ -58,7 +58,11 @@ function normalizeIdentifier(value) {
  * @param {string} readmePath - Path to README file
  * @returns {boolean} True if updated successfully
  */
-function updateReadmeContributors(author, website, readmePath = README_PATH) {
+function updateReadmeContributors(
+  author: string | null | undefined,
+  website: string | null | undefined,
+  readmePath = README_PATH
+): boolean {
   const authorName = (author || "").trim();
   if (!authorName) return false;
 
@@ -70,13 +74,15 @@ function updateReadmeContributors(author, website, readmePath = README_PATH) {
       (line) => normalizeIdentifier(line) === normalizeIdentifier(CONTRIBUTORS_HEADER)
     );
 
-    let tableStart = null;
+    let tableStart: number | null = null;
     for (let i = headerIdx + 1; i < lines.length; i++) {
       if (lines[i].trim().startsWith("|")) {
         tableStart = i;
         break;
       }
     }
+    // Without a table the old code threw on `lines[null].trim()`; the catch below reports it.
+    if (tableStart === null) throw new Error("no se encontró la tabla de contribuidores");
 
     let tableEnd = lines.length;
     for (let i = tableStart; i < lines.length; i++) {
@@ -92,10 +98,10 @@ function updateReadmeContributors(author, website, readmePath = README_PATH) {
     const columns = headerCells.length;
 
     // Build flat cells array from table
-    const rows = [];
+    const rows: string[][] = [];
     for (const line of dataLines) {
       if (!line.trim().startsWith("|")) continue;
-      let cells = splitMarkdownRow(line);
+      const cells = splitMarkdownRow(line);
       while (cells.length < columns) {
         cells.push("");
       }
@@ -128,7 +134,7 @@ function updateReadmeContributors(author, website, readmePath = README_PATH) {
         }
 
         flatCells[idx] = cell.replace(/href="[^"]*"/, `href="${target}"`);
-        const newRows = [];
+        const newRows: string[][] = [];
         for (let i = 0; i < flatCells.length; i += columns) {
           newRows.push(flatCells.slice(i, i + columns));
         }
@@ -143,7 +149,7 @@ function updateReadmeContributors(author, website, readmePath = README_PATH) {
 
       // Add href to existing cell
       flatCells[idx] = `<a href="${target}">${cell}</a>`;
-      const newRows = [];
+      const newRows: string[][] = [];
       for (let i = 0; i < flatCells.length; i += columns) {
         newRows.push(flatCells.slice(i, i + columns));
       }
@@ -172,7 +178,7 @@ function updateReadmeContributors(author, website, readmePath = README_PATH) {
       flatCells[emptyIndex] = newCell;
     }
 
-    const newRows = [];
+    const newRows: string[][] = [];
     for (let i = 0; i < flatCells.length; i += columns) {
       newRows.push(flatCells.slice(i, i + columns));
     }
@@ -186,42 +192,41 @@ function updateReadmeContributors(author, website, readmePath = README_PATH) {
     console.log(`✅ README.md actualizado con ${authorName} en la lista de contribuidores.`);
     return true;
   } catch (err) {
-    console.log(`⚠️ No se pudo actualizar README.md: ${err.message}`);
+    console.log(
+      `⚠️ No se pudo actualizar README.md: ${err instanceof Error ? err.message : String(err)}`
+    );
     return false;
   }
 }
 
-/**
- * Entry data structure
- * @typedef {Object} Entry
- * @property {string} id - Unique identifier
- * @property {string} word - Word or expression
- * @property {string} definition - Definition
- * @property {string} example - Usage example
- * @property {Object} createdBy - Author information
- * @property {string | null} createdBy.name - Author name
- * @property {string | null} createdBy.website - Author website
- * @property {string} createdAt - ISO timestamp
- */
+/** Entry data structure */
+interface Entry {
+  id: string;
+  word: string;
+  definition: string;
+  example: string;
+  createdBy: { name: string | null; website: string | null };
+  createdAt: string;
+}
 
-/**
- * Add entry options
- * @typedef {Object} AddEntryOptions
- * @property {string} word - Word or expression to add
- * @property {string} definition - Definition in markdown
- * @property {string} [example] - Example usage
- * @property {string | null} [author] - Author name
- * @property {string | null} [website] - Author website
- * @property {string | null} [createdAt] - ISO timestamp
- * @property {string} [jsonPath] - Path to JSON file
- * @property {boolean} [dryRun] - Print without writing
- */
+/** Add entry options */
+interface AddEntryOptions {
+  /** Word or expression to add */
+  word: string;
+  /** Definition in markdown */
+  definition: string;
+  example?: string;
+  author?: string | null;
+  website?: string | null;
+  /** ISO timestamp */
+  createdAt?: string | null;
+  /** Path to JSON file */
+  jsonPath?: string;
+  /** Print without writing */
+  dryRun?: boolean;
+}
 
-/**
- * Add a new word entry
- * @param {AddEntryOptions} options - Entry options
- * @returns {Entry} The created entry
- */
+/** Add a new word entry */
 function addEntry({
   word,
   definition,
@@ -231,7 +236,7 @@ function addEntry({
   createdAt = null,
   jsonPath = DEFAULT_JSON_PATH,
   dryRun = false,
-}) {
+}: AddEntryOptions): Entry {
   const timestamp = createdAt || new Date().toISOString().replace(/\+00:00$/, "Z");
   const entryId = randomUUID();
 
@@ -260,7 +265,7 @@ function addEntry({
   const authorValue = author?.trim() || null;
   const websiteValue = website?.trim() || null;
 
-  const entry = {
+  const entry: Entry = {
     id: entryId,
     word: normalizedWord,
     definition: cleanedDefinition,
@@ -278,7 +283,7 @@ function addEntry({
   }
 
   // Update JSON file
-  let records = [];
+  let records: Entry[] = [];
   if (existsSync(jsonPath)) {
     records = JSON.parse(readFileSync(jsonPath, "utf-8"));
   }
@@ -289,6 +294,17 @@ function addEntry({
 
   console.log(`✅ Added '${entry.word}' to ${jsonPath}`);
   return entry;
+}
+
+interface AddEntryCliOptions {
+  word: string;
+  definition: string;
+  example: string;
+  author?: string;
+  website?: string;
+  createdAt?: string;
+  json: string;
+  dryRun: boolean;
 }
 
 const program = new Command();
@@ -304,7 +320,7 @@ program
   .option("--created-at <timestamp>", "ISO timestamp (defaults to current UTC time)")
   .option("--json <path>", "Target JSON file", DEFAULT_JSON_PATH)
   .option("--dry-run", "Print the would-be entry without writing to disk", false)
-  .action((options) => {
+  .action((options: AddEntryCliOptions) => {
     addEntry({
       word: options.word,
       definition: options.definition,

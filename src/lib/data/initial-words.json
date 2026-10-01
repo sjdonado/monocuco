@@ -238,5 +238,24 @@
       "count": 29
     }
   ],
-  "generatedAt": "2026-09-30T14:52:31.623Z"
+  "pages": [
+    {
+      "number": 1,
+      "after": null
+    },
+    {
+      "number": 2,
+      "after": "7082f691-8e02-4de2-a2a0-371458472108"
+    },
+    {
+      "number": 3,
+      "after": "25338142-8bb6-4846-aa0a-66f58498def7"
+    },
+    {
+      "number": 4,
+      "after": "8e518681-7977-4a1f-ad24-3403e5cbd9da"
+    }
+  ],
+  "nextAfter": "7082f691-8e02-4de2-a2a0-371458472108",
+  "generatedAt": "2026-10-01T09:12:02.365Z"
 }
