@@ -540,7 +540,7 @@
       <section class="flex flex-col gap-4">
         <div class="flex items-baseline justify-between gap-4">
           <p
-            class="text-muted min-w-0 text-sm font-medium break-words tabular-nums"
+            class="text-muted min-w-0 grow text-sm font-medium break-words tabular-nums"
             aria-live="polite"
           >
             {#if isWordDetail || isSearching}
