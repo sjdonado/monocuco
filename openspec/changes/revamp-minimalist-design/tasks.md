@@ -1,0 +1,80 @@
+## 1. Tokens alone (human checkpoint at the end)
+
+- [x] 1.1 Replace both theme blocks in `src/app.css` with the design.md decision 1 palette. Alias `secondary`, `accent` and `neutral` to neutrals, set the status colors to chroma of at most 0.09, and set the radii to 0.375rem, 0.5rem and 9999px. Verify: `bun run check`, and in the built CSS no theme variable has chroma above 0.16.
+- [x] 1.2 Add Inter variable (Latin subset, `woff2`, 400 to 600) and its OFL license to `static/fonts/`. Declare it with `@font-face` and `font-display: swap`, set it as `--font-sans` in `@theme` with the system fallback, and preload it in `src/app.html`. Verify: the audit report's `fontFamilies` shows only `Inter` and no third-party request.
+- [x] 1.3 Add the `text-muted` and `border-hairline` utilities and the global `:focus-visible` rule with `@utility` (design.md decision 4). Verify: with a keyboard, focus one `btn` and one `input`; the computed outline is the accent ring, so the rule wins over DaisyUI.
+- [x] 1.4 In `src/app.html`: set `lang="es"`, use the zoomable viewport `width=device-width, initial-scale=1`, and add two `theme-color` metas with `media` queries. In `static/manifest.json`, set `theme_color` and `background_color` to the light `base-100`. Verify: `bun run build` and view the page source of the built `/`.
+- [x] 1.5 Tune the accent lightness until `bun run audit:ui` reports no contrast issue on an accent-colored element in either theme, then record the final token values in design.md decision 1. Verify: the audit report.
+- [x] 1.6 Present the screenshots in `.svelte-kit/ui-audit/` (home and `/add`, 360 and 1440, light and dark) to the user, and fold their reaction into design.md before any page work.
+
+## 2. Enforcement and the class recipe
+
+- [x] 2.1 Move the preview server start, the `PAGES` table and the ready waits from `scripts/ui-audit.js` into `scripts/lib/app-states.js`, and import it back. Verify: `bun run audit:ui` gives the same hard-failure count (0) and the same number of distinct design issues as before the move.
+- [x] 2.2 Add the strict rules to `DESIGN` in `scripts/ui-audit.js`: allowed font sizes, allowed radii, primary target heights at 360 px, a single `h1`, and the status-hue exemption (design.md decisions 5 and 8). Verify: each rule reports the current violations in report mode (for example, the two `h1` per page) and an injected violation fails `--strict`.
+- [x] 2.3 Add the keyboard focus pass to `scripts/ui-audit.js`: tab through home, `/add` and `/guidelines`, and require a visible outline or ring of at least 3:1 on every focused element. Verify: it passes after task 1.3, and fails when the global focus rule is removed.
+- [x] 2.4 Add `scripts/design-lint.js` with the banned patterns from design.md decision 8, and run it from `bun run lint`, first in report mode (exit 0 with a count). Verify: it lists the current violations by `path:line`.
+- [x] 2.5 Write the class-level style recipe at `.agent/revamp-minimalist-design.style.md`, the file every implementer follows. For color, borders, radius, type, buttons, inputs, dropdown, drawer, pagination, focus, empty, pending and status states, it names the allowed and the banned classes. Verify: every banned class in the recipe is also in `design-lint.js`.
+
+## 3. Pages, in parallel on disjoint file sets
+
+- [x] 3.1 Shell (`src/routes/+layout.svelte`, `src/lib/components/SearchInput.svelte`, `src/lib/components/LetterNav.svelte`): the brand stops being an `h1`; the header, the drawer and the footer use the tokens; "Desarollado" becomes "Desarrollado"; suggestions show the pending row (design.md decision 6); the dropdown has no shadow; the letter rows are at least 24 px tall; counts use `tabular-nums`; the search box is at least 40 px tall at 360 px. Verify: `bun run check`, `bun run lint`, and the audit flows search-submit and suggestion-select pass.
+- [x] 3.2 Home (`src/routes/+page.svelte`, `src/lib/components/WordCard.svelte`): the cards are borders without shadows, the headword follows decision 2, the author row meets the target size, the empty search is a neutral `role="status"` empty state, the failure panel follows decision 6, the pagination reserves one height in both modes with 32 px number targets and 40 px previous and next buttons at 360 px, the current page is marked by accent and `aria-current`, and the share confirmation is muted with an icon. Verify: `bun run test` (the WordCard tests unchanged) and the audit flows pagination-next and suggestion-select. (Also fixed on review: the result count printed a raw float and "0 resultado"; it now pluralizes and rounds to 3 decimals, see the Honest copy requirement.)
+- [x] 3.3 Content and form (`src/routes/add/+page.svelte`, `src/routes/guidelines/+page.svelte`): neutral headings without emoji, `rel="noreferrer"` fixed, the form as a bordered panel, the fields with `aria-invalid` and `aria-describedby`, inputs at `text-base` below `sm`, the success and error messages with `role="status"` and `role="alert"`, and the submit button at least 40 px tall at 360 px. Verify: the audit flow add-validation, and a manual submit with the webhook unset shows the existing error message.
+- [x] 3.4 Delete `src/lib/components/WordCardSkeleton.svelte`. Verify: `grep -rn WordCardSkeleton src` returns nothing, and `bun run check` passes.
+
+## 4. Enforce and verify
+
+- [x] 4.1 Switch `design-lint.js` to failing mode and `ci` to `audit:ui -- --strict`, and update AGENTS.md, Verification, to match. Verify: `bun run ci` exits 0.
+- [x] 4.2 Spec review by an agent that did not build the change: check the diff against every requirement in `specs/design-system/spec.md` and hunt behavior regressions (same links, buttons, fields, accessible names and URL parameters on every page). Verify: every finding is fixed or rejected with a reason, and `bun run ci` exits 0 again.
+- [x] 4.3 Browser pass by an agent that did not build the change: walk every page and state at 360 and 1440 px in both themes, including the drawer, the suggestions, the disabled pagination, the search data failure (block `/data.json`), and the `/add` success and error states (stub the webhook). Measure scroll width, target sizes, contrast and focus instead of eyeballing. Verify: its report finds nothing blocking, and repeat after fixes until it does.
+- [x] 4.4 Run Lighthouse accessibility on `/`, `/add` and `/guidelines` in both schemes once, by hand, against `vite preview`. Verify: 100 on each, or a recorded disagreement with the audit resolved per design.md decision 8. Result 2026-09-30 (Lighthouse 12, Playwright Chromium 141, `vite preview`): 100 on `/`, `/add` and `/guidelines` in the light scheme. The dark runs also scored 100, but whether `--blink-settings=preferredColorScheme=0` switched the scheme is unverified (the accessibility-only run keeps no screenshot); dark contrast is covered element by element by `audit:ui -- --strict`.
+- [x] 4.5 Design critique of home by a read-only agent, against the strict philosophy: reduction to the essential, the dictionary content as the hero, one accent per screen. It proposes a concrete outline that uses only existing copy. Verify: present it to the user, and fold in only what they accept.
+
+## 5. README media (last)
+
+- [x] 5.1 Add `scripts/capture-media.js` (design.md decision 9) and the `media` script. Verify: two runs on the same commit produce `docs/media/home-light.webp` and `docs/media/word-dark.webp`, each static WebP of at most 200 KB, with the same framing.
+- [x] 5.2 Add the two images to the README with Spanish alt text, write `docs/MEDIA.md` (when to run, the command, the checks), and link it from AGENTS.md. Verify: open the README preview and check that the word card text is readable at the rendered width.
+- [x] 5.3 Final ladder: `bun run ci` exits 0 and `openspec validate revamp-minimalist-design --strict` passes. Publishing is a separate step: no commit, push or PR happens until the user approves it.
+
+## 6. Iteration 2: search and welcome (user feedback 2026-09-30)
+
+- [x] 6.1 Confirm the submission path: production `/_app/env.js` is `{}`, so `/add` could never deliver. Remove `src/routes/add/`, the header and drawer links to it, and README section 2. Verify: `grep -rn "/add" src` returns nothing.
+- [x] 6.2 Welcome screen: logo, site name as `h1`, description, large search field and the letter row as the hero; no header bar on the welcome screen; one compact header elsewhere; footer with version, guidelines, source and author. Verify: the audit's `home` state and screenshots.
+- [x] 6.3 Remove the letter sidebar and the mobile drawer; one `max-w-2xl` column. Verify: `bun run check` and the strict audit at 360 px.
+- [x] 6.4 Browse by letter at `/?letter=`, filing words under their Spanish letter (`firstLetter`), with the letter row marking the current one and a count line. Verify: the repository tests for letter browse, filing and order, and the audit's `letter` state and `letter-browse` flow.
+- [x] 6.5 Search combobox: Down, Up, Enter, Escape, `aria-activedescendant`, five suggestions with one definition line, focus kept on mouse choice. Verify: the audit's `suggestion-keyboard` flow.
+- [x] 6.6 Pending state instead of the prerendered first page while a search, letter, page or word waits for the data; count line without timing. Verify: the audit's `search` and `letter` states wait for their own content.
+- [x] 6.7 Update the spec, AGENTS.md, docs/MEDIA.md and the README screenshots (the desktop shot is now the welcome screen). Verify: `openspec validate --strict`, `bun run ci` and `bun run media` twice with identical output.
+
+## 7. Flow review (user request: "double check all possible user flows make sense")
+
+- [x] 7.1 One entry style everywhere: the single word is a row like every list, and its hidden title takes no space (user feedback: "a card for the word, but the welcome doesnt have cards anymore"). Verify: the audit's "boxed word entries" and "empty gap above the word" checks, which fail when the box or a gap is put back.
+- [x] 7.2 Old links: a styled not-found page (`src/routes/+error.svelte`) with "Volver al inicio". Verify: the audit's `not-found` state and `not-found-home` flow.
+- [x] 7.3 Letter row: "Todas" while browsing a letter, `?letter=` filed by the same rule, counts built into `initial-words.json` so the row does not shift the page. Verify: `letter-to-all` and `letter-accent` flows, and the published-data test that the build-time letters equal the runtime filing.
+- [x] 7.4 Tab title of a single word is the word. Verify: open a word URL.
+- [x] 7.5 Flows in the audit: back from a search to the welcome screen, page 2 and back, letter pagination. Verify: `bun run ci` exits 0.
+- [x] 7.6 Independent walkthrough of every user flow by an agent that did not build it (13 problems). Fixed: paging is history with focus kept on the pager; failed load keeps the prerendered page and offers "Reintentar"; one shared `isWelcomeUrl` so empty params never show two search fields; empty submit returns to all words; accent-folded index and queries (`src/lib/text.js`); AND search with labeled approximate fallback; Spanish dictionary order in `build-index.js`; missing word without pager, with a link and title; letter copy and plural; `/add` 404 hint and "¿Cómo proponer una palabra?" on `/guidelines`; neutral title while a word loads; guidelines title order; Spanish dates in UTC; share links without `after`. Not done (not broken flows, recorded): headwords as links, page numbers in titles, first/last page links. Letters and page numbers are 32 px and audited at that size. Verify: audit flows `search-paging-history`, `clear-search`, `accents-fold`, `word-not-found`, `not-found-home`; repository tests for accents, AND and approximate; a manual 500 probe (retry recovers, 12 prerendered words stay on `/`).
+
+## 8. One layout (user feedback 2026-09-30: "don't have a different layout for the welcome page")
+
+- [x] 8.1 Remove the welcome hero and the large search variant; the sticky header with the search field is on every page from the first load; the description moves to the footer. Verify: every audit screenshot shows the header; `bun run check`.
+- [x] 8.2 The count label is the `h1` of every list, left-aligned in the same place ("2767 palabras", "255 palabras con M", "8 resultados para ..."); the letter row follows on browse pages and always starts with "Todas". Verify: the audit's `letterShows` and `searchShows` read the count from the `h1`, and the single-`h1` check.
+- [x] 8.3 Card meta on phones: the date on its own line instead of a wrapped "•". Verify: phone screenshots.
+- [x] 8.4 Remove `zod` and `@tanstack/svelte-form` (`bun remove`), used only by the removed `/add`. Verify: no import in `src/` or `scripts/`, `bun run ci` exits 0.
+
+## 9. Every state is a search, and SEO (user feedback 2026-09-30)
+
+- [x] 9.1 One result line for every state, including all words (the empty query) and a single word: "2767 palabras encontradas", "8 palabras encontradas para ...", "255 palabras encontradas con M", "1 palabra encontrada para ...", "N palabras parecidas a ..." when approximate. Verify: the audit's result-line check (present on every list state, first in the content) and the `searchShows` and `letterShows` waits.
+- [x] 9.2 Headings: a visually hidden `h1` names each list page; the headword is the `h1` on a word's page; a missing or loading word keeps an `h1`. Verify: the single-`h1` and h1-describes-page checks.
+- [x] 9.3 Metadata: a site description in `app.html` (one per page), home title "Monocuco | Diccionario de español barranquillero", `og:url` and `og:image` absolute on `monocuco.sjdonado.com` (`monocuco.info` does not answer), `og:image` size corrected to 512. Verify: the audit's title, description, `lang` and `og:url` checks; Lighthouse accessibility and SEO 100 on `/`, a search, a letter, a word and `/guidelines` (2026-09-30).
+- [ ] 9.4 Known limit, not in this change: with `ssr = false` a crawler that does not run JavaScript sees only the `app.html` head and no words. Prerendering or server-rendering word pages would fix it and is its own change.
+
+## 10. Adversarial review before the PR (2 blind reviewers, 2026-09-30)
+
+- [x] 10.1 Search field: highlight forgotten on close; only the latest lookup ends "Buscando..."; a failed lookup says "Búsqueda no disponible por ahora."; focus stays in the field after choosing; listbox children have valid roles; empty submit clears only a search. Verify: `suggestions-pending` and `suggestion-select` flows.
+- [x] 10.2 Word page: named after the word when the link has no `q`; the previous list never shows under it; one `h1` in every state; the title and `h1` name a failed load or a missing word. Verify: `word-bare` state and the single-`h1` check.
+- [x] 10.3 Paging keeps focus in the pager on the first and last page; old `?after=` cursors snap to the page boundary. Verify: repository cursor test.
+- [x] 10.4 Text rules: `firstLetter` normalizes to NFC first; the repository's letter option uses `firstLetter`; the audit imports `firstLetter` instead of copying it; ñ is tested as its own letter. Verify: repository tests.
+- [x] 10.5 Audit: `data-failure` state (own context, worker blocked), 32 px browse targets, README desktop shot at a 760 px viewport. Also fixed: `registration?.update()` for browsers that block service workers. Verify: `bun run ci` exits 0.
+- [x] 10.6 Removed dead code (`url-state.ts`, the LetterNav failure branch), the 2 px load bar (now 4 px), stale AGENTS.md lines and spec wording that no longer matched the result line.
+- [x] 10.7 Round 2 (one reviewer, the files round 1 touched): no regression from round 1; fixed older issues the redesign exposes. The field drops stale suggestions and in-flight lookups when the URL changes, and never overwrites typing for a whitespace-only URL change. URL canonicalization keeps focus and scroll and never rewrites a newer history entry. The pager awaits the navigation before repairing focus. The blur timer respects refocus. The audit's `searchShows` folds accents. Verify: `bun run ci` exits 0.

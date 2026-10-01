@@ -3,10 +3,8 @@
   import { env } from "$env/dynamic/public";
   import logo from "$lib/assets/logo.webp";
   import { onMount } from "svelte";
-  import { MenuIcon, XIcon } from "@lucide/svelte";
   import { dev } from "$app/environment";
   import SearchInput from "$lib/components/SearchInput.svelte";
-  import LetterNav from "$lib/components/LetterNav.svelte";
   import { APP_VERSION } from "$lib/config";
 
   const { children } = $props();
@@ -21,8 +19,9 @@
         const registration = await navigator.serviceWorker.register("/service-worker.js", {
           type: "module",
         });
-        // Immediately check for updates.
-        void registration.update();
+        // Immediately check for updates. Browsers that block service workers can resolve
+        // without a registration.
+        void registration?.update();
       } catch (error) {
         console.error("Service worker registration failed", error);
       }
@@ -42,104 +41,60 @@
   {/if}
 </svelte:head>
 
-<div class="min-h-screen">
-  <nav class="border-base-300 bg-base-100 sticky top-0 z-50 border-b">
-    <div class="drawer drawer-end">
-      <input id="nav-drawer" type="checkbox" class="drawer-toggle" />
-      <div class="drawer-content">
-        <div
-          class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6 md:flex-row md:items-center md:justify-between md:gap-6"
-        >
-          <div class="flex w-full flex-col gap-4 md:flex-row md:items-center md:gap-6">
-            <div class="flex w-full items-center gap-4 md:w-auto md:gap-6">
-              <a href="/" class="flex gap-2">
-                <img
-                  class="mx-auto max-h-8"
-                  src={logo}
-                  alt="Bailarina - Carnaval de Barranquilla, Colombia | Ilustración Andrés Urquina Sánchez"
-                  fetchpriority="high"
-                  decoding="async"
-                />
-                <h1 class="text-2xl font-bold normal-case">Monocuco</h1>
-              </a>
-              <label
-                for="nav-drawer"
-                class="btn btn-sm btn-ghost drawer-button ml-auto md:hidden"
-                aria-label="Abrir menú"
-              >
-                <MenuIcon class="size-5" aria-hidden="true" />
-              </label>
-            </div>
-            <div class="w-full md:flex-1">
-              <SearchInput />
-            </div>
-          </div>
-          <div class="hidden md:block">
-            <a href="/add" class="btn btn-sm btn-primary w-32">Agregar palabra</a>
-          </div>
-        </div>
-      </div>
-      <div class="drawer-side md:hidden">
-        <label for="nav-drawer" aria-label="Cerrar menú" class="drawer-overlay"></label>
-        <div class="bg-base-100 text-base-content flex h-screen w-full flex-col gap-6 p-6">
-          <div class="flex shrink-0 justify-end">
-            <label
-              for="nav-drawer"
-              class="btn btn-sm btn-ghost btn-circle"
-              aria-label="Cerrar menú"
-            >
-              <XIcon class="size-5" aria-hidden="true" />
-            </label>
-          </div>
-          <a
-            href="/add"
-            class="btn btn-primary w-full shrink-0"
-            onclick={() => {
-              const drawer = document.getElementById("nav-drawer") as HTMLInputElement;
-              if (drawer) drawer.checked = false;
-            }}
-          >
-            Agregar palabra
-          </a>
-          <div class="min-h-0 flex-1 overflow-y-auto">
-            <div
-              role="button"
-              tabindex="0"
-              onclick={() => {
-                const drawer = document.getElementById("nav-drawer") as HTMLInputElement;
-                if (drawer) drawer.checked = false;
-              }}
-              onkeydown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  const drawer = document.getElementById("nav-drawer") as HTMLInputElement;
-                  if (drawer) drawer.checked = false;
-                }
-              }}
-            >
-              <LetterNav />
-            </div>
-          </div>
-        </div>
+<div class="flex min-h-dvh flex-col">
+  <header class="border-hairline bg-base-100 sticky top-0 z-50 border-b">
+    <div class="mx-auto flex max-w-2xl items-center gap-4 px-4 py-3">
+      <a href="/" class="flex shrink-0 items-center gap-2" aria-label="Monocuco, inicio">
+        <img class="h-8 w-auto" src={logo} alt="" fetchpriority="high" decoding="async" />
+        <span class="hidden text-lg font-semibold tracking-tight sm:inline">Monocuco</span>
+      </a>
+      <div class="min-w-0 flex-1">
+        <SearchInput />
       </div>
     </div>
-  </nav>
-  <main class="mx-auto min-h-[89vh] max-w-6xl px-4 py-8">
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-[1fr_250px]">
-      <div class="flex flex-col gap-6">
-        {@render children()}
-      </div>
-      <aside class="hidden md:block">
-        <div class="sticky top-24">
-          <LetterNav />
-        </div>
-      </aside>
-    </div>
+  </header>
+  <main class="mx-auto w-full max-w-2xl flex-1 px-4 py-8">
+    {@render children()}
   </main>
-  <footer>
-    <p class="text-base-content/70 mb-2 flex items-center justify-center gap-1 text-xs">
-      v{APP_VERSION}
-      • Desarollado por
-      <a href="https://sjdonado.com" target="_blank" rel="noreferrer" class="link"> @sjdonado </a>
+  <footer class="text-muted flex flex-col items-center gap-2 px-4 py-8 text-center text-xs">
+    <p>
+      Diccionario abierto y gratuito de
+      <a
+        class="link hover:text-primary"
+        href="https://es.wikipedia.org/wiki/Español_barranquillero"
+        target="_blank"
+        rel="noreferrer">Español barranquillero</a
+      >.
+    </p>
+    <p class="flex flex-wrap items-center justify-center gap-x-2">
+      <span class="tabular-nums">v{APP_VERSION}</span>
+      <span class="whitespace-nowrap">
+        <span aria-hidden="true">•</span>
+        <a href="/guidelines" class="link hover:text-primary inline-flex min-h-6 items-center"
+          >Pautas de contenido</a
+        >
+      </span>
+      <span class="whitespace-nowrap">
+        <span aria-hidden="true">•</span>
+        <a
+          href="https://github.com/sjdonado/monocuco"
+          target="_blank"
+          rel="noreferrer"
+          class="link hover:text-primary inline-flex min-h-6 items-center">Github</a
+        >
+      </span>
+      <span class="whitespace-nowrap">
+        <span aria-hidden="true">•</span>
+        Desarrollado por
+        <a
+          href="https://sjdonado.com"
+          target="_blank"
+          rel="noreferrer"
+          class="link hover:text-primary inline-flex min-h-6 items-center"
+        >
+          @sjdonado
+        </a>
+      </span>
     </p>
   </footer>
 </div>

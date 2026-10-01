@@ -1,4 +1,7 @@
 import MiniSearch, { type SearchOptions } from "minisearch";
+import { firstLetter, processTerm } from "$lib/text.js";
+
+export { firstLetter };
 
 const DATA_URL = "/data.json";
 const INDEX_URL = "/search-index.json";
@@ -35,22 +38,20 @@ const SEARCH_BASE_OPTIONS: SearchOptions = {
   prefix: true,
 };
 
-const searchWithFallback = (term: string, overrides: SearchOptions = {}) => {
-  const strictResults = miniSearch!.search(term, {
-    ...SEARCH_BASE_OPTIONS,
-    ...overrides,
-    fuzzy: 0,
-  });
-
-  if (strictResults.length > 0) {
-    return strictResults;
+// Every word of the query must match (AND), exactly or as a prefix. Only when nothing
+// does, fall back to typo-tolerant matching, and then to any word of the query; those
+// results are approximate and the page says so.
+const searchWithFallback = (term: string) => {
+  const attempts: SearchOptions[] = [
+    { combineWith: "AND", fuzzy: 0 },
+    { combineWith: "AND", fuzzy: 0.2 },
+    { combineWith: "OR", fuzzy: 0.2 },
+  ];
+  for (const [index, attempt] of attempts.entries()) {
+    const results = miniSearch!.search(term, { ...SEARCH_BASE_OPTIONS, ...attempt });
+    if (results.length > 0) return { results, approximate: index > 0 };
   }
-
-  return miniSearch!.search(term, {
-    ...SEARCH_BASE_OPTIONS,
-    ...overrides,
-    fuzzy: 0.2,
-  });
+  return { results: [], approximate: false };
 };
 
 export const initDB = async () => {
@@ -78,6 +79,7 @@ export const initDB = async () => {
         fields: ["word", "definition"],
         storeFields: ["word", "definition"],
         idField: "id",
+        processTerm,
         searchOptions: {
           boost: { word: 2, definition: 1.2 },
           prefix: true,
@@ -108,6 +110,8 @@ const ensureDB = async () => {
 
 export interface QueryAllOptions {
   term?: string;
+  // Browse only the words whose first character is this letter (case-insensitive).
+  letter?: string | null;
   after?: string | null;
   pageSize?: number;
 }
@@ -124,6 +128,8 @@ export interface QueryAllResult {
   totalPages: number;
   pages: Array<{ number: number; after: string | null }>;
   loadTimeSeconds: number;
+  // True when no word matched exactly and the results come from typo-tolerant matching.
+  approximate: boolean;
 }
 
 export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllResult> => {
@@ -133,8 +139,10 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
   const term = options.term?.trim() ?? "";
   const pageSize = Math.max(1, options.pageSize ?? DEFAULT_PAGE_SIZE);
   const after = options.after?.trim() || null;
+  const letter = firstLetter(options.letter?.trim() ?? "") || null;
 
   let resultIds: string[] = [];
+  let approximate = false;
 
   if (term.length > 0) {
     // Search mode
@@ -142,8 +150,12 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
     // For simplicity in this static context, we just re-run search. it's fast.
     // However, pagination with 'after' in search results implies we know the order of search results.
     // MiniSearch returns sorted by relevance.
-    const searchResults = searchWithFallback(term);
-    resultIds = searchResults.map((r) => r.id);
+    const search = searchWithFallback(term);
+    approximate = search.approximate;
+    resultIds = search.results.map((r) => r.id);
+  } else if (letter) {
+    // Letter mode - the sorted list, only words starting with the letter
+    resultIds = items.filter((i) => firstLetter(i.word) === letter).map((i) => i.id);
   } else {
     // Browse mode - use full sorted list
     resultIds = items.map((i) => i.id);
@@ -168,7 +180,9 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
       // It used 'startIndex' derived from 'rn'.
       // If 'after' provided, 'rn' of that ID became 'startIndex'.
       // So 'after' == "start at this ID".
-      startIndex = foundIndex;
+      // Snap to the page the cursor is on, so a cursor saved before the order changed
+      // (an old bookmark) still lands on a page boundary.
+      startIndex = Math.floor(foundIndex / pageSize) * pageSize;
     }
   }
 
@@ -228,6 +242,7 @@ export const findAll = async (options: QueryAllOptions = {}): Promise<QueryAllRe
     totalPages,
     pages,
     loadTimeSeconds: (performance.now() - startedAt) / 1000,
+    approximate,
   };
 };
 
@@ -244,6 +259,7 @@ function emptyResult(startedAt: number): QueryAllResult {
     totalPages: 1,
     pages: [],
     loadTimeSeconds: (performance.now() - startedAt) / 1000,
+    approximate: false,
   };
 }
 
@@ -262,7 +278,7 @@ export const findSuggestions = async (
   const limit = Math.max(1, options.limit ?? 5);
 
   // MiniSearch is optimized for this
-  const results = searchWithFallback(term, { combineWith: "AND" });
+  const { results } = searchWithFallback(term);
 
   return results.slice(0, limit).map((r) => ({
     id: r.id,
@@ -288,14 +304,14 @@ export const getLetterCounts = async (): Promise<LetterCount[]> => {
   let total = 0;
 
   for (const item of items) {
-    const letter = item.word.charAt(0).toUpperCase();
+    const letter = firstLetter(item.word);
     counts.set(letter, (counts.get(letter) ?? 0) + 1);
     total++;
   }
 
   const result: LetterCount[] = [{ letter: "Todas", count: total }];
 
-  const sortedLetters = Array.from(counts.keys()).sort();
+  const sortedLetters = Array.from(counts.keys()).sort((a, b) => a.localeCompare(b, "es"));
   for (const letter of sortedLetters) {
     result.push({ letter, count: counts.get(letter)! });
   }

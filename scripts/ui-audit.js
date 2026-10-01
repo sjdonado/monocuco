@@ -8,23 +8,37 @@
  * requests, horizontal scroll, and the core flows (search, suggestion, word detail,
  * pagination, empty result, add-word validation).
  *
- * Design checks are reported, and fail the run only with --strict: text contrast,
- * tap target size, box shadows, chromatic hues, third-party font requests.
+ * Design checks are reported, and fail the run only with --strict: text contrast, tap
+ * target size, primary target height, box shadows, hue families outside status messages,
+ * font sizes and radii outside the token scale, a single h1, a visible keyboard focus
+ * ring, and third-party font requests.
  *
  * Usage: node scripts/ui-audit.js [--strict] [--no-build] [--only=<page-name>]
  * Output: .svelte-kit/ui-audit/report.json and one screenshot per page, viewport and scheme.
  */
 
-import { spawn, spawnSync } from "node:child_process";
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { spawnSync } from "node:child_process";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { chromium } from "playwright";
+import {
+  ORIGIN,
+  PAGES,
+  ROOT,
+  VITE,
+  cardsAre,
+  filedUnder,
+  letterShows,
+  welcomeShows,
+  words,
+  newContext,
+  sample,
+  searchShows,
+  startPreview,
+  wordShows,
+} from "./lib/app-states.js";
 
-const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT_DIR = resolve(ROOT, ".svelte-kit/ui-audit");
-const PORT = 4179;
-const ORIGIN = `http://localhost:${PORT}`;
 
 const args = new Set(process.argv.slice(2));
 const STRICT = args.has("--strict");
@@ -45,69 +59,24 @@ const DESIGN = {
   maxAccentHues: 1, // distinct chromatic hue families on one screen
   hueBucketDegrees: 30,
   minChroma: 40, // 0-255 max-min channel spread below which a color counts as neutral
+  allowedFontSizes: [12, 14, 16, 18, 24, 30], // px, the type scale
+  allowedRadii: [6, 8], // px, field and box; anything >= pillRadius counts as a pill
+  pillRadius: 9999,
+  minPrimaryTarget: 40, // px height at 360 px for the targets below
+  primaryTargets: [
+    ["search field", "form[role=search] label"],
+    ["pagination previous", "button[data-pagination=prev]"],
+    ["pagination next", "button[data-pagination=next]"],
+  ],
+  minFocusContrast: 3,
+  minBrowseTarget: 32, // px, letters and page numbers
+  browseTargets: 'nav[aria-label="Navegación por letras"] a, button[data-page]',
+  minFieldBoundary: 3, // WCAG 1.4.11: a field's border against the surface around it
+  focusPages: ["home", "search", "guidelines"],
+  focusViewports: ["1440", "360"],
+  maxFocusStops: 80,
 };
 
-const words = JSON.parse(readFileSync(resolve(ROOT, "static/data.json"), "utf-8"));
-const sample = words[Math.floor(words.length / 2)];
-
-// `ready` waits for content that only the named state shows, after the search data has
-// loaded. The prerendered home page already has cards, so a generic "article" wait would
-// pass before the client loaded, searched or paged.
-
-// The page shows exactly the dataset entries `start..start+12`, and the numbered page
-// links (rendered only once the client has its own result) mark the current page.
-const cardsAre = (start) => (page) =>
-  page.waitForFunction(
-    (expected) => {
-      if (!document.querySelector("button[aria-current=page]")) return false;
-      const shown = [...document.querySelectorAll("article h2")].map((h) => h.textContent?.trim());
-      return JSON.stringify(shown) === JSON.stringify(expected);
-    },
-    words.slice(start, start + 12).map((w) => w.word)
-  );
-
-// The result count line renders only once `findAll(term)` resolved, and every card matches.
-const searchShows = (term) => (page) =>
-  page.waitForFunction((t) => {
-    const count = [...document.querySelectorAll("p, div, span")].some((el) =>
-      /^\d+ resultados? en /.test(el.textContent?.trim() ?? "")
-    );
-    const cards = [...document.querySelectorAll("article")];
-    return (
-      count && cards.length > 0 && cards.every((c) => c.textContent?.toLowerCase().includes(t))
-    );
-  }, term);
-
-const PAGES = [
-  { name: "home", path: "/", ready: cardsAre(0) },
-  { name: "page-2", path: `/?after=${encodeURIComponent(words[12].id)}`, ready: cardsAre(12) },
-  { name: "search", path: "/?q=carnaval", ready: searchShows("carnaval") },
-  {
-    name: "search-empty",
-    path: "/?q=zzqxjwv",
-    ready: (page) => page.getByText("No encontramos palabras para esta búsqueda.").waitFor(),
-  },
-  {
-    name: "word",
-    path: `/?word=${encodeURIComponent(sample.id)}&q=${encodeURIComponent(sample.word)}`,
-    ready: async (page) => {
-      await page.waitForFunction(
-        (word) => {
-          const cards = document.querySelectorAll("article");
-          return cards.length === 1 && cards[0].querySelector("h2")?.textContent?.trim() === word;
-        },
-        sample.word,
-        { timeout: 10_000 }
-      );
-    },
-  },
-  { name: "add", path: "/add", ready: (page) => page.locator("form #word").waitFor() },
-  {
-    name: "guidelines",
-    path: "/guidelines",
-    ready: (page) => page.getByRole("heading", { name: "Pautas de contenido" }).waitFor(),
-  },
-];
 const PAGES_AUDITED = PAGES.filter((p) => !ONLY || p.name === ONLY);
 if (PAGES_AUDITED.length === 0) {
   throw new Error(`unknown page ${ONLY}; one of ${PAGES.map((p) => p.name).join(", ")}`);
@@ -124,43 +93,11 @@ function run(cmd, cmdArgs) {
   if (result.status !== 0) throw new Error(`${cmd} ${cmdArgs.join(" ")} exited ${result.status}`);
 }
 
-async function startPreview() {
-  // A server already on the port would be audited instead of this build.
-  const busy = await fetch(ORIGIN).then(
-    () => true,
-    () => false
-  );
-  if (busy) throw new Error(`port ${PORT} is already in use; stop that server first`);
-  const child = spawn(
-    resolve(ROOT, "node_modules/.bin/vite"),
-    ["preview", "--port", String(PORT), "--strictPort"],
-    {
-      cwd: ROOT,
-      stdio: ["ignore", "pipe", "pipe"],
-    }
-  );
-  let output = "";
-  child.stdout.on("data", (d) => (output += d));
-  child.stderr.on("data", (d) => (output += d));
-  for (let i = 0; i < 100; i++) {
-    if (child.exitCode !== null) throw new Error(`vite preview exited:\n${output}`);
-    try {
-      const res = await fetch(ORIGIN);
-      if (res.ok) return child;
-    } catch {
-      // not listening yet
-    }
-    await new Promise((r) => setTimeout(r, 200));
-  }
-  child.kill();
-  throw new Error(`vite preview did not answer on ${ORIGIN}:\n${output}`);
-}
-
 /**
  * Wire up error capture for a page. Third-party requests are blocked so the audit
  * is offline and deterministic; a blocked request is recorded, not treated as an error.
  */
-function instrument(page, where) {
+function instrument(page, where, allowStatus = [], allowConsole = [], allowRequestFailed = []) {
   const external = [];
   page.on("request", (req) => {
     const url = req.url();
@@ -171,24 +108,33 @@ function instrument(page, where) {
     const text = msg.text();
     // Third-party requests are aborted on purpose; the browser logs each one.
     if (text.includes("ERR_BLOCKED_BY_CLIENT")) return;
+    // The document of an expected error page (the not-found state) logs its own status.
+    if (allowStatus.some((code) => text.includes(`status of ${code}`))) return;
+    if (allowConsole.some((pattern) => pattern.test(text))) return;
+    // SvelteKit's client logs "Not found: <path>" when it renders the 404 page.
+    if (allowStatus.includes(404) && /Not found: \//.test(text)) return;
     fail(where, `console error: ${text}`);
   });
   page.on("pageerror", (err) => fail(where, `page error: ${err.message}`));
   page.on("requestfailed", (req) => {
-    if (req.url().startsWith(ORIGIN)) {
+    if (req.url().startsWith(ORIGIN) && !allowRequestFailed.some((p) => p.test(req.url()))) {
       fail(where, `request failed: ${req.url()} ${req.failure()?.errorText}`);
     }
   });
   page.on("response", (res) => {
-    if (res.url().startsWith(ORIGIN) && res.status() >= 400) {
+    const expected = allowStatus.includes(res.status());
+    if (res.url().startsWith(ORIGIN) && res.status() >= 400 && !expected) {
       fail(where, `HTTP ${res.status()} for ${res.url()}`);
     }
   });
   return external;
 }
 
-/** Runs in the page. Returns layout and design measurements. */
-function measure(design) {
+/**
+ * Runs in the page. Returns layout and design measurements, or with `focusOnly` only the
+ * focus ring of the focused element.
+ */
+function measure({ design, focusOnly = false }) {
   const canvas = document.createElement("canvas");
   canvas.width = canvas.height = 1;
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
@@ -268,11 +214,78 @@ function measure(design) {
     return { bg, unknown };
   };
 
+  // Focus ring of the focused element: outline, or a box-shadow ring, against its surroundings.
+  const focusRing = () => {
+    const focused = document.activeElement;
+    if (!focused || focused === document.body) return null;
+    // A field inside a DaisyUI `input` wrapper shows its ring on the wrapper.
+    const el = focused.closest(".input") ?? focused;
+    // Focus came back to an element already checked: the tab order has wrapped.
+    if (el.dataset.auditFocused) return { wrapped: true };
+    el.dataset.auditFocused = "1";
+    const style = getComputedStyle(el);
+    const outline = style.outlineStyle !== "none" && parseFloat(style.outlineWidth) >= 1;
+    const ringColor = outline
+      ? style.outlineColor
+      : style.boxShadow !== "none"
+        ? style.boxShadow.match(/(?:rgba?|oklch|oklab|lab|lch|hsla?|color)\([^)]*\)/i)?.[0]
+        : null;
+    const rect = el.getBoundingClientRect();
+    const where = describe(el);
+    if (rect.width === 0 || rect.height === 0 || Number(style.opacity) === 0)
+      return { where, ok: false, why: "focus is on an invisible element" };
+    if (!ringColor) return { where, ok: false, why: "no outline or ring" };
+    const bg = backgroundOf(el.parentElement ?? el).bg;
+    const ratio = contrast(over(toRgba(ringColor), bg), bg);
+    return {
+      where,
+      ok: ratio >= design.minFocusContrast,
+      why: `ring contrast ${ratio.toFixed(2)} < ${design.minFocusContrast}`,
+    };
+  };
+  if (focusOnly) return focusRing();
+
+  // Status colors are allowed only in status messages and form validation (design.md, decision 5).
+  const describedByInvalid = new Set(
+    [...document.querySelectorAll("[aria-invalid=true][aria-describedby]")].flatMap((f) =>
+      f.getAttribute("aria-describedby").split(/\s+/)
+    )
+  );
+  const isStatus = (el) =>
+    Boolean(el.closest("[role=status], [role=alert], [aria-invalid=true]")) ||
+    [...describedByInvalid].some((id) => el.closest(`#${CSS.escape(id)}`));
+
   const doc = document.documentElement;
   const result = {
+    h1Count: document.querySelectorAll("h1").length,
+    // What search engines and assistive technology read about the page.
+    seo: {
+      title: document.title,
+      descriptions: document.querySelectorAll('meta[name="description"]').length,
+      h1: document.querySelector("h1")?.textContent?.replace(/\s+/g, " ").trim() ?? "",
+      lang: document.documentElement.lang,
+      ogUrl: document.querySelector('meta[property="og:url"]')?.getAttribute("content") ?? "",
+    },
+    // Entries are rows everywhere: a word entry with side borders or corners is a boxed card.
+    boxedEntries: [...document.querySelectorAll("article")].filter((a) => {
+      const st = getComputedStyle(a);
+      return parseFloat(st.borderLeftWidth) > 0 || parseFloat(st.borderTopLeftRadius) > 0;
+    }).length,
+    // Every list starts with its result line, first thing in the content column.
+    resultLine: (() => {
+      const main = document.querySelector("main");
+      const line = document.querySelector("main p[aria-live]");
+      if (!main || !line) return null;
+      const top = main.getBoundingClientRect().top + parseFloat(getComputedStyle(main).paddingTop);
+      return Math.round(line.getBoundingClientRect().top - top);
+    })(),
+    offScaleFonts: [],
+    offScaleRadii: [],
+    shortPrimaryTargets: [],
     scrollWidth: doc.scrollWidth,
     clientWidth: doc.clientWidth,
     lowContrast: [],
+    weakFields: [],
     smallTargets: [],
     shadows: [],
     hues: {},
@@ -285,6 +298,7 @@ function measure(design) {
   const all = [...document.body.querySelectorAll("*")].filter(visible);
   const bucket = (h) => (Math.round(h / design.hueBucketDegrees) * design.hueBucketDegrees) % 360;
   const addHue = (el, css, prop) => {
+    if (isStatus(el)) return;
     const rgba = toRgba(css);
     if (rgba[3] < 0.1) return;
     const h = hue(rgba);
@@ -310,12 +324,20 @@ function measure(design) {
     });
     if (visibleShadow.length > 0)
       result.shadows.push(`${describe(el)} ${visibleShadow.map((l) => l.trim()).join(", ")}`);
-    if (style.borderRadius && style.borderRadius !== "0px")
+    if (style.borderRadius && style.borderRadius !== "0px") {
       result.radii[style.borderRadius] = (result.radii[style.borderRadius] ?? 0) + 1;
+      const offScale = style.borderRadius
+        .split(/[\s/]+/)
+        .map(parseFloat)
+        .some((r) => r !== 0 && r < design.pillRadius && !design.allowedRadii.includes(r));
+      if (offScale) result.offScaleRadii.push(`${style.borderRadius} ${describe(el)}`);
+    }
 
     const hasText = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
     if (hasText) {
       result.fontSizes[style.fontSize] = (result.fontSizes[style.fontSize] ?? 0) + 1;
+      if (!design.allowedFontSizes.includes(parseFloat(style.fontSize)))
+        result.offScaleFonts.push(`${style.fontSize} ${describe(el)}`);
       const family = style.fontFamily.split(",")[0].trim();
       result.fontFamilies[family] = (result.fontFamilies[family] ?? 0) + 1;
       addHue(el, style.color, "color");
@@ -336,9 +358,16 @@ function measure(design) {
     if (style.borderStyle !== "none" && parseFloat(style.borderWidth) > 0)
       addHue(el, style.borderColor, "border");
 
-    const interactive = el.matches(
-      "a[href], button, input:not([type=hidden]), select, textarea, label[for], [role=button], [role=option], summary"
-    );
+    // A <label for> is a target of its own only for a checkbox or radio;
+    // a text field's label is not, because the field itself is the target (and is measured).
+    const forControl = el.matches("label[for]")
+      ? document.getElementById(el.getAttribute("for"))
+      : null;
+    const interactive =
+      forControl?.matches("[type=checkbox], [type=radio]") ||
+      el.matches(
+        "a[href], button, input:not([type=hidden]), select, textarea, [role=button], [role=option], summary"
+      );
     if (interactive) {
       const rect = el.getBoundingClientRect();
       // Inline links inside running text are exempt from target size (WCAG 2.5.8).
@@ -353,12 +382,67 @@ function measure(design) {
       }
     }
   }
+
+  // Field boundaries and placeholders (a placeholder is text, and is not a text node).
+  for (const el of all) {
+    if (!el.matches("input:not([type=hidden]):not(.input > input), textarea, label.input"))
+      continue;
+    if (el.matches(":disabled") || el.querySelector?.(":disabled")) continue;
+    const style = getComputedStyle(el);
+    if (parseFloat(style.borderTopWidth) > 0 && style.borderTopStyle !== "none") {
+      const around = backgroundOf(el.parentElement ?? el).bg;
+      const ratio = contrast(over(toRgba(style.borderTopColor), around), around);
+      if (ratio < design.minFieldBoundary)
+        result.weakFields.push(
+          `boundary ${ratio.toFixed(2)} < ${design.minFieldBoundary} ${describe(el)}`
+        );
+    }
+    const field = el.matches("label.input") ? el.querySelector("input") : el;
+    if (field?.placeholder && !field.value) {
+      const bg = backgroundOf(field).bg;
+      const ph = over(toRgba(getComputedStyle(field, "::placeholder").color), bg);
+      const ratio = contrast(ph, bg);
+      if (ratio < design.minContrast)
+        result.weakFields.push(
+          `placeholder ${ratio.toFixed(2)} < ${design.minContrast} "${field.placeholder}"`
+        );
+    }
+  }
+
+  // Letters and page numbers are the browse controls, so they get a larger minimum.
+  for (const el of document.querySelectorAll(design.browseTargets)) {
+    if (!visible(el)) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width < design.minBrowseTarget || r.height < design.minBrowseTarget)
+      result.smallTargets.push(
+        `${Math.round(r.width)}x${Math.round(r.height)} (browse) ${describe(el)}`
+      );
+  }
+
+  // Primary targets must be tall enough on a phone (checked only at narrow widths).
+  if (innerWidth < 640) {
+    for (const [name, selector] of design.primaryTargets) {
+      for (const el of document.querySelectorAll(selector)) {
+        if (!visible(el)) continue;
+        const height = el.getBoundingClientRect().height;
+        if (height < design.minPrimaryTarget)
+          result.shortPrimaryTargets.push(`${name} ${Math.round(height)}px ${describe(el)}`);
+      }
+    }
+  }
   return result;
 }
 
 async function openPage(context, spec, where) {
   const page = await context.newPage();
-  const external = instrument(page, where);
+  const external = instrument(
+    page,
+    where,
+    spec.allowStatus,
+    spec.allowConsole,
+    spec.allowRequestFailed
+  );
+  if (spec.setup) await spec.setup(page);
   await page.goto(ORIGIN + spec.path, { waitUntil: "networkidle" });
   page.setDefaultTimeout(10_000);
   await spec
@@ -374,12 +458,15 @@ async function auditPages(browser) {
       const context = await newContext(browser, viewport, scheme);
       for (const spec of PAGES_AUDITED) {
         const where = `${spec.name}@${viewport.name}/${scheme}`;
-        const { page, external } = await openPage(context, spec, where);
+        const own = spec.isolated
+          ? await newContext(browser, viewport, scheme, { serviceWorkers: "block" })
+          : null;
+        const { page, external } = await openPage(own ?? context, spec, where);
         await page.screenshot({
           path: resolve(OUT_DIR, `${spec.name}-${viewport.name}-${scheme}.png`),
           fullPage: true,
         });
-        const m = await page.evaluate(measure, DESIGN);
+        const m = await page.evaluate(measure, { design: DESIGN });
 
         if (m.scrollWidth > m.clientWidth)
           fail(where, `horizontal scroll: scrollWidth ${m.scrollWidth} > ${m.clientWidth}`);
@@ -392,6 +479,32 @@ async function auditPages(browser) {
           ...m.lowContrast.map((x) => `contrast ${x}`),
           ...m.smallTargets.map((x) => `tap target ${x}`),
           ...m.shadows.map((x) => `shadow ${x}`),
+          ...m.weakFields.map((x) => `field ${x}`),
+          ...m.offScaleFonts.map((x) => `font size off scale ${x}`),
+          ...m.offScaleRadii.map((x) => `radius off scale ${x}`),
+          ...m.shortPrimaryTargets.map(
+            (x) => `primary target under ${DESIGN.minPrimaryTarget}px: ${x}`
+          ),
+          ...(m.h1Count === 1 ? [] : [`${m.h1Count} h1 elements (expected 1)`]),
+          ...(m.boxedEntries ? [`${m.boxedEntries} boxed word entries (entries are rows)`] : []),
+          ...(!/^Monocuco \| .+/.test(m.seo.title)
+            ? [`title "${m.seo.title}" does not name the page`]
+            : []),
+          ...(m.seo.descriptions !== 1
+            ? [`${m.seo.descriptions} meta descriptions (expected 1)`]
+            : []),
+          ...(m.seo.h1.length < 3 ? [`h1 "${m.seo.h1}" does not describe the page`] : []),
+          ...(m.seo.lang !== "es" ? [`lang "${m.seo.lang}"`] : []),
+          ...(!m.seo.ogUrl.startsWith("https://")
+            ? [`og:url "${m.seo.ogUrl}" is not absolute`]
+            : []),
+          ...(m.resultLine === null &&
+          ["home", "page-2", "letter", "search", "search-empty", "word"].includes(spec.name)
+            ? ["no result line at the top of the list"]
+            : []),
+          ...(m.resultLine !== null && m.resultLine > 1
+            ? [`result line starts ${m.resultLine}px below the top of the content`]
+            : []),
           ...fonts.map((x) => `third-party font ${x}`),
           ...(hueCount > DESIGN.maxAccentHues
             ? [
@@ -405,27 +518,11 @@ async function auditPages(browser) {
 
         report.pages.push({ where, external, ...m });
         await page.close();
+        await own?.close();
       }
       await context.close();
     }
   }
-}
-
-async function newContext(browser, viewport, scheme) {
-  const context = await browser.newContext({
-    viewport: { width: viewport.width, height: viewport.height },
-    isMobile: viewport.isMobile,
-    hasTouch: viewport.hasTouch,
-    colorScheme: scheme,
-    reducedMotion: "reduce",
-    locale: "es-CO",
-  });
-  await context.route("**/*", (route) => {
-    const url = route.request().url();
-    if (url.startsWith(ORIGIN) || url.startsWith("data:")) return route.continue();
-    return route.abort("blockedbyclient");
-  });
-  return context;
 }
 
 /** Core flows, run once per viewport. Each step asserts the visible outcome. */
@@ -434,7 +531,8 @@ async function auditFlows(browser) {
   for (const viewport of VIEWPORTS) {
     const context = await newContext(browser, viewport, "light");
     const at = (flow) => `flow:${flow}@${viewport.name}`;
-    const pageNamed = (name) => PAGES.find((p) => p.name === name);
+    const pageNamed = (name) =>
+      typeof name === "string" ? PAGES.find((p) => p.name === name) : name;
     const step = async (flow, startAt, fn) => {
       let page;
       try {
@@ -448,26 +546,50 @@ async function auditFlows(browser) {
     };
 
     await step("search-submit", "home", async (page) => {
-      const input = page.getByRole("searchbox");
+      const input = page.getByRole("combobox", { name: "Buscar palabras" });
       await input.fill("carnaval");
-      await page.getByRole("option").first().waitFor();
+      await page.locator("[role=option]:not([aria-disabled=true])").first().waitFor();
       await input.press("Enter");
       await page.waitForURL(/\?q=carnaval/);
       await searchShows("carnaval")(page);
+      // Back returns to all words.
+      await page.goBack();
+      await welcomeShows(page);
     });
 
     await step("suggestion-select", "home", async (page) => {
-      await page.getByRole("searchbox").fill(sample.word);
-      const option = page.getByRole("option").first();
+      await page.getByRole("combobox", { name: "Buscar palabras" }).fill(sample.word);
+      const option = page.locator("[role=option]:not([aria-disabled=true])").first();
       await option.waitFor();
       const chosen = (await option.locator("span").first().innerText()).trim();
       await option.click();
       await page.waitForURL(/\?word=/);
-      await page.waitForFunction((word) => {
-        const cards = document.querySelectorAll("article");
-        return cards.length === 1 && cards[0].querySelector("h2")?.textContent?.trim() === word;
-      }, chosen);
+      await wordShows(chosen)(page);
+      // Choosing with the mouse keeps focus in the search field.
+      const role = await page.evaluate(() => document.activeElement?.getAttribute("role"));
+      if (role !== "combobox") throw new Error(`focus after choosing is on role "${role}"`);
     });
+
+    await step(
+      "suggestions-pending",
+      {
+        path: "/",
+        // Hold the index back, so the list is open while the lookup waits for the data.
+        setup: (page) =>
+          page.route("**/search-index.json", async (route) => {
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+            await route.continue();
+          }),
+        ready: (page) => page.getByRole("combobox", { name: "Buscar palabras" }).waitFor(),
+      },
+      async (page) => {
+        await page.getByRole("combobox", { name: "Buscar palabras" }).pressSequentially("carn");
+        await page.getByRole("option", { name: "Buscando..." }).waitFor();
+        if (await page.getByText("Sin resultados").count())
+          throw new Error('"Sin resultados" shows while the lookup is still waiting');
+        await page.locator("[role=option]:not([aria-disabled=true])").first().waitFor();
+      }
+    );
 
     await step("pagination-next", "home", async (page) => {
       const next = page.getByRole("button", { name: "Siguiente" });
@@ -481,22 +603,155 @@ async function auditFlows(browser) {
       await cardsAre(12)(page);
     });
 
-    await step("add-validation", "add", async (page) => {
-      const word = page.locator("#word");
-      await word.pressSequentially("x");
-      await word.press("Backspace");
-      await word.blur();
-      await page.getByText("La palabra es obligatoria.").waitFor();
-      if (!(await page.locator("form button[type=submit]").isDisabled()))
-        throw new Error("submit is enabled with an invalid form");
+    await step("suggestion-keyboard", "home", async (page) => {
+      const input = page.getByRole("combobox", { name: "Buscar palabras" });
+      await input.fill(sample.word);
+      await page.locator("[role=option]:not([aria-disabled=true])").first().waitFor();
+      await input.press("ArrowDown");
+      const chosen = await page.evaluate(() => {
+        const input = document.querySelector("input[role=combobox]");
+        const id = input?.getAttribute("aria-activedescendant");
+        return id ? document.getElementById(id)?.querySelector("span")?.textContent?.trim() : null;
+      });
+      if (!chosen) throw new Error("ArrowDown did not highlight a suggestion");
+      await input.press("Enter");
+      await page.waitForURL(/\?word=/);
+      await wordShows(chosen)(page);
+    });
+
+    await step("letter-browse", "home", async (page) => {
+      await page.getByRole("link", { name: /^M, \d+ palabras$/ }).click();
+      await page.waitForURL(/\?letter=M/);
+      await letterShows("M")(page);
+    });
+
+    await step("letter-pagination", "letter", async (page) => {
+      const expected = words.filter((w) => filedUnder(w.word) === "M");
+      await page.getByRole("button", { name: "Siguiente" }).click();
+      await page.waitForURL(/letter=M.*after=|after=.*letter=M/);
+      await page.waitForFunction(
+        (word) => document.querySelector("article h2")?.textContent?.trim() === word,
+        expected[12].word
+      );
+      await letterShows("M")(page);
+    });
+
+    await step("letter-to-all", "letter", async (page) => {
+      await page.getByRole("link", { name: "Todas" }).click();
+      await page.waitForURL((url) => url.pathname === "/" && url.search === "");
+      await welcomeShows(page);
+    });
+
+    await step("letter-accent", "home", async (page) => {
+      await page.goto(`${ORIGIN}/?letter=${encodeURIComponent("é")}`);
+      await letterShows("E")(page);
+    });
+
+    await step("page-back", "home", async (page) => {
+      await page.getByRole("button", { name: "Siguiente" }).click();
+      await page.waitForURL(/after=/);
+      await cardsAre(12)(page);
+      await page.getByRole("button", { name: "Anterior" }).click();
+      await page.waitForURL((url) => url.pathname === "/" && url.search === "");
+      await welcomeShows(page);
+    });
+
+    await step("search-paging-history", "search", async (page) => {
+      await page.goto(`${ORIGIN}/?q=de`);
+      await page.waitForFunction(() => document.querySelector("button[aria-current=page]"));
+      const first = await page.locator("article h2").first().innerText();
+      const next = page.getByRole("button", { name: "Siguiente" });
+      await next.click();
+      await page.waitForURL(/after=/);
+      // Paging keeps keyboard focus on the pager, and Back returns to the previous page.
+      const focused = await page.evaluate(() => document.activeElement?.textContent?.trim());
+      if (focused !== "Siguiente") throw new Error(`focus after paging is on "${focused}"`);
+      await page.goBack();
+      await page.waitForFunction(
+        (w) => document.querySelector("article h2")?.textContent?.trim() === w,
+        first.trim()
+      );
+      if (!page.url().includes("q=de") || page.url().includes("after="))
+        throw new Error(`Back went to ${page.url()}`);
+    });
+
+    await step("clear-search", "search", async (page) => {
+      const input = page.getByRole("combobox", { name: "Buscar palabras" });
+      await input.fill("");
+      await input.press("Enter");
+      await page.waitForURL((url) => url.pathname === "/" && url.search === "");
+      await welcomeShows(page);
+    });
+
+    await step("accents-fold", "home", async (page) => {
+      // The count line renders once the search resolved.
+      const counted = () =>
+        page.waitForFunction(() =>
+          [...document.querySelectorAll("p[aria-live]")].some((h) =>
+            /^\d+ palabras? encontradas? para /.test(
+              h.textContent?.replace(/\s+/g, " ").trim() ?? ""
+            )
+          )
+        );
+      await page.goto(`${ORIGIN}/?q=aja`);
+      await counted();
+      const plain = await page.locator("article h2").allInnerTexts();
+      await page.goto(`${ORIGIN}/?q=${encodeURIComponent("ajá")}`);
+      await counted();
+      const accented = await page.locator("article h2").allInnerTexts();
+      if (plain.join("|") !== accented.join("|"))
+        throw new Error(`"aja" shows ${plain.length} words, "ajá" shows ${accented.length}`);
+    });
+
+    await step("word-not-found", "home", async (page) => {
+      await page.goto(`${ORIGIN}/?word=nope`);
+      await page.getByText("No encontramos la palabra solicitada.").waitFor();
+      if (await page.getByRole("button", { name: "Siguiente" }).count())
+        throw new Error("a missing word still shows the pager");
+      await page.getByRole("link", { name: "Ver todas las palabras" }).click();
+      await welcomeShows(page);
+    });
+
+    await step("not-found-home", "not-found", async (page) => {
+      await page.getByText("Ya no recibimos palabras desde la web.", { exact: false }).waitFor();
+      await page.getByRole("link", { name: "Volver al inicio" }).click();
+      await page.waitForURL((url) => url.pathname === "/");
+      await welcomeShows(page);
     });
 
     await context.close();
   }
 }
 
+/** Tabs through each focus page and checks every stop shows a visible ring. */
+async function auditFocus(browser) {
+  for (const viewport of VIEWPORTS.filter((v) => DESIGN.focusViewports.includes(v.name)))
+    for (const scheme of SCHEMES) {
+      const context = await newContext(browser, viewport, scheme);
+      for (const name of DESIGN.focusPages) {
+        const spec = PAGES.find((p) => p.name === name);
+        if (ONLY && ONLY !== name) continue;
+        const where = `focus:${name}@${viewport.name}/${scheme}`;
+        const { page } = await openPage(context, spec, where);
+        for (let i = 0; i < DESIGN.maxFocusStops; i++) {
+          await page.keyboard.press("Tab");
+          // Links and inputs transition their outline; read it after the transition's first frames.
+          await page.evaluate(
+            () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))
+          );
+          const ring = await page.evaluate(measure, { design: DESIGN, focusOnly: true });
+          if (!ring) continue;
+          if (ring.wrapped) break;
+          if (!ring.ok) designIssues.push(`${where}: focus ${ring.why} ${ring.where}`);
+        }
+        await page.close();
+      }
+      await context.close();
+    }
+}
+
 async function main() {
-  if (BUILD) run(resolve(ROOT, "node_modules/.bin/vite"), ["build"]);
+  if (BUILD) run(VITE, ["build"]);
   rmSync(OUT_DIR, { recursive: true, force: true });
   mkdirSync(OUT_DIR, { recursive: true });
 
@@ -505,6 +760,7 @@ async function main() {
   try {
     await auditPages(browser);
     await auditFlows(browser);
+    await auditFocus(browser);
   } finally {
     await browser.close();
     server.kill();

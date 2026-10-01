@@ -30,7 +30,7 @@ describe("WordCard", () => {
     await expect
       .element(page.getByRole("link", { name: "Ana Pérez" }))
       .toHaveAttribute("href", "https://example.com/ana");
-    await expect.element(page.getByText("Agosto 31, 2021")).toBeVisible();
+    await expect.element(page.getByText("31 de agosto de 2021", { exact: false })).toBeVisible();
   });
 
   it("shows the author as plain text when there is no website", async () => {

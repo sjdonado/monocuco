@@ -1,10 +1,19 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
+  import { tick } from "svelte";
   import { page } from "$app/stores";
   import WordCard from "$lib/components/WordCard.svelte";
-  import { findAll, findById, initDB, type QueryAllResult, type Word } from "$lib/db/repository";
-  import { AlertCircleIcon } from "@lucide/svelte";
+  import LetterNav from "$lib/components/LetterNav.svelte";
+  import {
+    findAll,
+    findById,
+    firstLetter,
+    initDB,
+    type QueryAllResult,
+    type Word,
+  } from "$lib/db/repository";
+  import { AlertCircleIcon, SearchIcon } from "@lucide/svelte";
   import type { Page } from "@sveltejs/kit";
   import type { PageData } from "./$types";
   import { searchFailed, searchError } from "$lib/stores/search-status";
@@ -59,14 +68,40 @@
     })()
   );
 
+  const letterParam = $derived(
+    (() => {
+      // Same filing rule as the letter row: `?letter=é` browses E.
+      const value = firstLetter((pageData?.url.searchParams.get("letter") ?? "").trim());
+      return value.length > 0 ? value : null;
+    })()
+  );
+
   let result = $state<QueryAllResult | null>(null);
 
   const isSearching = $derived(Boolean(searchValue));
   const isPaginating = $derived(Boolean(afterParam));
   const isWordDetail = $derived(Boolean(wordIdParam));
+  // A word link that fails names what went wrong in the title and the page's h1.
+  const wordError = $derived(
+    error === "No encontramos la palabra solicitada." ? "Palabra no encontrada" : "Error"
+  );
+  const isLetter = $derived(Boolean(letterParam) && !isSearching && !isWordDetail);
+  // User needs the search data if they're searching, paginating, browsing a letter, or viewing a word
+  const needsDB = $derived(isSearching || isPaginating || isWordDetail || isLetter);
+  // Home with no search, letter, page or word.
+  const isWelcome = $derived(!needsDB);
 
-  // User needs the search data if they're searching, paginating, or viewing a specific word
-  const needsDB = $derived(isSearching || isPaginating || isWordDetail);
+  // The word a word page shows, once it is the loaded entry (not the previous list).
+  const shownWord = $derived(
+    isWordDetail && items.length === 1 && items[0].id === wordIdParam ? items[0] : null
+  );
+
+  // Until the search data is ready, a search, letter, page or word would show the prerendered
+  // first page, which is the wrong content; show a pending line instead. A word page also
+  // waits for its own entry, so the previous list never shows under it.
+  const isPending = $derived(
+    !searchHasFailed && ((needsDB && !initDone) || (isWordDetail && !shownWord && !error))
+  );
 
   // Use prerendered pagination data initially, then switch to search data when available
   const totalFromResult = $derived(result?.total ?? null);
@@ -104,8 +139,17 @@
     initDone = true;
   };
 
-  const syncUrlState = (state: { term?: string | null; after?: string | null }) => {
+  // `push` is for a page change the visitor asked for: it adds a history entry, so Back
+  // steps through pages, and keeps focus on the pager. Otherwise the URL is only
+  // canonicalized in place.
+  const syncUrlState = (
+    state: { term?: string | null; after?: string | null },
+    { push = false, base = null }: { push?: boolean; base?: string | null } = {}
+  ) => {
     if (!browser) return;
+    // A load canonicalizes the URL it was started for; if the visitor has navigated since
+    // (Back, a link), leave the newer entry alone.
+    if (base && base !== window.location.href) return;
     const url = new URL(window.location.href);
     let changed = false;
 
@@ -138,10 +182,12 @@
     const target = `${url.pathname}${url.search}${url.hash ?? ""}`;
     const current = `${window.location.pathname}${window.location.search}${window.location.hash ?? ""}`;
     if (target === current) return;
-    void goto(target, {
-      replaceState: true,
-      keepFocus: false,
-      noScroll: false,
+    // Canonicalizing in place must not steal focus or scroll from a visitor who is
+    // already typing or reading; a page change keeps focus in the pager and scrolls up.
+    return goto(target, {
+      replaceState: !push,
+      keepFocus: true,
+      noScroll: !push,
     });
   };
 
@@ -169,6 +215,7 @@
           totalPages: 1,
           pages: [],
           loadTimeSeconds: 0,
+          approximate: false,
         };
       } else {
         items = [];
@@ -184,8 +231,13 @@
     }
   }
 
-  async function loadWords(term: string | null, afterToken: string | null) {
+  async function loadWords(
+    term: string | null,
+    afterToken: string | null,
+    letter: string | null = null
+  ) {
     if (!browser) return;
+    const base = window.location.href;
     const currentToken = ++fetchToken;
     error = null;
 
@@ -193,6 +245,7 @@
       const response = await findAll({
         term: term ?? undefined,
         after: afterToken,
+        letter,
         pageSize: PAGE_SIZE,
       });
 
@@ -205,20 +258,20 @@
         `Loaded ${response.items.length} entries in ${response.loadTimeSeconds.toFixed(3)}s`
       );
 
-      syncUrlState({
-        term,
-        after: response.currentPage > 1 ? response.currentAfter : null,
-      });
+      syncUrlState(
+        {
+          term,
+          after: response.currentPage > 1 ? response.currentAfter : null,
+        },
+        { base }
+      );
     } catch (err) {
       console.error(err);
       if (currentToken !== fetchToken) return;
       items = [];
       error = "No pudimos cargar las palabras. Intenta nuevamente.";
       result = null;
-      syncUrlState({
-        term,
-        after: null,
-      });
+      syncUrlState({ term, after: null }, { base });
     }
   }
 
@@ -256,12 +309,14 @@
     const wordId = wordIdParam;
     const term = searchValue || null;
     const afterToken = afterParam;
+    const letter = isLetter ? letterParam : null;
     const needsDatabase = needsDB;
     const ready = initDone;
     const failed = searchHasFailed;
 
     if (failed) {
-      items = [];
+      // The welcome screen still has its prerendered first page to show.
+      items = needsDatabase ? [] : data.initialWords || [];
       error = null;
       result = null;
       return;
@@ -283,7 +338,7 @@
       if (wordId) {
         void loadWord(wordId);
       } else {
-        void loadWords(term, afterToken);
+        void loadWords(term, afterToken, letter);
       }
     }
   });
@@ -294,18 +349,27 @@
     url.searchParams.set("word", wordId);
     url.searchParams.set("q", word);
 
-    if (isSearching && currentPage && currentPage > 1 && result?.currentAfter) {
-      url.searchParams.set("after", result.currentAfter);
-    }
-
     return url.toString();
   };
 
-  const goToAfter = (target: string | null) => {
-    syncUrlState({
-      term: searchValue,
-      after: target,
-    });
+  const goToAfter = async (target: string | null) => {
+    const navigation = syncUrlState(
+      {
+        term: searchValue,
+        after: target,
+      },
+      { push: true }
+    );
+    // On the first or last page the button just used becomes disabled and drops focus;
+    // keep it in the pager, on the current page number.
+    await navigation;
+    await tick();
+    if (
+      document.activeElement === document.body ||
+      (document.activeElement as HTMLButtonElement)?.disabled
+    ) {
+      document.querySelector<HTMLButtonElement>("button[aria-current=page]")?.focus();
+    }
   };
 
   const handlePrev = () => goToAfter(result?.prevAfter ?? null);
@@ -315,103 +379,159 @@
 <svelte:head>
   {#if searchHasFailed}
     <title>Monocuco | Error</title>
+  {:else if isWordDetail}
+    <!-- Neutral while loading, then the word, or "not found". -->
+    <title>
+      Monocuco{error ? ` | ${wordError}` : shownWord ? ` | ${shownWord.word}` : ""}
+    </title>
   {:else if isSearching}
     <title>Monocuco | Buscar "{searchValue}"</title>
+  {:else if isLetter}
+    <title>Monocuco | Palabras por letra: {letterParam}</title>
   {:else}
-    <title>Monocuco</title>
+    <title>Monocuco | Diccionario de español barranquillero</title>
   {/if}
 </svelte:head>
 
 <div class="flex flex-col gap-6">
   {#if showLoadingBar}
-    <progress
-      class="progress progress-primary pointer-events-none fixed top-0 left-0 z-50 h-1 w-full"
+    <div
+      role="progressbar"
       aria-label="Carga inicial"
-    ></progress>
+      class="bg-primary pointer-events-none fixed top-0 left-0 z-50 h-1 w-full motion-safe:animate-pulse"
+    ></div>
   {/if}
   {#if searchHasFailed}
-    <section
-      class="bg-base-100 border-base-200 rounded-box flex flex-col gap-4 border p-6 shadow-sm"
-    >
-      <div class="flex items-start gap-3">
-        <AlertCircleIcon class="text-error size-6 shrink-0" aria-hidden="true" />
-        <div class="space-y-2">
-          <h1 class="text-base-content text-2xl font-bold">
-            No pudimos cargar los datos de búsqueda
-          </h1>
-          <p class="text-base-content/70 text-sm">
-            {searchErrorMessage ??
-              "El buscador no está disponible en este momento. Intenta de nuevo más tarde."}
-          </p>
+    <section role="alert" class="bg-base-100 border-hairline rounded-box flex gap-3 border p-6">
+      <AlertCircleIcon class="text-error size-5 shrink-0" aria-hidden="true" />
+      <div class="flex flex-col gap-2">
+        <h1 class="text-lg font-semibold">No pudimos cargar los datos de búsqueda</h1>
+        <p class="text-muted text-sm">
+          {searchErrorMessage ??
+            "El buscador no está disponible en este momento. Intenta de nuevo más tarde."}
+        </p>
+        <div>
+          <button
+            type="button"
+            class="btn btn-ghost border-hairline btn-sm border"
+            onclick={() => location.reload()}
+          >
+            Reintentar
+          </button>
         </div>
       </div>
     </section>
-  {:else}
-    <section class="flex flex-wrap items-center justify-between gap-3">
-      {#if isSearching}
-        <div class="flex flex-col gap-2">
-          <h1 class="text-base-content text-3xl font-bold">Resultados de búsqueda</h1>
-          <p class="text-base-content/70">
-            Resultados para <span class="text-primary font-semibold">"{searchValue}"</span>
-          </p>
-          {#if result}
-            <div class="text-base-content/70 mt-2 text-xs">
-              <span>
-                {result.total} resultado{result.total > 1 ? "s" : ""} en {result.loadTimeSeconds}s.
-              </span>
-            </div>
-          {/if}
-        </div>
-      {:else}
-        <div class="flex flex-col gap-2">
-          <h1 class="text-base-content text-3xl font-bold">Bienvenido</h1>
-          <div class="text-base-content/70 flex flex-wrap gap-1 text-sm">
-            <p>
-              Diccionario abierto y gratuito de
-              <a
-                class="link"
-                href="https://es.wikipedia.org/wiki/Español_barranquillero"
-                target="_blank"
-                rel="noreferrer">Español barranquillero</a
-              >.
-            </p>
-            <p>
-              Código fuente disponible en
-              <a
-                class="link"
-                href="https://github.com/sjdonado/monocuco"
-                target="_blank"
-                rel="noreferrer">Github</a
-              >.
-            </p>
-          </div>
-        </div>
-      {/if}
-    </section>
-
-    {#if error}
-      <div class="alert alert-error">
-        <AlertCircleIcon class="text-error-content size-5 shrink-0" aria-hidden="true" />
-        <span>{error}</span>
-      </div>
-    {:else if items.length === 0}
-      <div class="alert alert-warning">
-        <AlertCircleIcon class="text-warning-content size-5 shrink-0" aria-hidden="true" />
-        <span>No encontramos palabras para esta búsqueda.</span>
-      </div>
-    {:else}
-      <div class="flex flex-col gap-6">
+    {#if isWelcome && items.length > 0}
+      <!-- The prerendered first page still works without the search data. -->
+      <div class="flex flex-col">
         {#each items as entry (entry.id)}
           <WordCard {entry} shareUrl={buildShareUrl(entry.id, entry.word)} />
         {/each}
       </div>
     {/if}
+  {:else}
+    <!-- Every state is a search: all words is the empty query, a letter or a word is a
+         narrower one. Each starts with the same result line, on the left. The h1 names the
+         page for assistive technology and search engines; on a word's page the headword is it. -->
+    {#if !shownWord}
+      <h1 class="sr-only">
+        {#if isWordDetail}
+          {error ? wordError : "Monocuco, diccionario de español barranquillero"}
+        {:else if isSearching}
+          Resultados para "{searchValue}" en Monocuco
+        {:else if isLetter}
+          Palabras con {letterParam} en Monocuco
+        {:else}
+          Monocuco, diccionario de español barranquillero
+        {/if}
+      </h1>
+    {/if}
+    {#if !error}
+      <section class="flex flex-col gap-4">
+        <p class="text-muted text-sm font-medium tabular-nums" aria-live="polite">
+          {#if isWordDetail || isSearching}
+            {#if result && !isPending}
+              {result.total}
+              {result.approximate
+                ? `palabra${result.total === 1 ? "" : "s"} parecida${result.total === 1 ? "" : "s"} a`
+                : `palabra${result.total === 1 ? "" : "s"} encontrada${result.total === 1 ? "" : "s"} para`}
+            {:else}
+              Buscando
+            {/if}
+            {#if shownWord?.word ?? searchValue}
+              <span class="text-base-content font-semibold">"{shownWord?.word ?? searchValue}"</span
+              >
+            {/if}
+          {:else if isLetter}
+            {#if result && !isPending}
+              {result.total} palabra{result.total === 1 ? "" : "s"} encontrada{result.total === 1
+                ? ""
+                : "s"} con
+            {:else}
+              Buscando palabras con
+            {/if}
+            <span class="text-base-content font-semibold">{letterParam}</span>
+          {:else}
+            {displayTotal} palabras encontradas
+          {/if}
+        </p>
+        {#if !isSearching && !isWordDetail}
+          <LetterNav current={isLetter ? letterParam : null} />
+        {/if}
+      </section>
+    {/if}
 
-    {#if displayTotal > PAGE_SIZE}
-      <div class="flex max-w-2xl items-center justify-center gap-4 pt-4">
+    {#if isPending}
+      <!-- The result line above already says "Buscando"; this is only the visual cue. -->
+      <span
+        class="loading loading-spinner loading-sm text-muted motion-reduce:hidden"
+        aria-hidden="true"
+      ></span>
+    {:else if error}
+      <div
+        role="alert"
+        class="bg-base-100 border-hairline rounded-box flex items-center gap-3 border p-4 text-sm"
+      >
+        <AlertCircleIcon class="text-error size-5 shrink-0" aria-hidden="true" />
+        <span class="flex flex-col gap-1">
+          {error}
+          {#if isWordDetail}
+            <a href="/" class="link hover:text-primary">Ver todas las palabras</a>
+          {/if}
+        </span>
+      </div>
+    {:else if items.length === 0}
+      <div
+        role="status"
+        class="border-hairline rounded-box text-muted flex flex-col items-center gap-2 border p-6 text-center text-sm"
+      >
+        <SearchIcon class="text-muted size-5" aria-hidden="true" />
+        <span>
+          {isLetter
+            ? `No hay palabras con ${letterParam}.`
+            : "No encontramos palabras para esta búsqueda."}
+        </span>
+      </div>
+    {:else}
+      <div class="flex flex-col">
+        {#each items as entry (entry.id)}
+          <WordCard
+            {entry}
+            shareUrl={buildShareUrl(entry.id, entry.word)}
+            heading={shownWord ? "h1" : "h2"}
+          />
+        {/each}
+      </div>
+    {/if}
+
+    {#if displayTotal > PAGE_SIZE && !isPending && !isWordDetail && !error}
+      <div
+        class="border-hairline flex min-h-10 max-w-2xl items-center justify-center gap-1 border-t pt-8 sm:gap-2"
+      >
         <button
           type="button"
-          class="btn btn-sm"
+          class="btn btn-ghost border-hairline h-10 min-h-10 border px-3 sm:h-8 sm:min-h-8"
+          data-pagination="prev"
           onclick={handlePrev}
           disabled={!hasPrev || isPaginationDisabled}
         >
@@ -420,7 +540,7 @@
 
         {#if isPaginationDisabled}
           <!-- Show simplified pagination when search data is not ready -->
-          <span class="text-base-content/50 text-sm">
+          <span class="text-muted text-sm tabular-nums">
             Página {currentPage} de {totalPages}
           </span>
         {:else if result?.pages}
@@ -428,9 +548,11 @@
           {#each result.pages as pageLink (pageLink.number)}
             <button
               type="button"
-              class="link cursor-pointer text-sm font-semibold"
-              class:text-primary={pageLink.number === currentPage}
+              class="btn btn-ghost btn-square h-10 min-h-10 w-8 tabular-nums sm:h-8 sm:min-h-8"
+              class:bg-base-200={pageLink.number === currentPage}
+              class:font-semibold={pageLink.number === currentPage}
               onclick={() => goToAfter(pageLink.after)}
+              data-page={pageLink.number}
               aria-current={pageLink.number === currentPage ? "page" : undefined}
             >
               {pageLink.number}
@@ -438,14 +560,15 @@
           {/each}
         {:else}
           <!-- Fallback when no pages data available -->
-          <span class="text-base-content/50 text-sm">
+          <span class="text-muted text-sm tabular-nums">
             Página {currentPage} de {totalPages}
           </span>
         {/if}
 
         <button
           type="button"
-          class="btn btn-sm"
+          class="btn btn-ghost border-hairline h-10 min-h-10 border px-3 sm:h-8 sm:min-h-8"
+          data-pagination="next"
           onclick={handleNext}
           disabled={!hasNext || isPaginationDisabled}
         >

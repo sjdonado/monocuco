@@ -1,13 +1,19 @@
 # Monocuco
 Diccionario abierto y gratuito de [Español barranquillero](https://es.wikipedia.org/wiki/Espa%C3%B1ol_barranquillero).
 
+<img src="docs/media/home-light.webp" alt="Pantalla de inicio de Monocuco: el buscador, la fila de letras y la lista de palabras" width="100%" />
+
+<p align="center">
+  <img src="docs/media/word-dark.webp" alt="La palabra Monocuco en un teléfono con el tema oscuro: definición, ejemplos y autor" width="300" />
+</p>
+
 ## ¿Cómo contribuir?
 
 Antes de escribir una definición, por favor revisa nuestras [pautas de contenido](https://monocuco.sjdonado.com/guidelines). En resumen: comparte definiciones útiles para otras personas y nunca publiques discursos de odio ni información personal.
 
-Tienes dos formas de aportar nuevas palabras al diccionario:
+Para aportar nuevas palabras al diccionario, usa el CLI y abre un Pull Request:
 
-### 1. Usar el CLI
+### Usar el CLI
 
 Requisitos: Node.js (o [Bun](https://bun.sh/)).
 
@@ -36,10 +42,6 @@ Después de ejecutarlo:
 2. Crea tu commit con el archivo actualizado.
 3. Abre un Pull Request en este repositorio (https://www.freecodecamp.org/espanol/news/como-hacer-tu-primer-pull-request-en-github/)
 4. **Opcional:** añade tu foto de perfil a la lista de contribuidores 😎.
-
-### 2. Enviar la palabra desde la web
-
-Si no tienes cuenta en GitHub o prefieres una opción más rápida, visita [https://monocuco.sjdonado.com/add](https://monocuco.sjdonado.com/add).
 
 ---
 

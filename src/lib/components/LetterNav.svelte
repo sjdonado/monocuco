@@ -1,23 +1,22 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { getLetterCounts, type LetterCount } from "$lib/db/repository";
-  import { searchFailed } from "$lib/stores/search-status";
+  import initialWordsData from "$lib/data/initial-words.json";
 
-  let letterCounts = $state<LetterCount[]>([]);
+  // The letter being browsed is marked as the current one; with none, "Todas" is.
+  const { current = null } = $props<{ current?: string | null }>();
 
-  let isSearchFailed = $state(false);
+  // Counts computed at build time, so the row has its final size before the data loads;
+  // replaced by the live counts once they are ready.
+  let letterCounts = $state<LetterCount[]>(
+    (initialWordsData as { letters?: LetterCount[] }).letters ?? []
+  );
+
   let hasLoadedCounts = $state(false);
-
-  $effect(() => {
-    const unsubFailed = searchFailed.subscribe((v) => (isSearchFailed = v));
-    return () => {
-      unsubFailed();
-    };
-  });
 
   // Load counts once in the browser
   $effect(() => {
-    if (!browser || isSearchFailed || hasLoadedCounts) return;
+    if (!browser || hasLoadedCounts) return;
 
     const loadCounts = async () => {
       try {
@@ -33,30 +32,45 @@
     void loadCounts();
   });
 
-  $effect(() => {
-    if (!isSearchFailed) return;
-    letterCounts = [];
-  });
+  const getLetterUrl = (letter: string) => `/?letter=${encodeURIComponent(letter)}`;
 
-  const getSearchUrl = (letter: string) => {
-    if (letter === "Todas") {
-      return "/";
-    }
-    return `/?q=${encodeURIComponent(letter)}`;
-  };
+  const letters = $derived(letterCounts.filter(({ letter }) => letter !== "Todas"));
 </script>
 
-<nav aria-label="Navegación por letras">
-  <h2 class="text-base-content/70 mb-3 text-sm font-semibold">Palabras por letra</h2>
-  {#if isSearchFailed}
-    <p class="text-base-content/70 text-sm">Búsqueda no disponible por ahora.</p>
-  {:else if letterCounts.length > 0}
-    <ul class="space-y-1 text-sm">
-      {#each letterCounts as { letter, count } (letter)}
+<!-- Browse by first letter: one quiet row of letters; the counts are in each link's name. -->
+<nav aria-label="Navegación por letras" class="min-h-8">
+  <h2 class="sr-only">Palabras por letra</h2>
+  {#if letters.length > 0}
+    <ul class="-ml-2 flex flex-wrap gap-1">
+      <li>
+        <a
+          href="/"
+          aria-current={current ? undefined : "page"}
+          class={[
+            "rounded-field inline-flex h-8 items-center px-2 text-sm font-medium transition-colors duration-150",
+            current
+              ? "text-muted hover:bg-base-200 hover:text-base-content"
+              : "bg-base-200 text-base-content",
+          ]}
+        >
+          Todas
+        </a>
+      </li>
+      {#each letters as { letter, count } (letter)}
         <li>
-          <a href={getSearchUrl(letter)} class="flex justify-between p-0">
-            <span class="link link-primary" class:font-bold={letter === "Todas"}>{letter}</span>
-            <span class="text-base-content/60">{count}</span>
+          <a
+            href={getLetterUrl(letter)}
+            title={`${count} palabra${count === 1 ? "" : "s"}`}
+            aria-label={`${letter}, ${count} palabra${count === 1 ? "" : "s"}`}
+            aria-current={current === letter ? "page" : undefined}
+            class={[
+              "rounded-field inline-flex size-8 items-center justify-center text-sm font-medium transition-colors duration-150",
+              current === letter
+                ? "bg-base-200 text-base-content"
+                : "text-muted hover:bg-base-200 hover:text-base-content",
+            ]}
+          >
+            {letter}
           </a>
         </li>
       {/each}

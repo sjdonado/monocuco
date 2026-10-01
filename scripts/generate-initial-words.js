@@ -7,6 +7,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
+import { firstLetter } from "../src/lib/text.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -28,6 +29,16 @@ function main() {
 
   // Calculate pagination info
   const total = data.length;
+
+  // Letter counts for the letter row, so it renders before the search data loads.
+  const counts = new Map();
+  for (const item of data) {
+    const letter = firstLetter(item.word);
+    counts.set(letter, (counts.get(letter) ?? 0) + 1);
+  }
+  const letters = [...counts.keys()]
+    .sort((a, b) => a.localeCompare(b, "es"))
+    .map((letter) => ({ letter, count: counts.get(letter) }));
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
   // Create output directory if needed
@@ -39,6 +50,7 @@ function main() {
     total: total,
     totalPages: totalPages,
     pageSize: PAGE_SIZE,
+    letters,
     generatedAt: new Date().toISOString(),
   };
 
