@@ -206,17 +206,27 @@ Each letter in the letter row SHALL open the words filed under that letter, in d
 
 ### Requirement: Interaction feedback on existing flows
 
-Every flow SHALL give immediate, legible feedback in the one shared style: waiting for suggestions, the first load of the search data, a search, letter, page or word opened before the data is ready, pagination while the data loads, copying a share link, and a failed data load. Pending states SHALL be a small inline indicator; they SHALL NOT be a blank area or the wrong content.
+Every flow SHALL give immediate, legible feedback in the one shared style: waiting for suggestions, the first load of the search data, a search opened before the data is ready, pagination while the data loads, copying a share link, and a failed data load. Pending states SHALL be a small inline indicator; they SHALL NOT be a blank area or the wrong content. The server renders every page with its words, so the search data (`data.json` and `search-index.json`) SHALL load only on first use: the first focus on the search field, reaching for the pager or the letter row (pointer or keyboard focus), or a state the browser has to compute (a search, or a letter, page or word reached by navigating in the app).
 
 #### Scenario: Opening a search before the data is ready
 
-- **WHEN** a visitor opens `/?q=carnaval` or `/?letter=M` and the search data has not loaded yet
-- **THEN** the result line reads "Buscando "carnaval"" (or "Buscando palabras con M") with a spinner instead of the prerendered first page, and then the results
+- **WHEN** a visitor opens `/?q=carnaval` and the search data has not loaded yet
+- **THEN** the result line reads "Buscando "carnaval"" with a spinner instead of other words, and then the results
+
+#### Scenario: A page the server rendered
+
+- **WHEN** a visitor opens `/?letter=M`, a word's page or a page of all words
+- **THEN** its words show at once, before any search data loads, and Back to that address shows them again even if the visitor navigated away before the data arrived
+
+#### Scenario: A reader never loads the search data
+
+- **WHEN** a visitor only reads: opens pages, scrolls, and follows links to all words from another page
+- **THEN** neither `data.json` nor `search-index.json` is downloaded, by the page or by the service worker; the first focus on the search field downloads each of them once
 
 #### Scenario: Pagination before the data is ready
 
-- **WHEN** all words (`/`) is shown from the prerendered page before the search data has loaded
-- **THEN** the pagination shows "Página 1 de N" with the previous and next buttons visibly disabled, and it becomes the numbered pagination once the data is ready, without the layout jumping
+- **WHEN** all words (`/`) is shown before the search data has loaded, on the first view or after navigating from another page
+- **THEN** the pager is already the numbered pagination of the first page (built with the site), and reaching for it starts loading the data the next page needs
 
 #### Scenario: Share confirmation
 
@@ -258,7 +268,7 @@ Interface copy SHALL NOT contain decorative emoji. Copy SHALL stay in Spanish, i
 
 ### Requirement: Scope of behavior changes
 
-The redesign SHALL change behavior only where this spec says so: the `/add` page and every link to it are removed, because production has no submission webhook, and contributing is described only in the README; letters browse by first letter; the search field is a keyboard combobox; the mobile drawer and the letter sidebar are removed. Search ranking, pagination, sharing, word detail URLs and offline behavior SHALL work as before. The site loads no analytics (removed after the redesign; `/privacy` states that it collects no data).
+The redesign SHALL change behavior only where this spec says so: the `/add` page and every link to it are removed, because production has no submission webhook, and contributing is described only in the README; letters browse by first letter; the search field is a keyboard combobox; the mobile drawer and the letter sidebar are removed. Search ranking, pagination, sharing and word detail URLs SHALL work as before. Offline, every page SHALL open after one visit, and search SHALL work after one search online (the search data is cached on first use, not precached). The site loads no analytics (removed after the redesign; `/privacy` states that it collects no data).
 
 #### Scenario: Removed submission
 
@@ -277,8 +287,13 @@ The redesign SHALL change behavior only where this spec says so: the `/add` page
 
 #### Scenario: Recovering from a failed load
 
-- **WHEN** the search data fails to load
-- **THEN** the page says so with a "Reintentar" button that reloads it, all words (`/`) still shows its prerendered first page, and there is exactly one search field
+- **WHEN** the search data fails to load for a state that needs it (a search, or a letter, page or word reached in the app)
+- **THEN** the page says so with a "Reintentar" button that reloads it, and there is exactly one search field
+
+#### Scenario: A failed load the page did not need
+
+- **WHEN** a load started by focusing the search field or reaching for the pager or the letters fails
+- **THEN** the page keeps its words, a notice says "La búsqueda no está disponible en este momento." with a "Reintentar" button (also announced to assistive technology), and the search field is disabled with the placeholder "Búsqueda no disponible"
 
 #### Scenario: A word that does not exist
 
