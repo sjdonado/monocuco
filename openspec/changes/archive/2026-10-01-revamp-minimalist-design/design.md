@@ -148,6 +148,16 @@ Alternatives: a hand-captured procedure (rejected: not reproducible, and Playwri
 4. **Flip `ci` to `--strict`**, then the verification rounds and the designer critique of home.
 5. **Media last**, because it depends on the finished UI.
 
+## Superseded during implementation
+
+The change ran as five iterations with the maintainer, and later ones replaced parts of the decisions above. The specs in this change describe what shipped; where this document disagrees with them, the specs win:
+
+- No mobile drawer, letter sidebar or welcome hero. Every page has one layout: a sticky header with the search field, one `max-w-2xl` column, a left-aligned result line, the letter row on browse pages, and entries as rows (decisions 3, 5b and 7 mention the drawer, a `max-w-5xl` shell and a boxed single word).
+- `/add` was removed, because production never had its webhook (decision 10 and the focus pages in decision 8 still list it); the audit's focus pages are home, a search and `/guidelines`.
+- Search gained accent folding, AND matching with a labeled approximate fallback, and Spanish dictionary order, all from one module, `src/lib/text.js`.
+- The README desktop shot is the home page at a 760 px viewport, resized to 1520 px (decision 9 says the search results at 1280 px and 1600 px).
+- The audit grew state and flow checks beyond decision 8: the result line, one descriptive `h1`, titles and metadata, 32 px browse targets, a data-failure state in its own context, and 15 user flows.
+
 ## Risks / Trade-offs
 
 - [DaisyUI's layer order beats our shared rules, so the focus ring or muted text silently loses] → Define the shared rules with `@utility`, and confirm the computed styles in the audit report during slice 1 before any page work.

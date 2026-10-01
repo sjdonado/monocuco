@@ -67,7 +67,7 @@
 - [x] 9.1 One result line for every state, including all words (the empty query) and a single word: "2767 palabras encontradas", "8 palabras encontradas para ...", "255 palabras encontradas con M", "1 palabra encontrada para ...", "N palabras parecidas a ..." when approximate. Verify: the audit's result-line check (present on every list state, first in the content) and the `searchShows` and `letterShows` waits.
 - [x] 9.2 Headings: a visually hidden `h1` names each list page; the headword is the `h1` on a word's page; a missing or loading word keeps an `h1`. Verify: the single-`h1` and h1-describes-page checks.
 - [x] 9.3 Metadata: a site description in `app.html` (one per page), home title "Monocuco | Diccionario de español barranquillero", `og:url` and `og:image` absolute on `monocuco.sjdonado.com` (`monocuco.info` does not answer), `og:image` size corrected to 512. Verify: the audit's title, description, `lang` and `og:url` checks; Lighthouse accessibility and SEO 100 on `/`, a search, a letter, a word and `/guidelines` (2026-09-30).
-- [ ] 9.4 Known limit, not in this change: with `ssr = false` a crawler that does not run JavaScript sees only the `app.html` head and no words. Prerendering or server-rendering word pages would fix it and is its own change.
+Deferred (not a task of this change): with `ssr = false` a crawler that does not run JavaScript sees only the `app.html` head and no words. Prerendering or server-rendering word pages would fix it and is its own change.
 
 ## 10. Adversarial review before the PR (2 blind reviewers, 2026-09-30)
 
