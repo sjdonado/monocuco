@@ -377,7 +377,10 @@
       document.activeElement === document.body ||
       (document.activeElement as HTMLButtonElement)?.disabled
     ) {
-      document.querySelector<HTMLButtonElement>("button[aria-current=page]")?.focus();
+      // Without scrolling back down: the new page starts at the top.
+      document
+        .querySelector<HTMLButtonElement>("button[aria-current=page]")
+        ?.focus({ preventScroll: true });
     }
   };
 
@@ -443,6 +446,13 @@
   // Split so the closing tag never ends this component's own script block.
   const structuredDataTag = $derived(
     `<script type="application/ld+json">${structuredData}</` + "script>"
+  );
+
+  // Only for a result the browser or the server has, never the first page's fallback numbers.
+  const pageLabel = $derived(
+    result && !isPending && !isWordDetail && result.totalPages > 1
+      ? `Página ${result.currentPage} de ${result.totalPages}`
+      : null
   );
 
   const handlePrev = () => goToAfter(result?.prevAfter ?? null);
@@ -528,33 +538,47 @@
     {/if}
     {#if !error}
       <section class="flex flex-col gap-4">
-        <p class="text-muted text-sm font-medium tabular-nums" aria-live="polite">
-          {#if isWordDetail || isSearching}
-            {#if result && !isPending}
-              {result.total}
-              {result.approximate
-                ? `palabra${result.total === 1 ? "" : "s"} parecida${result.total === 1 ? "" : "s"} a`
-                : `palabra${result.total === 1 ? "" : "s"} encontrada${result.total === 1 ? "" : "s"} para`}
+        <div class="flex items-baseline justify-between gap-4">
+          <p
+            class="text-muted min-w-0 text-sm font-medium break-words tabular-nums"
+            aria-live="polite"
+          >
+            {#if isWordDetail || isSearching}
+              {#if result && !isPending}
+                {result.total}
+                {result.approximate
+                  ? `palabra${result.total === 1 ? "" : "s"} parecida${result.total === 1 ? "" : "s"} a`
+                  : `palabra${result.total === 1 ? "" : "s"} encontrada${result.total === 1 ? "" : "s"} para`}
+              {:else}
+                Buscando
+              {/if}
+              {#if shownWord?.word ?? searchValue}
+                <span class="text-base-content font-semibold"
+                  >"{shownWord?.word ?? searchValue}"</span
+                >
+              {/if}
+            {:else if isLetter}
+              {#if result && !isPending}
+                {result.total} palabra{result.total === 1 ? "" : "s"} encontrada{result.total === 1
+                  ? ""
+                  : "s"} con
+              {:else}
+                Buscando palabras con
+              {/if}
+              <span class="text-base-content font-semibold">{letterParam}</span>
             {:else}
-              Buscando
+              {displayTotal} palabras encontradas
             {/if}
-            {#if shownWord?.word ?? searchValue}
-              <span class="text-base-content font-semibold">"{shownWord?.word ?? searchValue}"</span
-              >
+            {#if pageLabel}
+              <!-- Read with the count, so paging is announced: the count alone never changes. -->
+              <span class="sr-only">, {pageLabel}</span>
             {/if}
-          {:else if isLetter}
-            {#if result && !isPending}
-              {result.total} palabra{result.total === 1 ? "" : "s"} encontrada{result.total === 1
-                ? ""
-                : "s"} con
-            {:else}
-              Buscando palabras con
-            {/if}
-            <span class="text-base-content font-semibold">{letterParam}</span>
-          {:else}
-            {displayTotal} palabras encontradas
+          </p>
+          {#if pageLabel}
+            <!-- Which page of the result this is, across from the count. -->
+            <p class="text-muted shrink-0 text-sm tabular-nums" aria-hidden="true">{pageLabel}</p>
           {/if}
-        </p>
+        </div>
         {#if !isSearching && !isWordDetail}
           <LetterNav current={isLetter ? letterParam : null} />
         {/if}

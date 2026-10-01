@@ -651,9 +651,39 @@ async function auditFlows(browser) {
           (b) => b.textContent?.trim() === "Siguiente" && !b.disabled
         )
       );
+      // Clicked from the bottom of the list, the new page starts at the top, and the result
+      // line names it.
+      await next.scrollIntoViewIfNeeded();
       await next.click();
       await page.waitForURL(/after=/);
       await cardsAre(12)(page);
+      const scrolled = await page.evaluate(() => scrollY);
+      if (scrolled > 0) throw new Error(`page 2 opened scrolled ${scrolled}px down`);
+      // The page sits on the right of the result line, level with the count.
+      const row = await page.evaluate(() => {
+        const count = document.querySelector("p[aria-live]");
+        const label = count?.nextElementSibling;
+        if (!count || !label) return null;
+        const a = count.getBoundingClientRect();
+        const b = label.getBoundingClientRect();
+        return {
+          text: label.textContent?.trim(),
+          right: b.left >= a.right,
+          level: Math.abs(a.bottom - b.bottom) < 4,
+        };
+      });
+      if (!row || !/^Página 2 de \d+$/.test(row.text ?? "") || !row.right || !row.level)
+        throw new Error(`page label not on the right of the result line: ${JSON.stringify(row)}`);
+      // Back to page 1 with "Anterior": focus moves to the page number without scrolling.
+      const previous = page.getByRole("button", { name: "Anterior" });
+      await previous.scrollIntoViewIfNeeded();
+      await previous.click();
+      await cardsAre(0)(page);
+      await page.waitForFunction(() =>
+        document.activeElement?.matches("button[aria-current=page]")
+      );
+      const back = await page.evaluate(() => scrollY);
+      if (back > 0) throw new Error(`page 1 opened scrolled ${back}px down`);
     });
 
     await step("suggestion-keyboard", "home", async (page) => {
