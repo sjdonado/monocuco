@@ -31,10 +31,12 @@
           href="/"
           aria-current={current ? undefined : "page"}
           class={[
-            "rounded-field inline-flex h-8 items-center px-2 text-sm font-medium transition-colors duration-150",
+            // The same marks as the pager: the current item has the hairline border and the
+            // raised background; the others keep a transparent border, so nothing shifts.
+            "rounded-field inline-flex h-8 items-center border px-2 text-sm font-medium transition-colors duration-150",
             current
-              ? "text-muted hover:bg-base-200 hover:text-base-content"
-              : "bg-base-200 text-base-content",
+              ? "text-muted hover:bg-base-200 hover:text-base-content border-transparent"
+              : "bg-base-200 text-base-content border-hairline",
           ]}
         >
           Todas
@@ -48,10 +50,10 @@
             aria-label={`${letter}, ${count} palabra${count === 1 ? "" : "s"}`}
             aria-current={current === letter ? "page" : undefined}
             class={[
-              "rounded-field inline-flex size-8 items-center justify-center text-sm font-medium transition-colors duration-150",
+              "rounded-field inline-flex size-8 items-center justify-center border text-sm font-medium transition-colors duration-150",
               current === letter
-                ? "bg-base-200 text-base-content"
-                : "text-muted hover:bg-base-200 hover:text-base-content",
+                ? "bg-base-200 text-base-content border-hairline"
+                : "text-muted hover:bg-base-200 hover:text-base-content border-transparent",
             ]}
           >
             {letter}
