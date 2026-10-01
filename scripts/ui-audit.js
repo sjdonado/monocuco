@@ -17,7 +17,7 @@
  * plain HTTP (raw HTML, Markdown, sitemap, robots.txt, llms.txt, OpenAPI, the API and its
  * errors); those are hard checks too.
  *
- * Usage: node scripts/ui-audit.js [--strict] [--no-build] [--only=<page-name>]
+ * Usage: bun scripts/ui-audit.js [--strict] [--no-build] [--only=<page-name>]
  * Output: .svelte-kit/ui-audit/report.json and one screenshot per page, viewport and scheme.
  */
 
@@ -29,7 +29,7 @@ import {
   ORIGIN,
   PAGES,
   ROOT,
-  VITE,
+  viteCommand,
   cardsAre,
   filedUnder,
   letterShows,
@@ -567,22 +567,126 @@ async function auditFlows(browser) {
       await welcomeShows(page);
     });
 
-    await step("reader-loads-no-search-data", "home", async (page) => {
-      // Reading the server's page (scrolling, waiting) downloads neither data file; the first
-      // focus on the search field does. The search data costs about 30 MB of renderer memory.
+    // A reader downloads no search data: not on load, not from the service worker, not on the
+    // way back to all words from another page. The first focus on the search field does.
+    // Context-level requests include the service worker's; the listener exists before loading.
+    {
+      const own = await newContext(browser, viewport, "light");
       const fetched = [];
-      page.on("request", (request) => {
+      own.on("request", (request) => {
         if (/\/(data|search-index)\.json$/.test(new URL(request.url()).pathname))
-          fetched.push(request.url());
+          fetched.push(`${request.serviceWorker() ? "worker " : ""}${request.url()}`);
       });
-      await page.waitForFunction(() => "hydrated" in document.documentElement.dataset);
-      await page.mouse.wheel(0, 1500);
-      await page.waitForTimeout(1500);
-      if (fetched.length) throw new Error(`a reader downloaded ${fetched.join(", ")}`);
-      await page.getByRole("combobox", { name: "Buscar palabras" }).focus();
-      await page.waitForFunction(() => "searchReady" in document.documentElement.dataset);
-      if (fetched.length < 2) throw new Error(`focusing search fetched only ${fetched.join(", ")}`);
-    });
+      let page;
+      try {
+        ({ page } = await openPage(own, pageNamed("about"), at("reader-loads-no-search-data")));
+        await page.waitForFunction(() => "hydrated" in document.documentElement.dataset);
+        await page.evaluate(() => navigator.serviceWorker.ready);
+        await page.getByRole("link", { name: "Monocuco, inicio" }).click();
+        await welcomeShows(page);
+        await page.mouse.wheel(0, 1500);
+        await page.waitForTimeout(1500);
+        if (fetched.length) throw new Error(`a reader downloaded ${fetched.join(", ")}`);
+        await page.getByRole("combobox", { name: "Buscar palabras" }).focus();
+        await page.waitForFunction(() => "searchReady" in document.documentElement.dataset);
+        const names = new Set(fetched.map((f) => new URL(f.split(" ").pop()).pathname));
+        if (!names.has("/data.json") || !names.has("/search-index.json"))
+          throw new Error(`focusing search fetched only ${fetched.join(", ")}`);
+        // The worker fetches the pair once, not once per request.
+        const byWorker = fetched.filter((f) => f.startsWith("worker "));
+        if (byWorker.length !== 2) throw new Error(`the worker fetched ${byWorker.join(", ")}`);
+      } catch (err) {
+        fail(at("reader-loads-no-search-data"), err.message.split("\n")[0]);
+      } finally {
+        await own.close();
+      }
+    }
+
+    // Back on a page the server rendered shows its words again, also before the search data is
+    // ready: a letter page, then "Todas" (the first page built with the site), then Back.
+    {
+      const own = await newContext(browser, viewport, "light", { serviceWorkers: "block" });
+      let page;
+      try {
+        ({ page } = await openPage(
+          own,
+          {
+            ...pageNamed("letter"),
+            // Hold the data back, so all of this happens before it is ready.
+            setup: (p) =>
+              p.route("**/data.json", async (route) => {
+                await new Promise((r) => setTimeout(r, 4000));
+                await route.continue();
+              }),
+          },
+          at("back-to-rendered")
+        ));
+        await page.getByRole("link", { name: "Todas" }).click();
+        await page.waitForURL((url) => !url.search);
+        await cardsAre(0)(page);
+        await page.goBack();
+        await page.waitForURL(/letter=M/);
+        const expected = words
+          .filter((w) => filedUnder(w.word) === "M")
+          .slice(0, 12)
+          .map((w) => w.word);
+        await page.waitForFunction(
+          (want) =>
+            JSON.stringify(
+              [...document.querySelectorAll("article h2")].map((h) => h.textContent?.trim())
+            ) === JSON.stringify(want),
+          expected,
+          { timeout: 2000 }
+        );
+        // Only meaningful before the data arrived; otherwise the browser computed the cards.
+        if (await page.evaluate(() => "searchReady" in document.documentElement.dataset))
+          throw new Error("the data was ready before Back; the flow proved nothing");
+      } catch (err) {
+        fail(at("back-to-rendered"), err.message.split("\n")[0]);
+      } finally {
+        await own.close();
+      }
+    }
+
+    // Reaching for the pager starts the load; when it fails, the reader keeps the page, and
+    // only the state that needs the data (the next page) shows the failure.
+    {
+      const own = await newContext(browser, viewport, "light", { serviceWorkers: "block" });
+      let page;
+      try {
+        ({ page } = await openPage(
+          own,
+          {
+            ...pageNamed("home"),
+            setup: (p) => p.route("**/data.json", (route) => route.fulfill({ status: 500 })),
+            allowStatus: [500],
+            allowConsole: [/Failed to init search data/, /Search data initialization failed/],
+            allowRequestFailed: [/\/data\.json$/],
+          },
+          at("warm-failure-keeps-page")
+        ));
+        const asked = page.waitForRequest((r) => r.url().endsWith("/data.json"));
+        await page.getByRole("button", { name: "Siguiente" }).focus();
+        await asked;
+        await page
+          .getByRole("combobox", { name: "Buscar palabras" })
+          .and(page.locator("[disabled]"))
+          .waitFor();
+        if (await page.getByRole("alert").count())
+          throw new Error("a failed load started by focusing the pager replaced the page");
+        if ((await page.locator("article").count()) !== 12)
+          throw new Error("the page lost its words after a failed load");
+        await page.getByText("La búsqueda no está disponible", { exact: false }).first().waitFor();
+        if ((await page.getByRole("button", { name: "Reintentar" }).count()) !== 1)
+          throw new Error("the notice has no Reintentar button");
+        await page.getByRole("button", { name: "Siguiente" }).click();
+        await page.getByRole("alert").getByRole("button", { name: "Reintentar" }).waitFor();
+      } catch (err) {
+        fail(at("warm-failure-keeps-page"), err.message.split("\n")[0]);
+      } finally {
+        await own.close();
+      }
+    }
 
     await step("search-stays-local", "about", async (page) => {
       // Searching from another page, and going home, never asks the server: the search
@@ -604,12 +708,17 @@ async function auditFlows(browser) {
     });
 
     {
-      // After one visit the service worker opens any state of the home page offline. Its own
+      // After one visit with a search, the service worker opens any state of the home page offline. Its own
       // context, so the service worker and cache are this flow's alone.
       const own = await newContext(browser, viewport, "light");
       let page;
       try {
-        ({ page } = await openPage(own, pageNamed("home"), at("offline-home")));
+        ({ page } = await openPage(
+          own,
+          // Offline, the browser logs that the worker's update check could not fetch the script.
+          { ...pageNamed("home"), allowConsole: [/error occurred when fetching the script/] },
+          at("offline-home")
+        ));
         await page.evaluate(async () => {
           await navigator.serviceWorker.ready;
           if (!navigator.serviceWorker.controller)
@@ -617,6 +726,10 @@ async function auditFlows(browser) {
               navigator.serviceWorker.addEventListener("controllerchange", r)
             );
         });
+        // The search data is cached the first time it is used (it is not precached), so search
+        // once online; after that every state opens offline.
+        await page.getByRole("combobox", { name: "Buscar palabras" }).focus();
+        await page.waitForFunction(() => "searchReady" in document.documentElement.dataset);
         await own.setOffline(true);
         await page.goto(`${ORIGIN}/?letter=M`);
         await letterShows("M")(page);
@@ -859,7 +972,7 @@ async function auditFocus(browser) {
 }
 
 async function main() {
-  if (BUILD) run(VITE, ["build"]);
+  if (BUILD) run(...viteCommand("build"));
   rmSync(OUT_DIR, { recursive: true, force: true });
   mkdirSync(OUT_DIR, { recursive: true });
 

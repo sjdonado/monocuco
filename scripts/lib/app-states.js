@@ -12,6 +12,8 @@ import { firstLetter } from "../../src/lib/text.js";
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 export const VITE = resolve(ROOT, "node_modules/.bin/vite");
+// Vite runs on Bun too (`bun --bun`), so the scripts never need Node.
+export const viteCommand = (...args) => ["bun", ["--bun", VITE, ...args]];
 export const PORT = 4179;
 export const ORIGIN = `http://localhost:${PORT}`;
 
@@ -80,7 +82,7 @@ export const wordShows = (word) => (page) =>
     { timeout: 10_000 }
   );
 
-// The welcome screen: the first page of words and the letter row (both need the data).
+// The welcome screen: the first page of words and the letter row.
 export const welcomeShows = async (page) => {
   await cardsAre(0)(page);
   await page.locator('nav[aria-label="Navegación por letras"] li').first().waitFor();
@@ -122,6 +124,23 @@ export const PAGES = [
     ready: (page) => page.getByRole("button", { name: "Reintentar" }).waitFor(),
   },
   {
+    // A load started by focusing the search failed: the page keeps its words and says search
+    // is off, with a retry. Its own context, so no service worker serves cached data.
+    name: "search-off",
+    path: "/",
+    isolated: true,
+    setup: (page) => page.route("**/data.json", (route) => route.fulfill({ status: 500 })),
+    allowStatus: [500],
+    allowConsole: [/Failed to init search data/, /Search data initialization failed/],
+    allowRequestFailed: [/\/data\.json$/],
+    ready: async (page) => {
+      await page.waitForFunction(() => "hydrated" in document.documentElement.dataset);
+      await page.getByRole("combobox", { name: "Buscar palabras" }).focus();
+      await page.getByRole("button", { name: "Reintentar" }).waitFor();
+      await page.locator("body").click({ position: { x: 1, y: 1 } });
+    },
+  },
+  {
     // Unknown paths, including the removed /add, render the app's own not-found page.
     name: "not-found",
     path: "/add",
@@ -158,7 +177,7 @@ export async function startPreview() {
     () => false
   );
   if (busy) throw new Error(`port ${PORT} is already in use; stop that server first`);
-  const child = spawn(VITE, ["preview", "--port", String(PORT), "--strictPort"], {
+  const child = spawn(...viteCommand("preview", "--port", String(PORT), "--strictPort"), {
     cwd: ROOT,
     stdio: ["ignore", "pipe", "pipe"],
   });

@@ -6,8 +6,12 @@ import { build, files, prerendered, version } from "$service-worker";
 declare const self: ServiceWorkerGlobalScope;
 
 const ASSET_CACHE = `asset-cache-${version}`;
+// The search data (1.5 MB) is not precached: the page loads it on first use, and the worker
+// keeps it from then on, so a reader never downloads it and search works offline after one
+// search online.
+const SEARCH_DATA = new Set(["/data.json", "/search-index.json"]);
 // Pre-cache static assets (JS, CSS, etc.)
-const PRECACHE = new Set([...build, ...files, ...prerendered]);
+const PRECACHE = new Set([...build, ...files, ...prerendered].filter((f) => !SEARCH_DATA.has(f)));
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -40,6 +44,11 @@ self.addEventListener("fetch", (event: FetchEvent) => {
   const url = new URL(request.url);
 
   // Cache-first for precached assets (JS, CSS, etc.)
+  if (url.origin === self.location.origin && SEARCH_DATA.has(url.pathname)) {
+    event.respondWith(searchData(request));
+    return;
+  }
+
   if (url.origin === self.location.origin && PRECACHE.has(url.pathname)) {
     event.respondWith(cacheFirst(request));
     return;
@@ -51,6 +60,31 @@ self.addEventListener("fetch", (event: FetchEvent) => {
     return;
   }
 });
+
+// The words and the index are cached together or not at all, so a failed or partial fetch can
+// never pair one version of the words with another version of the index.
+// The page asks for both at once: one fetch of the pair serves both requests.
+let pendingSearchData: Promise<Response[]> | null = null;
+
+async function searchData(request: Request): Promise<Response> {
+  const cache = await caches.open(ASSET_CACHE);
+  const cached = await cache.match(request);
+  if (cached) return cached;
+  const paths = [...SEARCH_DATA];
+  pendingSearchData ??= (async () => {
+    try {
+      const responses = await Promise.all(paths.map((path) => fetch(path)));
+      if (responses.every((r) => r.ok)) {
+        await Promise.all(paths.map((path, i) => cache.put(path, responses[i].clone())));
+      }
+      return responses;
+    } finally {
+      pendingSearchData = null;
+    }
+  })();
+  const responses = await pendingSearchData;
+  return responses[paths.indexOf(new URL(request.url).pathname)].clone();
+}
 
 async function cacheFirst(request: Request): Promise<Response> {
   const cache = await caches.open(ASSET_CACHE);
@@ -75,8 +109,8 @@ async function networkFirstWithCacheFallback(request: Request): Promise<Response
   } catch {
     const cached = await cache.match(request);
     if (cached) return cached;
-    // Offline, any state of the home page opens from the cached home page, which then
-    // shows the word, letter or search from the cached data.
+    // Offline, any state of the home page opens from the cached home page; a word, letter or
+    // search then needs the search data, cached once the visitor has searched online.
     const url = new URL(request.url);
     if (request.mode === "navigate" && url.pathname === "/") {
       // Every / response varies on Accept; the cached home matches any navigation.

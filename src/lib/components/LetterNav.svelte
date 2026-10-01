@@ -12,7 +12,7 @@
 
   const getLetterUrl = (letter: string) => `/?letter=${encodeURIComponent(letter)}`;
 
-  const letters = $derived(letterCounts.filter(({ letter }) => letter !== "Todas"));
+  const letters = letterCounts.filter(({ letter }) => letter !== "Todas");
 </script>
 
 <!-- Browse by first letter: one quiet row of letters; the counts are in each link's name. -->

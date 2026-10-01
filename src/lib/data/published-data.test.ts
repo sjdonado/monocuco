@@ -71,4 +71,12 @@ describe("published data", () => {
     expect(initial.totalPages).toBe(Math.ceil(source.length / initial.pageSize));
     expect(initial.words).toEqual(published.slice(0, initial.pageSize));
   });
+
+  it("builds the first page's pager exactly as the client computes it", async () => {
+    const repo = await import("../db/repository");
+    repo.seedWords(published as never);
+    const first = await repo.findAll({ pageSize: initial.pageSize });
+    expect(initial.pages).toEqual(first.pages);
+    expect(initial.nextAfter).toBe(first.nextAfter);
+  });
 });

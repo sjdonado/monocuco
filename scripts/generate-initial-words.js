@@ -41,6 +41,14 @@ function main() {
     .map((letter) => ({ letter, count: counts.get(letter) }));
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
+  // The pager of the first page (the same links findAll returns: up to 4 pages, each named by
+  // the id of its first word), so the first page works with no search data loaded.
+  const pages = Array.from({ length: Math.min(4, totalPages) }, (_, i) => ({
+    number: i + 1,
+    after: i === 0 ? null : data[i * PAGE_SIZE].id,
+  }));
+  const nextAfter = totalPages > 1 ? data[PAGE_SIZE].id : null;
+
   // Create output directory if needed
   mkdirSync(dirname(OUTPUT_PATH), { recursive: true });
 
@@ -51,6 +59,8 @@ function main() {
     totalPages: totalPages,
     pageSize: PAGE_SIZE,
     letters,
+    pages,
+    nextAfter,
     generatedAt: new Date().toISOString(),
   };
 

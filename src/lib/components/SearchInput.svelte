@@ -269,7 +269,7 @@
           ? `${LISTBOX_ID}-${activeIndex}`
           : undefined}
         class="grow bg-transparent text-base outline-none sm:text-sm"
-        placeholder="Buscar palabras..."
+        placeholder={isDisabled ? "Búsqueda no disponible" : "Buscar palabras..."}
         autocomplete="off"
         disabled={isDisabled}
         bind:value={query}
