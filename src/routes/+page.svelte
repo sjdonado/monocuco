@@ -680,7 +680,6 @@
         <button
           type="button"
           class="btn btn-ghost border-hairline h-10 min-h-10 border px-3 sm:h-8 sm:min-h-8"
-          data-pagination="prev"
           onclick={handlePrev}
           disabled={!hasPrev || isPaginationDisabled}
         >
@@ -702,7 +701,6 @@
               class:border-hairline={pageLink.number === currentPage}
               class:font-semibold={pageLink.number === currentPage}
               onclick={() => goToAfter(pageLink.after)}
-              data-page={pageLink.number}
               aria-current={pageLink.number === currentPage ? "page" : undefined}
             >
               {pageLink.number}
@@ -718,7 +716,6 @@
         <button
           type="button"
           class="btn btn-ghost border-hairline h-10 min-h-10 border px-3 sm:h-8 sm:min-h-8"
-          data-pagination="next"
           onclick={handleNext}
           disabled={!hasNext || isPaginationDisabled}
         >

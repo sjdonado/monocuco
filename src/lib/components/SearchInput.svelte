@@ -349,7 +349,6 @@
                 type="button"
                 id={`${LISTBOX_ID}-${index + 1}`}
                 tabindex="-1"
-                data-suggestion
                 class={[
                   "rounded-field hover:bg-base-200 flex w-full flex-col items-start gap-1 px-3 py-2 text-left transition-colors duration-150",
                   index + 1 === activeIndex && "bg-base-200",

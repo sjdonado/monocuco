@@ -45,7 +45,7 @@ Body and secondary text SHALL meet a WCAG 2.2 contrast ratio of at least 4.5:1 a
 
 #### Scenario: Measured contrast on every page
 
-- **WHEN** the browser audit measures every visible text element on every page and state at 360 px and 1440 px in both themes
+- **WHEN** the browser pass (AGENTS.md, Verification) measures every visible text element on every page and state at 360 px and 1440 px in both themes
 - **THEN** no element falls below its contrast floor
 
 #### Scenario: Accent links in the dark theme
@@ -59,7 +59,7 @@ The site SHALL use one typeface family, served from the site's own origin, and S
 
 #### Scenario: Only scale sizes are used
 
-- **WHEN** the browser audit collects the font size of every visible text element on every page and state
+- **WHEN** the browser pass collects the font size of every visible text element on every page and state
 - **THEN** every size is one of 12, 14, 16, 18, 24 or 30 px
 
 #### Scenario: No third-party font request
@@ -88,7 +88,7 @@ Surfaces SHALL be separated by spacing, hairline borders and one tonal step, nev
 
 #### Scenario: Only token radii
 
-- **WHEN** the browser audit collects the border radius of every visible element
+- **WHEN** the browser pass collects the border radius of every visible element
 - **THEN** every non-zero radius is one of the three token values
 
 ### Requirement: Motion policy
@@ -116,7 +116,7 @@ Every link, button, input and option SHALL show a visible focus indicator when i
 
 #### Scenario: Targets meet the minimum
 
-- **WHEN** the browser audit measures every interactive element on every page and state at 360 px and 1440 px
+- **WHEN** the browser pass (AGENTS.md, Verification) measures every interactive element on every page and state at 360 px and 1440 px
 - **THEN** none is smaller than 24 by 24 px, except links inside running text, and the letters and page numbers are at least 32 px square
 
 ### Requirement: One layout on every page
@@ -302,5 +302,5 @@ The redesign SHALL change behavior only where this spec says so: the `/add` page
 
 #### Scenario: Flows still work
 
-- **WHEN** the audit's flows (search submit, suggestion select with mouse and keyboard, letter browse, pagination next) and the unit and component tests run after the change
+- **WHEN** the browser pass flows (search submit, suggestion select with mouse and keyboard, letter browse, pagination next) and the unit and component tests run after the change
 - **THEN** they pass

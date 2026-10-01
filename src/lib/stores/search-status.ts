@@ -24,8 +24,6 @@ export const warmSearch = () => {
   initDB()
     .then(() => {
       searchReady.set(true);
-      // The audit waits for this before checking a state the browser computed.
-      document.documentElement.dataset.searchReady = "";
     })
     .catch((err) => {
       console.error("[Page] Search data initialization failed:", err);

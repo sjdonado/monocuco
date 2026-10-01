@@ -19,8 +19,6 @@
   const { children } = $props();
 
   onMount(() => {
-    // The audit waits for this before it clicks: the server's HTML has no handlers yet.
-    document.documentElement.dataset.hydrated = "";
     if (dev || !("serviceWorker" in navigator)) {
       return;
     }
