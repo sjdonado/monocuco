@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 /**
  * Browser audit of the built app. Serves the production build with `vite preview`,
  * opens every page and state in Chromium at a phone and a desktop width, in light and
@@ -565,6 +565,23 @@ async function auditFlows(browser) {
       // Back returns to all words.
       await page.goBack();
       await welcomeShows(page);
+    });
+
+    await step("reader-loads-no-search-data", "home", async (page) => {
+      // Reading the server's page (scrolling, waiting) downloads neither data file; the first
+      // focus on the search field does. The search data costs about 30 MB of renderer memory.
+      const fetched = [];
+      page.on("request", (request) => {
+        if (/\/(data|search-index)\.json$/.test(new URL(request.url()).pathname))
+          fetched.push(request.url());
+      });
+      await page.waitForFunction(() => "hydrated" in document.documentElement.dataset);
+      await page.mouse.wheel(0, 1500);
+      await page.waitForTimeout(1500);
+      if (fetched.length) throw new Error(`a reader downloaded ${fetched.join(", ")}`);
+      await page.getByRole("combobox", { name: "Buscar palabras" }).focus();
+      await page.waitForFunction(() => "searchReady" in document.documentElement.dataset);
+      if (fetched.length < 2) throw new Error(`focusing search fetched only ${fetched.join(", ")}`);
     });
 
     await step("search-stays-local", "about", async (page) => {

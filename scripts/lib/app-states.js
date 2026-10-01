@@ -18,16 +18,17 @@ export const ORIGIN = `http://localhost:${PORT}`;
 export const words = JSON.parse(readFileSync(resolve(ROOT, "static/data.json"), "utf-8"));
 export const sample = words[Math.floor(words.length / 2)];
 
-// `ready` waits for content that only the named state shows, once the page has hydrated and
-// loaded the search data (`data-search-ready`): the server already renders most states, so
-// their HTML alone proves nothing about the client.
+// `ready` waits for content that only the named state shows, once the page has hydrated. A
+// search also waits for the browser's own search data (`data-search-ready`), which loads on
+// first use; the other states are rendered by the server, and after a navigation in the
+// browser their cards only match once the client has computed them.
 
 // The page shows exactly the dataset entries `start..start+12`, and the numbered page
 // links mark the current page.
 export const cardsAre = (start) => (page) =>
   page.waitForFunction(
     (expected) => {
-      if (!("searchReady" in document.documentElement.dataset)) return false;
+      if (!("hydrated" in document.documentElement.dataset)) return false;
       if (!document.querySelector("button[aria-current=page]")) return false;
       const shown = [...document.querySelectorAll("article h2")].map((h) => h.textContent?.trim());
       return JSON.stringify(shown) === JSON.stringify(expected);
@@ -55,7 +56,7 @@ export const searchShows = (term) => (page) =>
 // app's own `firstLetter`, not a copy).
 export const letterShows = (letter) => async (page) => {
   await page.waitForFunction(() => {
-    if (!("searchReady" in document.documentElement.dataset)) return false;
+    if (!("hydrated" in document.documentElement.dataset)) return false;
     const count = [...document.querySelectorAll("p[aria-live]")].some((el) =>
       /^\d+ palabras? encontradas? con /.test(el.textContent?.replace(/\s+/g, " ").trim() ?? "")
     );
@@ -71,7 +72,7 @@ export const filedUnder = firstLetter;
 export const wordShows = (word) => (page) =>
   page.waitForFunction(
     (w) => {
-      if (!("searchReady" in document.documentElement.dataset)) return false;
+      if (!("hydrated" in document.documentElement.dataset)) return false;
       const cards = document.querySelectorAll("article");
       return cards.length === 1 && cards[0].querySelector("h1, h2")?.textContent?.trim() === w;
     },
@@ -107,19 +108,16 @@ export const PAGES = [
     ready: wordShows(sample.word),
   },
   {
-    // The search data fails: the page says so, offers a retry, and keeps the first page.
+    // The search data fails: the page says so and offers a retry. A search, because the
+    // search data loads on first use and the home page alone never asks for it.
     name: "data-failure",
-    path: "/",
+    path: "/?q=carnaval",
     // Its own context with the service worker blocked: a worker from an earlier page
     // would serve the cached data and the failure would never happen.
     isolated: true,
     setup: (page) => page.route("**/data.json", (route) => route.fulfill({ status: 500 })),
     allowStatus: [500],
-    allowConsole: [
-      /Failed to init search data/,
-      /Search data initialization failed/,
-      /Failed to load letter counts/,
-    ],
+    allowConsole: [/Failed to init search data/, /Search data initialization failed/],
     allowRequestFailed: [/\/data\.json$/],
     ready: (page) => page.getByRole("button", { name: "Reintentar" }).waitFor(),
   },

@@ -9,14 +9,13 @@
     findAll,
     findById,
     firstLetter,
-    initDB,
     type QueryAllResult,
     type Word,
   } from "$lib/db/repository";
   import { AlertCircleIcon, SearchIcon } from "@lucide/svelte";
   import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, plainText, wordPath } from "$lib/site";
   import type { PageData } from "./$types";
-  import { searchFailed, searchError } from "$lib/stores/search-status";
+  import { searchFailed, searchError, searchReady, warmSearch } from "$lib/stores/search-status";
 
   // Get prerendered data from load function
   const { data } = $props<{ data: PageData }>();
@@ -50,7 +49,6 @@
   );
   let error = $state<string | null>(renderedWord === null ? NOT_FOUND : null);
 
-  let initStarted = $state(false);
   let initDone = $state(false);
 
   // Track search data errors from shared store
@@ -279,31 +277,28 @@
     }
   }
 
-  // Initialize search data in background (even if not immediately needed)
+  // The search data loads on first use (`warmSearch`), not on every visit: here, as soon as
+  // the URL shows a state the server did not render (a search, or any navigation in the app).
   $effect(() => {
-    if (!browser || initStarted || searchHasFailed) return;
-
-    initStarted = true;
+    if (!browser || initDone || searchHasFailed || showsRendered) return;
+    if (!needsDB) {
+      // All words: the first page built with the site shows until the data is ready.
+      items = data.initialWords || [];
+      error = null;
+    }
     startInitialLoadingBar();
-    searchError.set(null);
-    searchFailed.set(false);
+    warmSearch();
+  });
 
-    // Warm up the search index and data in the background
-    initDB()
-      .then(() => {
-        stopInitialLoadingBar();
-        // The audit waits for this: the server's HTML alone proves nothing about the client.
-        document.documentElement.dataset.searchReady = "";
-        console.log("[Page] Search data ready");
-      })
-      .catch((err) => {
-        console.error("[Page] Search data initialization failed:", err);
-        searchFailed.set(true);
-        searchError.set(
-          "No pudimos cargar los datos de búsqueda locales. Intenta de nuevo más tarde."
-        );
-        stopInitialLoadingBar();
-      });
+  $effect(() => {
+    const unsubscribe = searchReady.subscribe((ready) => {
+      if (ready) stopInitialLoadingBar();
+    });
+    return unsubscribe;
+  });
+
+  $effect(() => {
+    if (searchHasFailed) stopInitialLoadingBar();
   });
 
   // Load data when URL params change
@@ -629,8 +624,11 @@
     {/if}
 
     {#if displayTotal > PAGE_SIZE && !isPending && !isWordDetail && !error}
+      <!-- Reaching for the pager starts loading the search data the next page needs. -->
       <div
         class="border-hairline flex min-h-10 max-w-2xl items-center justify-center gap-1 border-t pt-8 sm:gap-2"
+        onpointerenter={warmSearch}
+        onfocusin={warmSearch}
       >
         <button
           type="button"

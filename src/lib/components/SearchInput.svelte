@@ -3,7 +3,7 @@
   import { findSuggestions, type WordSuggestion } from "$lib/db/repository";
   import { parseMarkdown } from "$lib/markdown";
   import { SearchIcon } from "@lucide/svelte";
-  import { searchFailed } from "$lib/stores/search-status";
+  import { searchFailed, warmSearch } from "$lib/stores/search-status";
 
   const SUGGESTION_LIMIT = 5;
   const LISTBOX_ID = "search-suggestions";
@@ -166,6 +166,8 @@
   };
 
   const handleFocus = () => {
+    // The first focus loads the search data (src/lib/stores/search-status.ts).
+    warmSearch();
     hasFocus = true;
     isOpen = query.trim().length > 0;
     if (isOpen && !suggestions.length) {

@@ -1,36 +1,14 @@
 <script lang="ts">
-  import { browser } from "$app/environment";
-  import { getLetterCounts, type LetterCount } from "$lib/db/repository";
+  import type { LetterCount } from "$lib/db/repository";
+  import { warmSearch } from "$lib/stores/search-status";
   import initialWordsData from "$lib/data/initial-words.json";
 
   // The letter being browsed is marked as the current one; with none, "Todas" is.
   const { current = null } = $props<{ current?: string | null }>();
 
-  // Counts computed at build time, so the row has its final size before the data loads;
-  // replaced by the live counts once they are ready.
-  let letterCounts = $state<LetterCount[]>(
-    (initialWordsData as { letters?: LetterCount[] }).letters ?? []
-  );
-
-  let hasLoadedCounts = $state(false);
-
-  // Load counts once in the browser
-  $effect(() => {
-    if (!browser || hasLoadedCounts) return;
-
-    const loadCounts = async () => {
-      try {
-        const counts = await getLetterCounts();
-        letterCounts = counts;
-        hasLoadedCounts = true;
-      } catch (error) {
-        console.error("Failed to load letter counts", error);
-        hasLoadedCounts = true;
-      }
-    };
-
-    void loadCounts();
-  });
+  // Counts computed when the site is built from the same data (src/lib/data/published-data.test.ts
+  // fails when they differ), so the row needs no search data at all.
+  const letterCounts = (initialWordsData as { letters?: LetterCount[] }).letters ?? [];
 
   const getLetterUrl = (letter: string) => `/?letter=${encodeURIComponent(letter)}`;
 
@@ -38,7 +16,13 @@
 </script>
 
 <!-- Browse by first letter: one quiet row of letters; the counts are in each link's name. -->
-<nav aria-label="Navegación por letras" class="min-h-8">
+<!-- Reaching for a letter starts loading the search data its page needs. -->
+<nav
+  aria-label="Navegación por letras"
+  class="min-h-8"
+  onpointerenter={warmSearch}
+  onfocusin={warmSearch}
+>
   <h2 class="sr-only">Palabras por letra</h2>
   {#if letters.length > 0}
     <ul class="-ml-2 flex flex-wrap gap-1">
