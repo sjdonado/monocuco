@@ -149,12 +149,17 @@ Less visible text SHALL NOT make a page harder to understand for assistive techn
 
 ### Requirement: Search as a keyboard combobox
 
-The search field SHALL behave as a combobox with a list of up to five suggestions, each with the word and one line of its definition. Down and Up SHALL move the highlight through the suggestions, Enter SHALL open the highlighted word or, with none highlighted, search for the typed text, and Escape SHALL close the list. The highlighted suggestion SHALL be exposed to assistive technology (`aria-activedescendant`), and choosing with the mouse or Enter SHALL keep focus in the field, also after the word opens; closing the list SHALL forget the highlight; a failed lookup SHALL say "Búsqueda no disponible por ahora." instead of "Sin resultados". While suggestions are loading the list SHALL show "Buscando..." instead of an empty panel, and "Sin resultados" only after the lookup finished with no match.
+The search field SHALL behave as a combobox whose list starts with the option `Buscar "<typed text>"`, followed by up to five suggestions, each with the word and one line of its definition. The first option SHALL do exactly what Enter does with nothing highlighted: search for the typed text (and, like that search, move focus to the results). It is always there while the field has text, so a term with no suggestion is never a dead end; there is no "Sin resultados" row. Down and Up SHALL move the highlight through the options in order (none, `Buscar`, then each suggestion, wrapping around), Enter SHALL run the highlighted option, and Escape SHALL close the list. The highlighted option SHALL be exposed to assistive technology (`aria-activedescendant`); choosing a suggestion with the mouse or Enter SHALL keep focus in the field, also after the word opens; closing the list SHALL forget the highlight. While suggestions are loading the list SHALL show "Buscando..." below the first option, and a failed lookup SHALL say "Búsqueda no disponible por ahora.".
 
 #### Scenario: Choose a suggestion with the keyboard
 
-- **WHEN** a visitor types a word, presses Down and then Enter
-- **THEN** the first suggestion is highlighted and announced, and Enter opens that word's page
+- **WHEN** a visitor types a word, presses Down twice and then Enter
+- **THEN** Down first highlights `Buscar "<word>"`, then the first suggestion, which is announced, and Enter opens that word's page
+
+#### Scenario: A term with no suggestion
+
+- **WHEN** a visitor types a term no word matches
+- **THEN** the list shows only `Buscar "<term>"`, never "Sin resultados", and choosing it opens the results page for that term, the same page Enter opens
 
 #### Scenario: Search the typed text
 

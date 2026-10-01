@@ -182,8 +182,9 @@
     }, 150);
   };
 
-  // Combobox keys: Down and Up move through the suggestions, Enter opens the highlighted
-  // word (or searches when none is highlighted), Escape closes the list.
+  // Combobox keys: Down and Up move through the options (first "Buscar …", then the
+  // suggestions), Enter opens the highlighted suggestion and otherwise submits the search
+  // (which is what "Buscar …" does), Escape closes.
   const handleKeydown = (event: KeyboardEvent) => {
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       if (!query.trim()) return;
@@ -193,21 +194,27 @@
         if (!suggestions.length) scheduleSuggestions(query);
         return;
       }
-      if (!suggestions.length) return;
+      // Option 0 searches the typed text; options 1..n are the suggestions; -1 is none.
+      const options = suggestions.length + 1;
       const step = event.key === "ArrowDown" ? 1 : -1;
-      activeIndex = (activeIndex + step + suggestions.length + 1) % (suggestions.length + 1);
-      if (activeIndex === suggestions.length) activeIndex = -1;
+      activeIndex = ((activeIndex + 1 + step + options + 1) % (options + 1)) - 1;
       return;
     }
-    if (event.key === "Enter" && isOpen && activeIndex >= 0 && suggestions[activeIndex]) {
+    if (event.key === "Enter" && isOpen && activeIndex > 0 && suggestions[activeIndex - 1]) {
       event.preventDefault();
-      handleSelect(suggestions[activeIndex]);
+      handleSelect(suggestions[activeIndex - 1]);
       return;
     }
     if (event.key === "Escape" && isOpen) {
       event.preventDefault();
       close();
     }
+  };
+
+  // The same as pressing Enter: search exactly what was typed.
+  const searchTyped = () => {
+    close();
+    navigateToSearch(query);
   };
 
   const handleSelect = (suggestion: WordSuggestion) => {
@@ -288,6 +295,29 @@
         aria-label="Sugerencias"
         aria-busy={loading}
       >
+        <!-- The first option searches exactly what was typed, as Enter does, so a term with no
+             suggestion (or one the visitor does not want) is never a dead end. -->
+        <li role="none">
+          <button
+            type="button"
+            id={`${LISTBOX_ID}-0`}
+            tabindex="-1"
+            class={[
+              "rounded-field hover:bg-base-200 flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors duration-150",
+              activeIndex === 0 && "bg-base-200",
+            ]}
+            onmousedown={(event) => event.preventDefault()}
+            onmouseenter={() => (activeIndex = 0)}
+            onclick={searchTyped}
+            role="option"
+            aria-selected={activeIndex === 0}
+          >
+            <SearchIcon class="text-muted size-4 shrink-0" aria-hidden="true" />
+            <span class="min-w-0 truncate"
+              >Buscar "<span class="font-medium">{query.trim()}</span>"</span
+            >
+          </button>
+        </li>
         {#if suggestions.length === 0}
           {#if loading}
             <li
@@ -302,14 +332,14 @@
               ></span>
               <span>Buscando...</span>
             </li>
-          {:else}
+          {:else if lookupFailed}
             <li
               role="option"
               aria-selected="false"
               aria-disabled="true"
               class="text-muted px-3 py-2 text-sm"
             >
-              <span>{lookupFailed ? "Búsqueda no disponible por ahora." : "Sin resultados"}</span>
+              <span>Búsqueda no disponible por ahora.</span>
             </li>
           {/if}
         {:else}
@@ -317,17 +347,18 @@
             <li role="none">
               <button
                 type="button"
-                id={`${LISTBOX_ID}-${index}`}
+                id={`${LISTBOX_ID}-${index + 1}`}
                 tabindex="-1"
+                data-suggestion
                 class={[
                   "rounded-field hover:bg-base-200 flex w-full flex-col items-start gap-1 px-3 py-2 text-left transition-colors duration-150",
-                  index === activeIndex && "bg-base-200",
+                  index + 1 === activeIndex && "bg-base-200",
                 ]}
                 onmousedown={(event) => event.preventDefault()}
-                onmouseenter={() => (activeIndex = index)}
+                onmouseenter={() => (activeIndex = index + 1)}
                 onclick={() => handleSelect(suggestion)}
                 role="option"
-                aria-selected={index === activeIndex}
+                aria-selected={index + 1 === activeIndex}
               >
                 <span class="text-sm font-medium">{suggestion.word}</span>
                 <span class="text-muted line-clamp-1 text-xs">

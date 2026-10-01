@@ -636,7 +636,8 @@ async function auditFlows(browser: Browser) {
     await step("search-submit", "home", async (page) => {
       const input = page.getByRole("combobox", { name: "Buscar palabras" });
       await input.fill("carnaval");
-      await page.locator("[role=option]:not([aria-disabled=true])").first().waitFor();
+      // Real suggestions are showing, and Enter with none highlighted still searches.
+      await page.locator("[role=option][data-suggestion]").first().waitFor();
       await input.press("Enter");
       await page.waitForURL(/\?q=carnaval/);
       await searchShows("carnaval")(page);
@@ -820,7 +821,7 @@ async function auditFlows(browser: Browser) {
 
     await step("suggestion-select", "home", async (page) => {
       await page.getByRole("combobox", { name: "Buscar palabras" }).fill(sample.word);
-      const option = page.locator("[role=option]:not([aria-disabled=true])").first();
+      const option = page.locator("[role=option][data-suggestion]").first();
       await option.waitFor();
       const chosen = (await option.locator("span").first().innerText()).trim();
       await option.click();
@@ -846,9 +847,9 @@ async function auditFlows(browser: Browser) {
       async (page) => {
         await page.getByRole("combobox", { name: "Buscar palabras" }).pressSequentially("carn");
         await page.getByRole("option", { name: "Buscando..." }).waitFor();
-        if (await page.getByText("Sin resultados").count())
-          throw new Error('"Sin resultados" shows while the lookup is still waiting');
-        await page.locator("[role=option]:not([aria-disabled=true])").first().waitFor();
+        if (!(await page.getByRole("option", { name: 'Buscar "carn"' }).count()))
+          throw new Error('no "Buscar" option while the lookup is still waiting');
+        await page.locator("[role=option][data-suggestion]").first().waitFor();
       }
     );
 
@@ -897,7 +898,24 @@ async function auditFlows(browser: Browser) {
     await step("suggestion-keyboard", "home", async (page) => {
       const input = page.getByRole("combobox", { name: "Buscar palabras" });
       await input.fill(sample.word);
-      await page.locator("[role=option]:not([aria-disabled=true])").first().waitFor();
+      await page.locator("[role=option][data-suggestion]").first().waitFor();
+      // Up from no highlight wraps to the last suggestion, and Down from there back to none.
+      const activeText = () =>
+        page.evaluate(() => {
+          const id = document
+            .querySelector("input[role=combobox]")
+            ?.getAttribute("aria-activedescendant");
+          return id ? (document.getElementById(id)?.textContent?.trim() ?? null) : null;
+        });
+      await input.press("ArrowUp");
+      const last = await page.locator("[role=option][data-suggestion]").last().textContent();
+      if ((await activeText()) !== last?.trim())
+        throw new Error("Up from no highlight did not wrap to the last suggestion");
+      await input.press("ArrowDown");
+      if ((await activeText()) !== null)
+        throw new Error("Down from the last suggestion did not clear the highlight");
+      // The first option searches the typed text; the second is the first suggestion.
+      await input.press("ArrowDown");
       await input.press("ArrowDown");
       const chosen = await page.evaluate(() => {
         const input = document.querySelector("input[role=combobox]");
@@ -908,6 +926,44 @@ async function auditFlows(browser: Browser) {
       await input.press("Enter");
       await page.waitForURL(/\?word=/);
       await wordShows(chosen)(page);
+    });
+
+    await step("search-typed-option", "home", async (page) => {
+      // A term with no suggestion offers to search it, never a dead "Sin resultados"; the
+      // option does what Enter does, by mouse and by keyboard.
+      const term = "zzqxjwv";
+      const input = page.getByRole("combobox", { name: "Buscar palabras" });
+      await input.fill(term);
+      const option = page.getByRole("option", { name: `Buscar "${term}"` });
+      await option.waitFor();
+      await page.waitForFunction(
+        () => document.querySelector("[role=listbox]")?.getAttribute("aria-busy") === "false"
+      );
+      if (await page.getByText("Sin resultados").count()) throw new Error('"Sin resultados" shows');
+      await option.click();
+      await page.waitForURL(new RegExp(`\\?q=${term}`));
+      await page.getByText("No encontramos palabras para esta búsqueda.").waitFor();
+      // Keyboard: Down highlights it, Enter runs it. The pointer moves away first, or hovering
+      // where the option was clicked would highlight whatever renders under it.
+      await page.mouse.move(0, 0);
+      await input.fill("carnaval");
+      await page.locator("[role=option][data-suggestion]").first().waitFor();
+      // Down, Down, Up lands on the first option again (checked below), and Enter searches.
+      await input.press("ArrowDown");
+      await input.press("ArrowDown");
+      await input.press("ArrowUp");
+      const active = await page.evaluate(() => {
+        const id = document
+          .querySelector("input[role=combobox]")
+          ?.getAttribute("aria-activedescendant");
+        return id ? document.getElementById(id)?.textContent?.replace(/\s+/g, " ").trim() : null;
+      });
+      if (active !== 'Buscar "carnaval"') throw new Error(`ArrowDown highlighted ${active}`);
+      await input.press("Enter");
+      await page.waitForURL(
+        (url) => url.searchParams.get("q") === "carnaval" && !url.searchParams.has("word")
+      );
+      await searchShows("carnaval")(page);
     });
 
     await step("letter-browse", "home", async (page) => {
