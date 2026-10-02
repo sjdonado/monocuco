@@ -22,14 +22,14 @@ The README SHALL show one or two static WebP screenshots of the redesigned inter
 
 ### Requirement: Reproducible capture procedure
 
-A single command SHALL build the app and regenerate every README screenshot, with the same viewport, color scheme, page state and crop each time. It SHALL make no network request outside the local preview server. The procedure SHALL be documented step by step in the repository, together with when it must be run.
+A documented procedure (`docs/MEDIA.md`) SHALL regenerate the README screenshot from the production build, with the same viewport, color scheme, page state, pixel density and encoding each time. It SHALL make no network request outside the local preview server, and the documentation SHALL say when it must be run.
 
 #### Scenario: Regenerating after a visual change
 
-- **WHEN** a maintainer runs the documented command after changing how the header, search, word card or pagination look
+- **WHEN** a maintainer follows the documented procedure after changing how the header, search, word card or pagination look
 - **THEN** the screenshots are regenerated at the same paths, sizes and framing, and the documentation names every check to run on the result
 
 #### Scenario: Deterministic content
 
-- **WHEN** the command runs twice on the same commit
+- **WHEN** the procedure runs twice on the same commit
 - **THEN** both runs show the same words in the same state

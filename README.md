@@ -5,7 +5,7 @@ Diccionario abierto y gratuito de [Español barranquillero](https://es.wikipedia
 
 ## ¿Cómo contribuir?
 
-Antes de escribir una definición, por favor revisa nuestras [pautas de contenido](https://monocuco.sjdonado.com/guidelines). En resumen: comparte definiciones útiles para otras personas y nunca publiques discursos de odio ni información personal.
+Antes de escribir una definición, por favor revisa nuestras [pautas de contenido](https://monocuco.sjdonado.com/about#pautas). En resumen: comparte definiciones útiles para otras personas y nunca publiques discursos de odio ni información personal.
 
 Para aportar nuevas palabras al diccionario, usa el CLI y abre un Pull Request:
 
@@ -16,7 +16,7 @@ Requisitos: [Bun](https://bun.sh/).
 ```sh
 bun install
 
-bun run add-word -- \
+bun run add-word \
   --word "Jodido" \
   --definition "Persona que está mal" \
   --example "Quedé jodido con ese aguacero" \
@@ -24,18 +24,12 @@ bun run add-word -- \
   --website "https://github.com/krthr"
 ```
 
-El comando actualizará `data.json` y el README automáticamente. Para actualizar el índice de búsqueda y los datos estáticos, ejecuta:
-
-```sh
-bun run build-data
-```
-
-Este comando genera `static/data.json` y `static/search-index.json` para el buscador.
+El comando agrega la palabra a `data.json`, te suma a la lista de contribuidores del README y regenera los datos que usa el buscador (`static/data.json`, `static/search-index.json`).
 
 Después de ejecutarlo:
 
 1. Revisa que la palabra se vea bien en la interfaz (`bun run dev`).
-2. Crea tu commit con el archivo actualizado.
+2. Crea tu commit con los archivos actualizados.
 3. Abre un Pull Request en este repositorio (https://www.freecodecamp.org/espanol/news/como-hacer-tu-primer-pull-request-en-github/)
 4. **Opcional:** añade tu foto de perfil a la lista de contribuidores 😎.
 

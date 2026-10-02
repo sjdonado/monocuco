@@ -1,336 +1,148 @@
 #!/usr/bin/env bun
 /**
- * CLI to append a new word entry to the project JSON dataset.
+ * Adds a word to data.json and its author to the README contributors table, then regenerates
+ * the published data (`bun run build-data`).
  */
 
-import { readFileSync, writeFileSync, existsSync } from "fs";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
-import { randomUUID } from "crypto";
-import { Command } from "commander";
+import { parseArgs } from "util";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const ROOT = new URL("..", import.meta.url).pathname;
+const README = `${ROOT}README.md`;
 
-const DEFAULT_JSON_PATH = resolve(__dirname, "../data.json");
-const README_PATH = resolve(__dirname, "../README.md");
-const CONTRIBUTORS_HEADER = "## Contribuidores";
+const USAGE = `Usage: bun run add-word --word <word> --definition <markdown> [options]
 
-/**
- * Split markdown table row into cells
- * @param {string} line - Markdown table row
- * @returns {string[]} Array of cell contents
- */
-function splitMarkdownRow(line: string): string[] {
-  let core = line.trim();
-  if (core.startsWith("|")) core = core.slice(1);
-  if (core.endsWith("|")) core = core.slice(0, -1);
-  return core.split("|").map((cell: string) => cell.trim());
-}
+  -w, --word <word>             Word or expression to add
+  -d, --definition <markdown>   Definition (Markdown)
+  -e, --example <markdown>      Example of use; one per line
+  --author <name>               Who contributed it
+  --website <url>               The author's website
+  --created-at <iso>            Timestamp (default: now, UTC)
+  --json <path>                 Target file (default: data.json)
+  --dry-run                     Print the entry without writing anything`;
 
-/**
- * Format cells into a markdown row
- * @param {string[]} cells - Array of cell contents
- * @returns {string} Formatted markdown row
- */
-function formatMarkdownRow(cells: string[]): string {
-  return `| ${cells.join(" | ")} |`;
-}
-
-/**
- * Normalize identifier for comparison
- * @param {string | null | undefined} value - Value to normalize
- * @returns {string} Normalized identifier
- */
-function normalizeIdentifier(value: string | null | undefined): string {
-  if (!value) return "";
-  return value
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim()
-    .toLowerCase();
-}
-
-/**
- * Update README contributors table
- * @param {string | null} author - Author name
- * @param {string | null} website - Author website
- * @param {string} readmePath - Path to README file
- * @returns {boolean} True if updated successfully
- */
-function updateReadmeContributors(
-  author: string | null | undefined,
-  website: string | null | undefined,
-  readmePath = README_PATH
-): boolean {
-  const authorName = (author || "").trim();
-  if (!authorName) return false;
-
+const parsed = (() => {
   try {
-    const content = readFileSync(readmePath, "utf-8");
-    const lines = content.split("\n");
-
-    const headerIdx = lines.findIndex(
-      (line) => normalizeIdentifier(line) === normalizeIdentifier(CONTRIBUTORS_HEADER)
-    );
-
-    let tableStart: number | null = null;
-    for (let i = headerIdx + 1; i < lines.length; i++) {
-      if (lines[i].trim().startsWith("|")) {
-        tableStart = i;
-        break;
-      }
-    }
-    // Without a table the old code threw on `lines[null].trim()`; the catch below reports it.
-    if (tableStart === null) throw new Error("no se encontró la tabla de contribuidores");
-
-    let tableEnd = lines.length;
-    for (let i = tableStart; i < lines.length; i++) {
-      if (!lines[i].trim().startsWith("|")) {
-        tableEnd = i;
-        break;
-      }
-    }
-
-    const tableLines = lines.slice(tableStart, tableEnd);
-    const headerCells = splitMarkdownRow(tableLines[0]);
-    const dataLines = tableLines.slice(2);
-    const columns = headerCells.length;
-
-    // Build flat cells array from table
-    const rows: string[][] = [];
-    for (const line of dataLines) {
-      if (!line.trim().startsWith("|")) continue;
-      const cells = splitMarkdownRow(line);
-      while (cells.length < columns) {
-        cells.push("");
-      }
-      rows.push(cells);
-    }
-
-    const flatCells = rows.flat();
-    const normalizedAuthor = normalizeIdentifier(authorName);
-
-    // Check if author already exists and update if needed
-    for (let idx = 0; idx < flatCells.length; idx++) {
-      const cell = flatCells[idx];
-      if (!cell.trim()) continue;
-      if (!normalizedAuthor || !normalizeIdentifier(cell).includes(normalizedAuthor)) continue;
-
-      if (!website?.trim()) {
-        console.log(`ℹ️ README.md ya incluía a ${authorName}.`);
-        return true;
-      }
-
-      const target = website.trim();
-      const hrefMatch = cell.match(/href="([^"]*)"/);
-
-      // Update existing href
-      if (hrefMatch) {
-        const current = hrefMatch[1];
-        if (current === target) {
-          console.log(`ℹ️ README.md ya incluía a ${authorName}.`);
-          return true;
-        }
-
-        flatCells[idx] = cell.replace(/href="[^"]*"/, `href="${target}"`);
-        const newRows: string[][] = [];
-        for (let i = 0; i < flatCells.length; i += columns) {
-          newRows.push(flatCells.slice(i, i + columns));
-        }
-        const formatted = newRows
-          .filter((row) => row.some((item) => item.trim()))
-          .map((row) => formatMarkdownRow(row));
-        lines.splice(tableStart, tableEnd - tableStart, tableLines[0], tableLines[1], ...formatted);
-        writeFileSync(readmePath, lines.join("\n") + "\n", "utf-8");
-        console.log(`ℹ️ README.md ya incluía a ${authorName}; la información fue actualizada.`);
-        return true;
-      }
-
-      // Add href to existing cell
-      flatCells[idx] = `<a href="${target}">${cell}</a>`;
-      const newRows: string[][] = [];
-      for (let i = 0; i < flatCells.length; i += columns) {
-        newRows.push(flatCells.slice(i, i + columns));
-      }
-      const formatted = newRows
-        .filter((row) => row.some((item) => item.trim()))
-        .map((row) => formatMarkdownRow(row));
-      lines.splice(tableStart, tableEnd - tableStart, tableLines[0], tableLines[1], ...formatted);
-      writeFileSync(readmePath, lines.join("\n") + "\n", "utf-8");
-      console.log(`ℹ️ README.md ya incluía a ${authorName}; la información fue actualizada.`);
-      return true;
-    }
-
-    // Add new contributor
-    const label = authorName.trim();
-    const href = (website || "").trim();
-    const newCell = `<a href="${href}"><img src="" width="460px;" alt="${label}"/><br /><sub><b>${label}</b></sub></a>`;
-
-    const emptyIndex = flatCells.findIndex((cell) => !cell.trim());
-
-    if (emptyIndex === -1) {
-      flatCells.push(newCell);
-      while (flatCells.length % columns !== 0) {
-        flatCells.push("");
-      }
-    } else {
-      flatCells[emptyIndex] = newCell;
-    }
-
-    const newRows: string[][] = [];
-    for (let i = 0; i < flatCells.length; i += columns) {
-      newRows.push(flatCells.slice(i, i + columns));
-    }
-
-    const formattedRows = newRows
-      .filter((row) => row.some((item) => item.trim()))
-      .map((row) => formatMarkdownRow(row));
-
-    lines.splice(tableStart, tableEnd - tableStart, tableLines[0], tableLines[1], ...formattedRows);
-    writeFileSync(readmePath, lines.join("\n") + "\n", "utf-8");
-    console.log(`✅ README.md actualizado con ${authorName} en la lista de contribuidores.`);
-    return true;
+    return parseArgs({
+      options: {
+        word: { type: "string", short: "w" },
+        definition: { type: "string", short: "d" },
+        example: { type: "string", short: "e", default: "" },
+        author: { type: "string" },
+        website: { type: "string" },
+        "created-at": { type: "string" },
+        json: { type: "string", default: `${ROOT}data.json` },
+        "dry-run": { type: "boolean", default: false },
+        help: { type: "boolean", short: "h", default: false },
+      },
+    });
   } catch (err) {
+    // An unknown or misspelled flag.
+    console.log(`${err instanceof Error ? err.message : String(err)}\n\n${USAGE}`);
+    process.exit(1);
+  }
+})();
+const args = parsed.values;
+
+if (args.help || !args.word?.trim() || !args.definition?.trim()) {
+  console.log(USAGE);
+  process.exit(args.help ? 0 : 1);
+}
+
+const word = args.word.trim();
+const author = args.author?.trim() || null;
+const website = args.website?.trim() || null;
+const entry = {
+  id: crypto.randomUUID(),
+  word: word[0].toUpperCase() + word.slice(1),
+  definition: args.definition.trim(),
+  // One example per line, each in quotes.
+  example: args.example
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => (line.startsWith('"') && line.endsWith('"') ? line : `"${line}"`))
+    .join("\n"),
+  createdBy: { name: author, website },
+  createdAt: args["created-at"] || new Date().toISOString(),
+};
+
+if (args["dry-run"]) {
+  console.log(JSON.stringify(entry, null, 2));
+  process.exit(0);
+}
+
+const file = Bun.file(args.json);
+const records = (await file.exists()) ? await file.json() : [];
+records.push(entry);
+await Bun.write(args.json, JSON.stringify(records, null, 2));
+if (author) {
+  try {
+    await addContributor(author, website);
+  } catch (err) {
+    // The word is already saved; the README can be fixed by hand.
     console.log(
       `⚠️ No se pudo actualizar README.md: ${err instanceof Error ? err.message : String(err)}`
     );
-    return false;
   }
 }
+console.log(`✅ Added '${entry.word}' to ${args.json}`);
+const build = Bun.spawnSync(["bun", "run", "build-data"], { stdout: "inherit", stderr: "inherit" });
+process.exit(build.exitCode);
 
-/** Entry data structure */
-interface Entry {
-  id: string;
-  word: string;
-  definition: string;
-  example: string;
-  createdBy: { name: string | null; website: string | null };
-  createdAt: string;
-}
+/** Lists the author in the README's contributors grid, or updates their link. */
+async function addContributor(name: string, link: string | null) {
+  const fold = (text: string) => text.normalize("NFKD").replace(/\p{M}/gu, "").trim().toLowerCase();
+  const cellsOf = (line: string) =>
+    line
+      .trim()
+      .replace(/^\||\|$/g, "")
+      .split("|")
+      .map((cell) => cell.trim());
 
-/** Add entry options */
-interface AddEntryOptions {
-  /** Word or expression to add */
-  word: string;
-  /** Definition in markdown */
-  definition: string;
-  example?: string;
-  author?: string | null;
-  website?: string | null;
-  /** ISO timestamp */
-  createdAt?: string | null;
-  /** Path to JSON file */
-  jsonPath?: string;
-  /** Print without writing */
-  dryRun?: boolean;
-}
-
-/** Add a new word entry */
-function addEntry({
-  word,
-  definition,
-  example = "",
-  author = null,
-  website = null,
-  createdAt = null,
-  jsonPath = DEFAULT_JSON_PATH,
-  dryRun = false,
-}: AddEntryOptions): Entry {
-  const timestamp = createdAt || new Date().toISOString().replace(/\+00:00$/, "Z");
-  const entryId = randomUUID();
-
-  const trimmedWord = word.trim();
-  const normalizedWord = trimmedWord ? trimmedWord[0].toUpperCase() + trimmedWord.slice(1) : "";
-  const cleanedDefinition = definition.trim();
-
-  let normalizedExample = "";
-  if (example) {
-    const exampleLines = example
-      .split("\n")
-      .map((line) => line.trim())
-      .filter((line) => line);
-
-    if (exampleLines.length > 0) {
-      const formattedLines = exampleLines.map((line) => {
-        if (line.startsWith('"') && line.endsWith('"')) {
-          return line;
-        }
-        return `"${line}"`;
-      });
-      normalizedExample = formattedLines.join("\n");
-    }
+  const lines = (await Bun.file(README).text()).split("\n");
+  const header = lines.findIndex((line) => fold(line) === fold("## Contribuidores"));
+  const start = lines.findIndex((line, i) => i > header && line.trim().startsWith("|"));
+  if (header < 0 || start < 0) {
+    console.log("⚠️ No se pudo actualizar README.md: no se encontró la tabla de contribuidores");
+    return;
   }
+  let end = lines.findIndex((line, i) => i > start && !line.trim().startsWith("|"));
+  if (end < 0) end = lines.length;
 
-  const authorValue = author?.trim() || null;
-  const websiteValue = website?.trim() || null;
-
-  const entry: Entry = {
-    id: entryId,
-    word: normalizedWord,
-    definition: cleanedDefinition,
-    example: normalizedExample,
-    createdBy: {
-      name: authorValue,
-      website: websiteValue,
-    },
-    createdAt: timestamp,
-  };
-
-  if (dryRun) {
-    console.log(JSON.stringify(entry, null, 2));
-    return entry;
-  }
-
-  // Update JSON file
-  let records: Entry[] = [];
-  if (existsSync(jsonPath)) {
-    records = JSON.parse(readFileSync(jsonPath, "utf-8"));
-  }
-  records.push(entry);
-  writeFileSync(jsonPath, JSON.stringify(records, null, 2), "utf-8");
-
-  updateReadmeContributors(author, website);
-
-  console.log(`✅ Added '${entry.word}' to ${jsonPath}`);
-  return entry;
-}
-
-interface AddEntryCliOptions {
-  word: string;
-  definition: string;
-  example: string;
-  author?: string;
-  website?: string;
-  createdAt?: string;
-  json: string;
-  dryRun: boolean;
-}
-
-const program = new Command();
-
-program
-  .name("add-word")
-  .description("CLI to append a new word entry to the project JSON dataset")
-  .requiredOption("-w, --word <word>", "Word or expression to add")
-  .requiredOption("-d, --definition <definition>", "Definition in markdown")
-  .option("-e, --example <example>", "Example usage (markdown, optional)", "")
-  .option("--author <author>", "Author name")
-  .option("--website <website>", "Author website")
-  .option("--created-at <timestamp>", "ISO timestamp (defaults to current UTC time)")
-  .option("--json <path>", "Target JSON file", DEFAULT_JSON_PATH)
-  .option("--dry-run", "Print the would-be entry without writing to disk", false)
-  .action((options: AddEntryCliOptions) => {
-    addEntry({
-      word: options.word,
-      definition: options.definition,
-      example: options.example,
-      author: options.author,
-      website: options.website,
-      createdAt: options.createdAt,
-      jsonPath: options.json,
-      dryRun: options.dryRun,
-    });
+  // The table is a grid: header, separator, then rows of cells read left to right.
+  const columns = cellsOf(lines[start]).length;
+  const cells = lines.slice(start + 2, end).flatMap((line) => {
+    const row = cellsOf(line);
+    while (row.length < columns) row.push("");
+    return row;
   });
 
-program.parse();
+  const existing = cells.findIndex((cell) => cell && fold(cell).includes(fold(name)));
+  if (existing >= 0) {
+    if (!link || cells[existing].includes(`href="${link}"`)) {
+      console.log(`ℹ️ README.md ya incluía a ${name}.`);
+      return;
+    }
+    cells[existing] = /href="[^"]*"/.test(cells[existing])
+      ? cells[existing].replace(/href="[^"]*"/, `href="${link}"`)
+      : `<a href="${link}">${cells[existing]}</a>`;
+    console.log(`ℹ️ README.md ya incluía a ${name}; la información fue actualizada.`);
+  } else {
+    const cell = `<a href="${link ?? ""}"><img src="" width="460px;" alt="${name}"/><br /><sub><b>${name}</b></sub></a>`;
+    const empty = cells.findIndex((value) => !value);
+    if (empty >= 0) cells[empty] = cell;
+    else {
+      cells.push(cell);
+      while (cells.length % columns) cells.push("");
+    }
+    console.log(`✅ README.md actualizado con ${name} en la lista de contribuidores.`);
+  }
+
+  const rows: string[] = [];
+  for (let i = 0; i < cells.length; i += columns) {
+    const row = cells.slice(i, i + columns);
+    if (row.some(Boolean)) rows.push(`| ${row.join(" | ")} |`);
+  }
+  lines.splice(start, end - start, lines[start], lines[start + 1], ...rows);
+  await Bun.write(README, lines.join("\n"));
+}

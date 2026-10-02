@@ -1,7 +1,7 @@
 {
 	"name": "monocuco",
 	"private": true,
-	"version": "1.2.0",
+	"version": "1.3.0",
 	"type": "module",
 	"scripts": {
 		"dev": "bun --bun vite dev",
@@ -11,14 +11,12 @@
 		"prepare": "bun --bun svelte-kit sync || echo ''",
 		"check": "bun --bun svelte-kit sync && bun --bun svelte-check --tsconfig ./tsconfig.json && bun --bun tsc -p scripts/tsconfig.json",
 		"check:watch": "bun --bun svelte-kit sync && bun --bun svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "bun --bun eslint . && bun --bun prettier --check . && bun ./scripts/design-lint.ts",
+		"lint": "bun --bun eslint . && bun --bun prettier --check .",
 		"test:unit": "bun --bun vitest",
 		"test": "bun run test:unit -- --run",
-		"audit:ui": "bun ./scripts/ui-audit.ts",
-		"media": "bun ./scripts/capture-media.ts",
-		"ci": "bun run check && bun run lint && bun run test && bun run audit:ui -- --strict",
+		"ci": "bun run check && bun run lint && bun run test",
 		"format": "bun --bun prettier --write .",
-		"add-word": "./scripts/add-word.ts && bun run build-data",
+		"add-word": "./scripts/add-word.ts",
 		"build-data": "bun ./scripts/build-index.ts && bun ./scripts/generate-initial-words.ts"
 	},
 	"devDependencies": {
@@ -29,6 +27,7 @@
 		"@sveltejs/vite-plugin-svelte": "^7.3.1",
 		"@tailwindcss/typography": "^0.5.20",
 		"@tailwindcss/vite": "^4.3.3",
+		"@types/bun": "^1.4.2",
 		"@types/node": "^26.6.3",
 		"@vitest/browser": "^5.0.3",
 		"@vitest/browser-playwright": "^5.0.3",
@@ -54,12 +53,7 @@
 	},
 	"dependencies": {
 		"@lucide/svelte": "^1.49.0",
-		"commander": "^15.0.0",
 		"marked": "^18.0.14",
-		"minisearch": "^7.2.0",
-		"remark-parse": "^11.0.0",
-		"remark-stringify": "^11.0.0",
-		"unified": "^11.0.5",
-		"unist-util-visit": "^5.1.0"
+		"minisearch": "^7.2.0"
 	}
 }

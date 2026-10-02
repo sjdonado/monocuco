@@ -22,12 +22,11 @@
 
 - [OpenAPI specification](https://monocuco.sjdonado.com/openapi.json): the API's parameters, responses and error codes
 - [Whole dataset](https://monocuco.sjdonado.com/data.json): every entry as one JSON array, in dictionary order
-- [Content guidelines](https://monocuco.sjdonado.com/guidelines): what entries belong in the dictionary
+- [Content guidelines](https://monocuco.sjdonado.com/about#pautas): what entries belong in the dictionary
 - [Source code and contributions](https://github.com/sjdonado/monocuco): new words arrive by pull request
 
 ## Optional
 
-- [About](https://monocuco.sjdonado.com/about): what Monocuco is and where its words come from
-- [Contact](https://monocuco.sjdonado.com/contact): how to report a word or reach the maintainer
+- [About](https://monocuco.sjdonado.com/about): what Monocuco is, where its words come from, the content guidelines, and how to propose, fix or report a word
 - [Privacy](https://monocuco.sjdonado.com/privacy): what the site processes
 - [Sitemap](https://monocuco.sjdonado.com/sitemap.xml): every page and word

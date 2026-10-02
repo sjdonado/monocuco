@@ -1,6 +1,6 @@
-# README screenshots
+# README screenshot
 
-The README shows one screenshot of the app: `docs/media/home-dark.webp`, the home page with nothing searched, on a desktop (1024 by 720), in the dark theme. It is generated from the production build, never captured by hand, so any change can refresh it the same way.
+The README shows one screenshot of the app: `docs/media/home-dark.webp`, the home page with nothing searched, on a desktop, in the dark theme.
 
 ## When to regenerate
 
@@ -8,16 +8,14 @@ Regenerate the image in the same change whenever that change alters how the home
 
 ## How
 
-1. Install `cwebp` once (macOS: `brew install webp`). Playwright's Chromium comes from `bunx playwright install chromium`.
-2. Stop any server on port 4179 (the audit and this script share it).
-3. Run `bun run media`. It builds the app, serves it with `vite preview`, opens each state with third-party requests blocked and reduced motion on, waits until the client shows the state (the home page's word list and letter row, or the single word), removes focus and hover, and captures at device pixel ratio 2. Then it converts each capture with `cwebp -q 80` to 1600 px wide.
-4. The script fails when `cwebp` is missing, when a state never appears, or when the image is over 200 KB.
-
-The shot, its viewport, scheme and state are the `SHOTS` table in `scripts/capture-media.ts`. Change them there, not by hand.
+1. Serve the production build: `bun run build && bun run preview`.
+2. With the browser MCP's `run` (Playwright), open a context with a 1024 by 720 viewport, the dark color scheme, a device pixel ratio of 2, reduced motion and every request outside the preview server blocked. Open `/`, wait until the twelve words and the letter row show and `document.fonts.ready` resolves, then move the pointer to the corner and remove focus, so no caret, focus ring or hover state is in the picture.
+3. Take a screenshot of the viewport as PNG.
+4. Convert it: `cwebp -q 80 -resize 1600 0 home.png -o docs/media/home-dark.webp` (macOS: `brew install webp`).
 
 ## Checks on the result
 
-- Each file is a static WebP of at most 200 KB (the script enforces this).
-- Open the README preview on GitHub or in an editor and confirm that the entry text is readable at the rendered width without zooming.
-- Run `bun run media` a second time and confirm with `git status` that the image did not change, or changed only in encoding bytes: the words shown and the framing must be identical.
+- The file is a static WebP, 1600 px wide, of at most 200 KB.
+- Open the README preview and confirm that the entry text is readable at the rendered width without zooming.
+- Capture it a second time and confirm with `git status` that the image did not change, or changed only in encoding bytes: the words shown and the framing must be identical.
 - Commit the image with the visual change that required it.

@@ -22,7 +22,7 @@ describe("canonicalPath", () => {
   });
 
   it("ignores the query on other pages", () => {
-    expect(canonicalPath(at("/guidelines?ref=x"))).toBe("/guidelines");
+    expect(canonicalPath(at("/about?ref=x"))).toBe("/about");
   });
 });
 

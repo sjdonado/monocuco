@@ -17,7 +17,7 @@ The site SHALL render every page with one of two themes, light and dark, built o
 
 #### Scenario: Every page uses the shared theme
 
-- **WHEN** any route or state is rendered (all words, page 2, a letter, search results, empty search, a word, search data failure, not found, `/guidelines`)
+- **WHEN** any route or state is rendered (all words, page 2, a letter, search results, empty search, a word, search data failure, not found, `/about`)
 - **THEN** its background, text, borders and controls use the colors of the active theme, and no element sets a color outside the token set
 
 ### Requirement: One accent color
@@ -29,9 +29,9 @@ The palette SHALL contain exactly one brand accent, a red in the hue family of t
 - **WHEN** any page or state is rendered and every visible color is measured
 - **THEN** at most one chromatic hue family appears outside status messages, and it is the accent
 
-#### Scenario: Guidelines headings are neutral
+#### Scenario: Section headings are neutral
 
-- **WHEN** a visitor opens `/guidelines`
+- **WHEN** a visitor opens `/about`
 - **THEN** the section headings use the primary text color, not a success or error color
 
 #### Scenario: Empty search is not a warning
@@ -45,7 +45,7 @@ Body and secondary text SHALL meet a WCAG 2.2 contrast ratio of at least 4.5:1 a
 
 #### Scenario: Measured contrast on every page
 
-- **WHEN** the browser audit measures every visible text element on every page and state at 360 px and 1440 px in both themes
+- **WHEN** the browser pass (AGENTS.md, Verification) measures every visible text element on every page and state at 360 px and 1440 px in both themes
 - **THEN** no element falls below its contrast floor
 
 #### Scenario: Accent links in the dark theme
@@ -59,7 +59,7 @@ The site SHALL use one typeface family, served from the site's own origin, and S
 
 #### Scenario: Only scale sizes are used
 
-- **WHEN** the browser audit collects the font size of every visible text element on every page and state
+- **WHEN** the browser pass collects the font size of every visible text element on every page and state
 - **THEN** every size is one of 12, 14, 16, 18, 24 or 30 px
 
 #### Scenario: No third-party font request
@@ -88,7 +88,7 @@ Surfaces SHALL be separated by spacing, hairline borders and one tonal step, nev
 
 #### Scenario: Only token radii
 
-- **WHEN** the browser audit collects the border radius of every visible element
+- **WHEN** the browser pass collects the border radius of every visible element
 - **THEN** every non-zero radius is one of the three token values
 
 ### Requirement: Motion policy
@@ -106,7 +106,7 @@ Every link, button, input and option SHALL show a visible focus indicator when i
 
 #### Scenario: Keyboard focus is visible
 
-- **WHEN** a keyboard user tabs through every focusable element on the home page, a search result page and `/guidelines`
+- **WHEN** a keyboard user tabs through every focusable element on the home page, a search result page and `/about`
 - **THEN** each focused element shows an outline or ring with at least 3:1 contrast against the surface around it
 
 #### Scenario: Field boundaries and placeholders
@@ -116,12 +116,12 @@ Every link, button, input and option SHALL show a visible focus indicator when i
 
 #### Scenario: Targets meet the minimum
 
-- **WHEN** the browser audit measures every interactive element on every page and state at 360 px and 1440 px
+- **WHEN** the browser pass (AGENTS.md, Verification) measures every interactive element on every page and state at 360 px and 1440 px
 - **THEN** none is smaller than 24 by 24 px, except links inside running text, and the letters and page numbers are at least 32 px square
 
 ### Requirement: One layout on every page
 
-Every page SHALL use the same layout from the first load: a sticky header with the logo linking home and the search field, then one content column. Every state is a search: all words is the empty query, a letter or a single word is a narrower one. Each SHALL start with the same left-aligned result line in the same place: "2767 palabras encontradas", "255 palabras encontradas con M", "8 palabras encontradas para "carnaval"", "1 palabra encontrada para "Ira"", and "N palabras parecidas a "x"" when the results are approximate. Browse pages (all words, a later page, a letter) SHALL show the letter row below the result line. There SHALL be no separate welcome layout, sidebar or menu. The footer SHALL hold the one-line description with its link, the version, the link to `/guidelines`, the source code link and the author link.
+Every page SHALL use the same layout from the first load: a sticky header with the logo linking home and the search field, then one content column. Every state is a search: all words is the empty query, a letter or a single word is a narrower one. Each SHALL start with the same left-aligned result line in the same place: "2767 palabras encontradas", "255 palabras encontradas con M", "8 palabras encontradas para "carnaval"", "1 palabra encontrada para "Ira"", and "N palabras parecidas a "x"" when the results are approximate. Browse pages (all words, a later page, a letter) SHALL show the letter row below the result line. There SHALL be no separate welcome layout, sidebar or menu. The footer SHALL hold the one-line description with its link, the version, and the links "Acerca de" (`/about`), "Privacidad" (`/privacy`) and "Código fuente".
 
 #### Scenario: First visit
 
@@ -139,7 +139,7 @@ Less visible text SHALL NOT make a page harder to understand for assistive techn
 
 #### Scenario: Lighthouse
 
-- **WHEN** Lighthouse audits `/`, a search, a letter, a word and `/guidelines`
+- **WHEN** Lighthouse audits `/`, a search, a letter, a word and `/about`
 - **THEN** accessibility and SEO both score 100
 
 #### Scenario: A word's page
@@ -149,12 +149,17 @@ Less visible text SHALL NOT make a page harder to understand for assistive techn
 
 ### Requirement: Search as a keyboard combobox
 
-The search field SHALL behave as a combobox with a list of up to five suggestions, each with the word and one line of its definition. Down and Up SHALL move the highlight through the suggestions, Enter SHALL open the highlighted word or, with none highlighted, search for the typed text, and Escape SHALL close the list. The highlighted suggestion SHALL be exposed to assistive technology (`aria-activedescendant`), and choosing with the mouse or Enter SHALL keep focus in the field, also after the word opens; closing the list SHALL forget the highlight; a failed lookup SHALL say "Búsqueda no disponible por ahora." instead of "Sin resultados". While suggestions are loading the list SHALL show "Buscando..." instead of an empty panel, and "Sin resultados" only after the lookup finished with no match.
+The search field SHALL behave as a combobox whose list starts with the option `Buscar "<typed text>"`, followed by up to five suggestions, each with the word and one line of its definition. The first option SHALL do exactly what Enter does with nothing highlighted: search for the typed text (and, like that search, move focus to the results). It is always there while the field has text, so a term with no suggestion is never a dead end; there is no "Sin resultados" row. Down and Up SHALL move the highlight through the options in order (none, `Buscar`, then each suggestion, wrapping around), Enter SHALL run the highlighted option, and Escape SHALL close the list. The highlighted option SHALL be exposed to assistive technology (`aria-activedescendant`); choosing a suggestion with the mouse or Enter SHALL keep focus in the field, also after the word opens; closing the list SHALL forget the highlight. While suggestions are loading the list SHALL show "Buscando..." below the first option, and a failed lookup SHALL say "Búsqueda no disponible por ahora.".
 
 #### Scenario: Choose a suggestion with the keyboard
 
-- **WHEN** a visitor types a word, presses Down and then Enter
-- **THEN** the first suggestion is highlighted and announced, and Enter opens that word's page
+- **WHEN** a visitor types a word, presses Down twice and then Enter
+- **THEN** Down first highlights `Buscar "<word>"`, then the first suggestion, which is announced, and Enter opens that word's page
+
+#### Scenario: A term with no suggestion
+
+- **WHEN** a visitor types a term no word matches
+- **THEN** the list shows only `Buscar "<term>"`, never "Sin resultados", and choosing it opens the results page for that term, the same page Enter opens
 
 #### Scenario: Search the typed text
 
@@ -201,17 +206,27 @@ Each letter in the letter row SHALL open the words filed under that letter, in d
 
 ### Requirement: Interaction feedback on existing flows
 
-Every flow SHALL give immediate, legible feedback in the one shared style: waiting for suggestions, the first load of the search data, a search, letter, page or word opened before the data is ready, pagination while the data loads, copying a share link, and a failed data load. Pending states SHALL be a small inline indicator; they SHALL NOT be a blank area or the wrong content.
+Every flow SHALL give immediate, legible feedback in the one shared style: waiting for suggestions, the first load of the search data, a search opened before the data is ready, pagination while the data loads, copying a share link, and a failed data load. Pending states SHALL be a small inline indicator; they SHALL NOT be a blank area or the wrong content. The server renders every page with its words, so the search data (`data.json` and `search-index.json`) SHALL load only on first use: the first focus on the search field, reaching for the pager or the letter row (pointer or keyboard focus), or a state the browser has to compute (a search, or a letter, page or word reached by navigating in the app).
 
 #### Scenario: Opening a search before the data is ready
 
-- **WHEN** a visitor opens `/?q=carnaval` or `/?letter=M` and the search data has not loaded yet
-- **THEN** the result line reads "Buscando "carnaval"" (or "Buscando palabras con M") with a spinner instead of the prerendered first page, and then the results
+- **WHEN** a visitor opens `/?q=carnaval` and the search data has not loaded yet
+- **THEN** the result line reads "Buscando "carnaval"" with a spinner instead of other words, and then the results
+
+#### Scenario: A page the server rendered
+
+- **WHEN** a visitor opens `/?letter=M`, a word's page or a page of all words
+- **THEN** its words show at once, before any search data loads, and Back to that address shows them again even if the visitor navigated away before the data arrived
+
+#### Scenario: A reader never loads the search data
+
+- **WHEN** a visitor only reads: opens pages, scrolls, and follows links to all words from another page
+- **THEN** neither `data.json` nor `search-index.json` is downloaded, by the page or by the service worker; the first focus on the search field downloads each of them once
 
 #### Scenario: Pagination before the data is ready
 
-- **WHEN** all words (`/`) is shown from the prerendered page before the search data has loaded
-- **THEN** the pagination shows "Página 1 de N" with the previous and next buttons visibly disabled, and it becomes the numbered pagination once the data is ready, without the layout jumping
+- **WHEN** all words (`/`) is shown before the search data has loaded, on the first view or after navigating from another page
+- **THEN** the pager is already the numbered pagination of the first page (built with the site), and reaching for it starts loading the data the next page needs
 
 #### Scenario: Share confirmation
 
@@ -236,29 +251,29 @@ Each page SHALL have exactly one `h1` (see "Pages stay findable and understandab
 
 Interface copy SHALL NOT contain decorative emoji. Copy SHALL stay in Spanish, in sentence case, and SHALL make no claim the product cannot back: in particular the site SHALL NOT offer a way to submit words that production cannot deliver. Displayed numbers SHALL be exact counts, without timings.
 
-#### Scenario: Guidelines without emoji
+#### Scenario: One page about the project
 
-- **WHEN** a visitor opens `/guidelines`
-- **THEN** the section headings read "Lo que esperamos de tus aportes" and "Lo que no aceptamos", with no emoji
+- **WHEN** a visitor opens `/about`, or an old link to `/guidelines` or `/contact`
+- **THEN** one page covers what Monocuco is, where its words come from, the content guidelines (`#pautas`) and how to propose, fix or report a word (`#contacto`), and ends with the credit "Desarrollado por @sjdonado", with no emoji; the old addresses redirect permanently (308) to those sections
 
 #### Scenario: Result count reads correctly
 
 - **WHEN** a search returns 0, 1 or 8 results
 - **THEN** the result line reads "0 palabras encontradas para", "1 palabra encontrada para" or "8 palabras encontradas para", followed by the search term
 
-#### Scenario: Footer spelling
+#### Scenario: Footer links
 
 - **WHEN** any page is rendered
-- **THEN** the footer reads "Desarrollado por"
+- **THEN** the footer shows the version and the links "Acerca de", "Privacidad" and "Código fuente", and no author credit
 
 ### Requirement: Scope of behavior changes
 
-The redesign SHALL change behavior only where this spec says so: the `/add` page and every link to it are removed, because production has no submission webhook, and contributing is described only in the README; letters browse by first letter; the search field is a keyboard combobox; the mobile drawer and the letter sidebar are removed. Search ranking, pagination, sharing, word detail URLs and offline behavior SHALL work as before. The site loads no analytics (removed after the redesign; `/privacy` states that it collects no data).
+The redesign SHALL change behavior only where this spec says so: the `/add` page and every link to it are removed, because production has no submission webhook, and contributing is described in the README and on `/about`; letters browse by first letter; the search field is a keyboard combobox; the mobile drawer and the letter sidebar are removed. Search ranking, pagination, sharing and word detail URLs SHALL work as before. Offline, every page SHALL open after one visit, and search SHALL work after one search online (the search data is cached on first use, not precached). The site loads no analytics (removed after the redesign; `/privacy` states that it collects no data).
 
 #### Scenario: Removed submission
 
 - **WHEN** a visitor opens `/add` after the change, for example from an old bookmark
-- **THEN** no submission form exists, no page links to `/add`, and the visitor sees the site's own "Página no encontrada" page in the shared style, saying that words are no longer received on the web with a link to how to propose one on `/guidelines`, and "Volver al inicio" leading to all words (`/`)
+- **THEN** no submission form exists, no page links to `/add`, and the visitor sees the site's own "Página no encontrada" page in the shared style, saying that words are no longer received on the web with a link to how to propose one on `/about`, and "Volver al inicio" leading to all words (`/`)
 
 #### Scenario: Back and forward
 
@@ -272,8 +287,13 @@ The redesign SHALL change behavior only where this spec says so: the `/add` page
 
 #### Scenario: Recovering from a failed load
 
-- **WHEN** the search data fails to load
-- **THEN** the page says so with a "Reintentar" button that reloads it, all words (`/`) still shows its prerendered first page, and there is exactly one search field
+- **WHEN** the search data fails to load for a state that needs it (a search, or a letter, page or word reached in the app)
+- **THEN** the page says so with a "Reintentar" button that reloads it, and there is exactly one search field
+
+#### Scenario: A failed load the page did not need
+
+- **WHEN** a load started by focusing the search field or reaching for the pager or the letters fails
+- **THEN** the page keeps its words, a notice says "La búsqueda no está disponible en este momento." with a "Reintentar" button (also announced to assistive technology), and the search field is disabled with the placeholder "Búsqueda no disponible"
 
 #### Scenario: A word that does not exist
 
@@ -282,5 +302,5 @@ The redesign SHALL change behavior only where this spec says so: the `/add` page
 
 #### Scenario: Flows still work
 
-- **WHEN** the audit's flows (search submit, suggestion select with mouse and keyboard, letter browse, pagination next) and the unit and component tests run after the change
+- **WHEN** the browser pass flows (search submit, suggestion select with mouse and keyboard, letter browse, pagination next) and the unit and component tests run after the change
 - **THEN** they pass

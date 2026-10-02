@@ -8,7 +8,6 @@ import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { firstLetter } from "../src/lib/text.js";
-import type { Word } from "./lib/app-states.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -16,6 +15,11 @@ const __dirname = dirname(__filename);
 const JSON_PATH = resolve(__dirname, "../static/data.json");
 const OUTPUT_PATH = resolve(__dirname, "../src/lib/data/initial-words.json");
 const PAGE_SIZE = 12;
+
+interface Word {
+  id: string;
+  word: string;
+}
 
 function main() {
   // Read the dataset build-index.ts already normalized and sorted, so the
